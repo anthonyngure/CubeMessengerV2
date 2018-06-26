@@ -6,9 +6,9 @@
     extends: Base,
     data () {
       return {
-        headers: [],
+        headers: [], //Headers for the table
         manager: {},
-        defaultValue: '_____',
+        defaultValue: '_____', //Displayed when a value is null
         extraInlineActions: [
           /*
           Actions should be name,color objects e.g
@@ -47,8 +47,8 @@
       }
     },
     created () {
-      this.setDefaultManager()
-      this.initialize()
+      this.setDefaultManager() // Sets a default manager
+      this.initialize() //
     },
     methods: {
       initialize () {
@@ -56,25 +56,44 @@
       setDefaultManager () {
         let that = this
         this.manager = {
+
+          //Whether the item is deletable
           deletable: (item) => {
             return true
           },
+
+          //Whether the item is editable
           editable: (item) => {
             return true
           },
+
+          //If should show a custom dialog or any view when view item is clicked
           hasCustomView (item, viewableHeaders, viewItemHeaders) {
             return false
           },
+
+          //Get value for a header
+          //header: the header
+          //item: current item
           toValue: (header, item) => {
             return item[header.value] ? item[header.value] : that.defaultValue
           },
+
+          //Name shown in the delete prompt dialog
           nameOnDelete (item) {
             return item.name
           },
-          onTopAction(action, items, filter){
+
+          //Called when any specified top action is clicked
+          // action: clicked action
+          //items: all items
+          // filter: current filter
+          onTopAction (action, items, filter) {
           },
-          showTopAction(action, items, filter){
-            return true;
+
+          //Whether a top action should be shown
+          showTopAction (action, items, filter) {
+            return true
           }
 
         }

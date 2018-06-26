@@ -5,6 +5,7 @@
 	use App\CrudHeader;
 	use App\Delivery;
 	use App\Department;
+	use App\LocalPurchaseOrder;
 	use App\Order;
 	use App\OrderItem;
 	use App\Product;
@@ -488,7 +489,7 @@
 			]);
 			//endregion
 			
-			//region Headers for Category
+			//region Headers for App\Category
 			CrudHeader::create([
 				'model'     => Category::class,
 				'text'      => 'Id',
@@ -541,7 +542,7 @@
 			]);
 			//endregion
 			
-			
+			//region Headers for App\Delivery
 			CrudHeader::create([
 				'model'     => Delivery::class,
 				'text'      => 'Id',
@@ -616,6 +617,65 @@
 				'browsable' => false,
 				'viewable'  => false,
 			]);
+			//endregion
+			
+			//region Headers for App\LocalPurchaseOrder
+			CrudHeader::create([
+				'model'     => LocalPurchaseOrder::class,
+				'text'      => 'Id',
+				'value'     => 'id',
+				'type'      => 'number',
+				'editable'  => false,
+				'creatable' => false,
+			
+			]);
+			CrudHeader::create([
+				'model'    => LocalPurchaseOrder::class,
+				'text'     => 'Supplier',
+				'value'    => 'supplier',
+				'type'     => 'text',
+				'editable' => false,
+			]);
+			CrudHeader::create([
+				'model'    => LocalPurchaseOrder::class,
+				'text'     => 'Delivery Note Received At',
+				'value'    => 'deliveryNoteReceivedAt',
+				'type'     => 'date',
+				'editable' => false,
+			]);
+			CrudHeader::create([
+				'model'    => LocalPurchaseOrder::class,
+				'text'     => 'Delivery Note Received By',
+				'value'    => 'deliveryNoteReceivedBy',
+				'editable' => false,
+			]);
+			CrudHeader::create([
+				'model'    => LocalPurchaseOrder::class,
+				'text'     => 'Items',
+				'value'    => 'itemsCount',
+				'editable' => false,
+			]);
+			CrudHeader::create([
+				'model'     => LocalPurchaseOrder::class,
+				'text'      => 'Created At',
+				'value'     => 'createdAt',
+				'type'      => 'date',
+				'editable'  => false,
+				'creatable' => false,
+				'browsable' => true,
+				'viewable'  => true,
+			]);
+			CrudHeader::create([
+				'model'     => LocalPurchaseOrder::class,
+				'text'      => 'Updated At',
+				'value'     => 'updatedAt',
+				'type'      => 'date',
+				'editable'  => false,
+				'creatable' => false,
+				'browsable' => false,
+				'viewable'  => false,
+			]);
+			//endregion
 			
 		}
 	}

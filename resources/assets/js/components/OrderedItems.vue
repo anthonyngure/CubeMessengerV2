@@ -132,7 +132,7 @@
           }
         }
         this.manager.showTopAction = (action, items, filter) => {
-          if (action.key === 'generateLPO' && filter) {
+          if (action.key === 'generateLPO' && filter && this.isSupplier()) {
             return filter.value === 'PENDING_LPO' && items.length
           } else {
             return false

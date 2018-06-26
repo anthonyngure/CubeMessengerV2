@@ -41,6 +41,7 @@
 					['icon' => 'local_shipping', 'title' => 'Deliveries', 'route' => 'deliveries', 'pendingApprovals' => 0],
 					['icon' => 'shopping_cart', 'title' => 'Ordered Products', 'route' => 'orderItems', 'pendingApprovals' => 0],
 					['icon' => 'shopping_basket', 'title' => 'Orders', 'route' => 'orders', 'pendingApprovals' => 0],
+					['icon' => 'work', 'title' => 'LPOs', 'route' => 'lpos', 'pendingApprovals' => 0],
 				];
 			} else {
 				$client = Auth::user()->getClient();

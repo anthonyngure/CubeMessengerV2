@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 25, 2018 at 08:24 AM
+-- Generation Time: Jun 26, 2018 at 08:02 AM
 -- Server version: 10.1.32-MariaDB
 -- PHP Version: 7.2.5
 
@@ -112,7 +112,7 @@ CREATE TABLE `bills` (
 --
 
 INSERT INTO `bills` (`id`, `client_id`, `billable_id`, `billable_type`, `amount`, `status`, `description`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, 1, 'App\\Order', 430.96000000000004, 'BLOCKED', 'Purchase of 4 products', '2018-06-24 20:52:59', '2018-06-24 20:52:59', NULL);
+(1, 1, 1, 'App\\Order', 199.27999999999997, 'BLOCKED', 'Purchase of 3 products', '2018-06-26 05:59:00', '2018-06-26 05:59:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -135,11 +135,11 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`, `order`, `slug`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Office Furniture', 5, NULL, '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(2, 'Laptops & Desktops', 3, NULL, '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(3, 'Computer Accessories', 4, NULL, '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(4, 'Electronics', 2, NULL, '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(5, 'Office Stationary', 1, NULL, '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL);
+(1, 'Office Furniture', 5, NULL, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(2, 'Laptops & Desktops', 3, NULL, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(3, 'Computer Accessories', 4, NULL, '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(4, 'Electronics', 2, NULL, '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(5, 'Office Stationary', 1, NULL, '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL);
 
 -- --------------------------------------------------------
 
@@ -165,8 +165,8 @@ CREATE TABLE `clients` (
 --
 
 INSERT INTO `clients` (`id`, `name`, `logo`, `email`, `phone`, `account_type`, `limit`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Test Client', 'images/client_default.jpg', 'testclient@cube-messenger.com', '0700000001', 'PRE_PAID', 0.00, '2018-06-24 20:43:55', '2018-06-24 20:43:55', NULL),
-(2, 'Test Client 2', 'images/client_default.jpg', 'testclient2@cube-messenger.com', '0700000002', 'PRE_PAID', 0.00, '2018-06-24 20:43:56', '2018-06-24 20:43:56', NULL);
+(1, 'Test Client', 'images/client_default.jpg', 'testclient@cube-messenger.com', '0700000001', 'PRE_PAID', 0.00, '2018-06-26 05:56:40', '2018-06-26 05:56:40', NULL),
+(2, 'Test Client 2', 'images/client_default.jpg', 'testclient2@cube-messenger.com', '0700000002', 'PRE_PAID', 0.00, '2018-06-26 05:56:40', '2018-06-26 05:56:40', NULL);
 
 -- --------------------------------------------------------
 
@@ -189,15 +189,15 @@ CREATE TABLE `cost_variables` (
 --
 
 INSERT INTO `cost_variables` (`id`, `name`, `value`, `public`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'URGENT_COST_PER_KM', 3.15, 1, '2018-06-24 20:43:54', '2018-06-24 20:43:54', NULL),
-(2, 'NON_URGENT_COST_PER_KM', 2.00, 1, '2018-06-24 20:43:54', '2018-06-24 20:43:54', NULL),
-(3, 'ERRAND_COST_PER_KM', 3.15, 1, '2018-06-24 20:43:54', '2018-06-24 20:43:54', NULL),
-(4, 'URGENT_COST_PER_MIN', 1.50, 1, '2018-06-24 20:43:55', '2018-06-24 20:43:55', NULL),
-(5, 'NON_URGENT_COST_PER_MIN', 1.00, 1, '2018-06-24 20:43:55', '2018-06-24 20:43:55', NULL),
-(6, 'ERRAND_COST_PER_MIN', 3.00, 1, '2018-06-24 20:43:55', '2018-06-24 20:43:55', NULL),
-(7, 'URGENT_BASE_COST', 150.00, 1, '2018-06-24 20:43:55', '2018-06-24 20:43:55', NULL),
-(8, 'NON_URGENT_BASE_COST', 50.00, 1, '2018-06-24 20:43:55', '2018-06-24 20:43:55', NULL),
-(9, 'ERRAND_BASE_COST', 150.00, 1, '2018-06-24 20:43:55', '2018-06-24 20:43:55', NULL);
+(1, 'URGENT_COST_PER_KM', 3.15, 1, '2018-06-26 05:56:38', '2018-06-26 05:56:38', NULL),
+(2, 'NON_URGENT_COST_PER_KM', 2.00, 1, '2018-06-26 05:56:39', '2018-06-26 05:56:39', NULL),
+(3, 'ERRAND_COST_PER_KM', 3.15, 1, '2018-06-26 05:56:39', '2018-06-26 05:56:39', NULL),
+(4, 'URGENT_COST_PER_MIN', 1.50, 1, '2018-06-26 05:56:39', '2018-06-26 05:56:39', NULL),
+(5, 'NON_URGENT_COST_PER_MIN', 1.00, 1, '2018-06-26 05:56:39', '2018-06-26 05:56:39', NULL),
+(6, 'ERRAND_COST_PER_MIN', 3.00, 1, '2018-06-26 05:56:39', '2018-06-26 05:56:39', NULL),
+(7, 'URGENT_BASE_COST', 150.00, 1, '2018-06-26 05:56:39', '2018-06-26 05:56:39', NULL),
+(8, 'NON_URGENT_BASE_COST', 50.00, 1, '2018-06-26 05:56:39', '2018-06-26 05:56:39', NULL),
+(9, 'ERRAND_BASE_COST', 150.00, 1, '2018-06-26 05:56:40', '2018-06-26 05:56:40', NULL);
 
 -- --------------------------------------------------------
 
@@ -222,9 +222,9 @@ CREATE TABLE `courier_options` (
 --
 
 INSERT INTO `courier_options` (`id`, `name`, `plural_name`, `icon`, `active`, `description`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Envelope', 'Envelopes', 'images/envelope.png', 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:03', '2018-06-24 20:44:03', NULL),
-(2, 'Box', 'Boxes', 'images/box.jpg', 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(3, 'Errand', 'Errands', 'images/errand.gif', 0, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL);
+(1, 'Envelope', 'Envelopes', 'images/envelope.png', 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:47', '2018-06-26 05:56:47', NULL),
+(2, 'Box', 'Boxes', 'images/box.jpg', 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:47', '2018-06-26 05:56:47', NULL),
+(3, 'Errand', 'Errands', 'images/errand.gif', 0, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:47', '2018-06-26 05:56:47', NULL);
 
 -- --------------------------------------------------------
 
@@ -259,76 +259,83 @@ CREATE TABLE `crud_headers` (
 --
 
 INSERT INTO `crud_headers` (`id`, `model`, `text`, `align`, `value`, `type`, `options`, `mask`, `priority`, `edit_hint`, `create_hint`, `edit_required`, `create_required`, `viewable`, `editable`, `creatable`, `browsable`, `created_at`, `updated_at`) VALUES
-(1, 'App\\Client', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:07', '2018-06-24 20:44:07'),
-(2, 'App\\Client', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:07', '2018-06-24 20:44:07'),
-(3, 'App\\Client', 'Email', 'left', 'email', 'email', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(4, 'App\\Client', 'Phone', 'left', 'phone', 'text', NULL, '##########', 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(5, 'App\\Client', 'Account Type', 'left', 'accountType', 'select', 'PRE_PAID,POST_PAID', NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(6, 'App\\Client', 'Limit', 'left', 'limit', 'text', NULL, '######', 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(7, 'App\\Client', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(8, 'App\\Client', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(9, 'App\\User', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(10, 'App\\User', 'Client', 'left', 'clientId', 'select_remote', 'clients/search', NULL, 0, 'Leave empty to keep user on with current client', NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(11, 'App\\User', 'Role', 'left', 'roleId', 'select_remote', 'roles/search', NULL, 0, 'Leave empty to keep user with the same role', NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(12, 'App\\User', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(13, 'App\\User', 'Email', 'left', 'email', 'email', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(14, 'App\\User', 'Password', 'left', 'password', 'email', NULL, NULL, 0, 'Leave empty to keep the same password', 'Password will be sent to the user phone number', 0, 1, 0, 1, 1, 0, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(15, 'App\\User', 'Phone', 'left', 'phone', 'text', NULL, '##########', 0, NULL, 'User password will be sent to this phone number', 1, 1, 1, 1, 1, 0, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(16, 'App\\User', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(17, 'App\\User', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(18, 'App\\TopUp', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(19, 'App\\TopUp', 'Client', 'left', 'clientId', 'select_remote', 'clients/search', NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(20, 'App\\TopUp', 'Amount', 'left', 'amount', 'text', NULL, '######', 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(21, 'App\\TopUp', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(22, 'App\\TopUp', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(23, 'App\\Role', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(24, 'App\\Role', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:08', '2018-06-24 20:44:08'),
-(25, 'App\\Role', 'Display Name', 'left', 'displayName', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(26, 'App\\Role', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(27, 'App\\Role', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(28, 'App\\Department', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(29, 'App\\Department', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(30, 'App\\Department', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(31, 'App\\Department', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(32, 'App\\Product', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(33, 'App\\Product', 'Supplier', 'left', 'supplierId', 'select_remote', 'suppliers/search', NULL, 0, 'Leave empty to keep same supplier', NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(34, 'App\\Product', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(35, 'App\\Product', 'Price', 'left', 'price', 'text', NULL, '#####', 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(36, 'App\\Product', 'Description', 'left', 'description', 'textarea', NULL, NULL, 0, NULL, NULL, 0, 0, 1, 1, 1, 0, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(37, 'App\\Product', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(38, 'App\\Product', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(39, 'App\\Order', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(40, 'App\\Order', 'Items', 'left', 'itemCount', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(41, 'App\\Order', 'Amount', 'left', 'amount', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(42, 'App\\Order', 'Status', 'left', 'status', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:09', '2018-06-24 20:44:09'),
-(43, 'App\\Order', 'RejectedBy', 'left', 'rejectedBy', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(44, 'App\\Order', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(45, 'App\\Order', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(46, 'App\\OrderItem', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(47, 'App\\OrderItem', 'Product', 'left', 'product', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(48, 'App\\OrderItem', 'Supplier', 'left', 'supplier', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(49, 'App\\OrderItem', 'Quantity', 'left', 'quantity', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(50, 'App\\OrderItem', 'Price at Purchase', 'left', 'priceAtPurchase', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(51, 'App\\OrderItem', 'Amount', 'left', 'amount', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(52, 'App\\OrderItem', 'Status', 'left', 'status', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(53, 'App\\OrderItem', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(54, 'App\\OrderItem', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(55, 'App\\Category', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(56, 'App\\Category', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(57, 'App\\Category', 'Order', 'left', 'order', 'number', NULL, '#', 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(58, 'App\\Category', 'Items', 'left', 'productsCount', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:10', '2018-06-24 20:44:10'),
-(59, 'App\\Category', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(60, 'App\\Category', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(61, 'App\\Delivery', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(62, 'App\\Delivery', 'Client', 'left', 'client', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(63, 'App\\Delivery', 'Rider', 'left', 'riderId', 'select_remote', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 0, 1, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(64, 'App\\Delivery', 'From', 'left', 'from', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(65, 'App\\Delivery', 'Items', 'left', 'itemsCount', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(66, 'App\\Delivery', 'Date', 'left', 'date', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(67, 'App\\Delivery', 'Time', 'left', 'time', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(68, 'App\\Delivery', 'Status', 'left', 'status', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(69, 'App\\Delivery', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-24 20:44:11', '2018-06-24 20:44:11'),
-(70, 'App\\Delivery', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-24 20:44:11', '2018-06-24 20:44:11');
+(1, 'App\\Client', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:51', '2018-06-26 05:56:51'),
+(2, 'App\\Client', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:51', '2018-06-26 05:56:51'),
+(3, 'App\\Client', 'Email', 'left', 'email', 'email', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:51', '2018-06-26 05:56:51'),
+(4, 'App\\Client', 'Phone', 'left', 'phone', 'text', NULL, '##########', 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:51', '2018-06-26 05:56:51'),
+(5, 'App\\Client', 'Account Type', 'left', 'accountType', 'select', 'PRE_PAID,POST_PAID', NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:51', '2018-06-26 05:56:51'),
+(6, 'App\\Client', 'Limit', 'left', 'limit', 'text', NULL, '######', 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:51', '2018-06-26 05:56:51'),
+(7, 'App\\Client', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-26 05:56:51', '2018-06-26 05:56:51'),
+(8, 'App\\Client', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(9, 'App\\User', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(10, 'App\\User', 'Client', 'left', 'clientId', 'select_remote', 'clients/search', NULL, 0, 'Leave empty to keep user on with current client', NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(11, 'App\\User', 'Role', 'left', 'roleId', 'select_remote', 'roles/search', NULL, 0, 'Leave empty to keep user with the same role', NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(12, 'App\\User', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(13, 'App\\User', 'Email', 'left', 'email', 'email', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(14, 'App\\User', 'Password', 'left', 'password', 'email', NULL, NULL, 0, 'Leave empty to keep the same password', 'Password will be sent to the user phone number', 0, 1, 0, 1, 1, 0, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(15, 'App\\User', 'Phone', 'left', 'phone', 'text', NULL, '##########', 0, NULL, 'User password will be sent to this phone number', 1, 1, 1, 1, 1, 0, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(16, 'App\\User', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(17, 'App\\User', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(18, 'App\\TopUp', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(19, 'App\\TopUp', 'Client', 'left', 'clientId', 'select_remote', 'clients/search', NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(20, 'App\\TopUp', 'Amount', 'left', 'amount', 'text', NULL, '######', 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(21, 'App\\TopUp', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(22, 'App\\TopUp', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(23, 'App\\Role', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(24, 'App\\Role', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(25, 'App\\Role', 'Display Name', 'left', 'displayName', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(26, 'App\\Role', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-26 05:56:52', '2018-06-26 05:56:52'),
+(27, 'App\\Role', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(28, 'App\\Department', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(29, 'App\\Department', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(30, 'App\\Department', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(31, 'App\\Department', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(32, 'App\\Product', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(33, 'App\\Product', 'Supplier', 'left', 'supplierId', 'select_remote', 'suppliers/search', NULL, 0, 'Leave empty to keep same supplier', NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(34, 'App\\Product', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(35, 'App\\Product', 'Price', 'left', 'price', 'text', NULL, '#####', 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(36, 'App\\Product', 'Description', 'left', 'description', 'textarea', NULL, NULL, 0, NULL, NULL, 0, 0, 1, 1, 1, 0, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(37, 'App\\Product', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(38, 'App\\Product', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(39, 'App\\Order', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(40, 'App\\Order', 'Items', 'left', 'itemCount', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(41, 'App\\Order', 'Amount', 'left', 'amount', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(42, 'App\\Order', 'Status', 'left', 'status', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(43, 'App\\Order', 'RejectedBy', 'left', 'rejectedBy', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(44, 'App\\Order', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-26 05:56:53', '2018-06-26 05:56:53'),
+(45, 'App\\Order', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(46, 'App\\OrderItem', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(47, 'App\\OrderItem', 'Product', 'left', 'product', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(48, 'App\\OrderItem', 'Supplier', 'left', 'supplier', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(49, 'App\\OrderItem', 'Quantity', 'left', 'quantity', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(50, 'App\\OrderItem', 'Price at Purchase', 'left', 'priceAtPurchase', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(51, 'App\\OrderItem', 'Amount', 'left', 'amount', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(52, 'App\\OrderItem', 'Status', 'left', 'status', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(53, 'App\\OrderItem', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(54, 'App\\OrderItem', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(55, 'App\\Category', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(56, 'App\\Category', 'Name', 'left', 'name', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(57, 'App\\Category', 'Order', 'left', 'order', 'number', NULL, '#', 0, NULL, NULL, 1, 1, 1, 1, 1, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(58, 'App\\Category', 'Items', 'left', 'productsCount', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(59, 'App\\Category', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(60, 'App\\Category', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(61, 'App\\Delivery', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(62, 'App\\Delivery', 'Client', 'left', 'client', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(63, 'App\\Delivery', 'Rider', 'left', 'riderId', 'select_remote', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 1, 0, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(64, 'App\\Delivery', 'From', 'left', 'from', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(65, 'App\\Delivery', 'Items', 'left', 'itemsCount', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(66, 'App\\Delivery', 'Date', 'left', 'date', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(67, 'App\\Delivery', 'Time', 'left', 'time', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:54', '2018-06-26 05:56:54'),
+(68, 'App\\Delivery', 'Status', 'left', 'status', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:55', '2018-06-26 05:56:55'),
+(69, 'App\\Delivery', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-26 05:56:55', '2018-06-26 05:56:55'),
+(70, 'App\\Delivery', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-26 05:56:55', '2018-06-26 05:56:55'),
+(71, 'App\\LocalPurchaseOrder', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:55', '2018-06-26 05:56:55'),
+(72, 'App\\LocalPurchaseOrder', 'Supplier', 'left', 'supplier', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:55', '2018-06-26 05:56:55'),
+(73, 'App\\LocalPurchaseOrder', 'Delivery Note Received At', 'left', 'deliveryNoteReceivedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:55', '2018-06-26 05:56:55'),
+(74, 'App\\LocalPurchaseOrder', 'Delivery Note Received By', 'left', 'deliveryNoteReceivedBy', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:55', '2018-06-26 05:56:55'),
+(75, 'App\\LocalPurchaseOrder', 'Items', 'left', 'itemsCount', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-06-26 05:56:55', '2018-06-26 05:56:55'),
+(76, 'App\\LocalPurchaseOrder', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-06-26 05:56:55', '2018-06-26 05:56:55'),
+(77, 'App\\LocalPurchaseOrder', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-06-26 05:56:55', '2018-06-26 05:56:55');
 
 -- --------------------------------------------------------
 
@@ -415,7 +422,7 @@ CREATE TABLE `departments` (
 --
 
 INSERT INTO `departments` (`id`, `client_id`, `name`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, 'Test Department', '2018-06-24 20:44:01', '2018-06-24 20:44:01', NULL);
+(1, 1, 'Test Department', '2018-06-26 05:56:45', '2018-06-26 05:56:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -426,6 +433,10 @@ INSERT INTO `departments` (`id`, `client_id`, `name`, `created_at`, `updated_at`
 CREATE TABLE `local_purchase_orders` (
   `id` int(10) UNSIGNED NOT NULL,
   `supplier_id` int(10) UNSIGNED NOT NULL,
+  `lpo_pdf_path` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `delivery_note_path` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `delivery_note_received_at` timestamp NULL DEFAULT NULL,
+  `delivery_note_received_by_id` int(10) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
@@ -435,10 +446,8 @@ CREATE TABLE `local_purchase_orders` (
 -- Dumping data for table `local_purchase_orders`
 --
 
-INSERT INTO `local_purchase_orders` (`id`, `supplier_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 4, '2018-06-24 20:54:49', '2018-06-24 20:54:49', NULL),
-(2, 4, '2018-06-24 20:55:18', '2018-06-24 20:55:18', NULL),
-(3, 4, '2018-06-24 20:58:33', '2018-06-24 20:58:33', NULL);
+INSERT INTO `local_purchase_orders` (`id`, `supplier_id`, `lpo_pdf_path`, `delivery_note_path`, `delivery_note_received_at`, `delivery_note_received_by_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 4, NULL, NULL, NULL, NULL, '2018-06-26 06:01:21', '2018-06-26 06:01:21', NULL);
 
 -- --------------------------------------------------------
 
@@ -460,8 +469,9 @@ CREATE TABLE `local_purchase_order_items` (
 --
 
 INSERT INTO `local_purchase_order_items` (`id`, `local_purchase_order_id`, `order_item_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 3, 2, '2018-06-24 20:58:33', '2018-06-24 20:58:33', NULL),
-(2, 3, 3, '2018-06-24 20:58:33', '2018-06-24 20:58:33', NULL);
+(1, 1, 1, '2018-06-26 06:01:21', '2018-06-26 06:01:21', NULL),
+(2, 1, 2, '2018-06-26 06:01:21', '2018-06-26 06:01:21', NULL),
+(3, 1, 3, '2018-06-26 06:01:21', '2018-06-26 06:01:21', NULL);
 
 -- --------------------------------------------------------
 
@@ -480,38 +490,38 @@ CREATE TABLE `migrations` (
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(65, '2014_01_10_071110_create_clients_table', 1),
-(66, '2014_01_11_071110_create_top_ups_table', 1),
-(67, '2014_01_11_115437_create_departments_table', 1),
-(68, '2014_10_10_190000_create_roles_table', 1),
-(69, '2014_10_12_000000_create_users_table', 1),
-(70, '2014_10_12_100000_create_password_resets_table', 1),
-(71, '2018_01_12_121710_create_sms_messages_table', 1),
-(72, '2018_01_30_094836_create_courier_options_table', 1),
-(73, '2018_01_30_101110_create_cost_variables_table', 1),
-(74, '2018_02_08_101907_create_deliveries_table', 1),
-(75, '2018_02_08_103250_create_delivery_items_table', 1),
-(76, '2018_02_26_134302_create_subscription_options_table', 1),
-(77, '2018_02_26_154259_create_subscription_option_items_table', 1),
-(78, '2018_02_27_155538_create_subscriptions_table', 1),
-(79, '2018_03_01_133356_create_subscription_deliveries_table', 1),
-(80, '2018_03_13_120127_create_appointments_table', 1),
-(81, '2018_03_16_121623_create_appointment_internal_participants_table', 1),
-(82, '2018_03_16_134619_create_appointment_external_participants_table', 1),
-(83, '2018_03_16_141829_create_appointment_items_table', 1),
-(84, '2018_03_17_121308_create_categories_table', 1),
-(85, '2018_03_17_121317_create_products_table', 1),
-(86, '2018_03_17_130028_create_orders_table', 1),
-(87, '2018_03_17_135546_create_order_items_table', 1),
-(88, '2018_03_18_130750_create_service_request_options_table', 1),
-(89, '2018_03_24_085521_create_service_requests_table', 1),
-(90, '2018_04_09_101150_create_bills_table', 1),
-(91, '2018_04_17_104322_create_service_request_quotes_table', 1),
-(92, '2018_04_17_104803_create_service_request_items_table', 1),
-(93, '2018_05_10_124141_create_notifications_table', 1),
-(94, '2018_05_22_124701_create_crud_headers_table', 1),
-(95, '2018_06_16_132352_create_local_purchase_orders_table', 1),
-(96, '2018_06_16_132403_create_local_purchase_order_items_table', 1);
+(161, '2014_01_10_071110_create_clients_table', 1),
+(162, '2014_01_11_071110_create_top_ups_table', 1),
+(163, '2014_01_11_115437_create_departments_table', 1),
+(164, '2014_10_10_190000_create_roles_table', 1),
+(165, '2014_10_12_000000_create_users_table', 1),
+(166, '2014_10_12_100000_create_password_resets_table', 1),
+(167, '2018_01_12_121710_create_sms_messages_table', 1),
+(168, '2018_01_30_094836_create_courier_options_table', 1),
+(169, '2018_01_30_101110_create_cost_variables_table', 1),
+(170, '2018_02_08_101907_create_deliveries_table', 1),
+(171, '2018_02_08_103250_create_delivery_items_table', 1),
+(172, '2018_02_26_134302_create_subscription_options_table', 1),
+(173, '2018_02_26_154259_create_subscription_option_items_table', 1),
+(174, '2018_02_27_155538_create_subscriptions_table', 1),
+(175, '2018_03_01_133356_create_subscription_deliveries_table', 1),
+(176, '2018_03_13_120127_create_appointments_table', 1),
+(177, '2018_03_16_121623_create_appointment_internal_participants_table', 1),
+(178, '2018_03_16_134619_create_appointment_external_participants_table', 1),
+(179, '2018_03_16_141829_create_appointment_items_table', 1),
+(180, '2018_03_17_121308_create_categories_table', 1),
+(181, '2018_03_17_121317_create_products_table', 1),
+(182, '2018_03_17_130028_create_orders_table', 1),
+(183, '2018_03_17_135546_create_order_items_table', 1),
+(184, '2018_03_18_130750_create_service_request_options_table', 1),
+(185, '2018_03_24_085521_create_service_requests_table', 1),
+(186, '2018_04_09_101150_create_bills_table', 1),
+(187, '2018_04_17_104322_create_service_request_quotes_table', 1),
+(188, '2018_04_17_104803_create_service_request_items_table', 1),
+(189, '2018_05_10_124141_create_notifications_table', 1),
+(190, '2018_05_22_124701_create_crud_headers_table', 1),
+(191, '2018_06_16_132352_create_local_purchase_orders_table', 1),
+(192, '2018_06_16_132403_create_local_purchase_order_items_table', 1);
 
 -- --------------------------------------------------------
 
@@ -535,11 +545,10 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `type`, `notifiable_id`, `notifiable_type`, `data`, `read_at`, `created_at`, `updated_at`) VALUES
-('d9e80d8e-d0db-414b-bf9a-e7848be03203', 'App\\Notifications\\BillNotification', 1, 'App\\Client', '[]', NULL, '2018-06-24 20:53:03', '2018-06-24 20:53:03'),
-('df3a57fc-a508-4f48-8e94-0d6f50dda593', 'App\\Notifications\\TopUpNotification', 1, 'App\\Client', '[]', NULL, '2018-06-24 20:44:01', '2018-06-24 20:44:01'),
-('e4d980f7-02c9-4043-91ba-4c2ec825dfbc', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-06-24 20:55:22', '2018-06-24 20:55:22'),
-('efea39fb-32d7-4b12-94b0-eb59bb1a1986', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-06-24 20:53:08', '2018-06-24 20:53:08'),
-('fd35f70d-7ec1-4544-ab0d-fef4b02d0580', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-06-24 20:58:38', '2018-06-24 20:58:38');
+('472797d6-f3ba-4736-95e0-ac02f9fb9f73', 'App\\Notifications\\BillNotification', 1, 'App\\Client', '[]', NULL, '2018-06-26 05:59:05', '2018-06-26 05:59:05'),
+('4d018794-ac82-4802-aa38-e4cc69bf17cb', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-06-26 05:59:09', '2018-06-26 05:59:09'),
+('96920808-86ae-4302-8a11-6c88ead222e8', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-06-26 06:01:25', '2018-06-26 06:01:25'),
+('96e28e49-40af-4353-9600-c9f0cdb432f9', 'App\\Notifications\\TopUpNotification', 1, 'App\\Client', '[]', NULL, '2018-06-26 05:56:45', '2018-06-26 05:56:45');
 
 -- --------------------------------------------------------
 
@@ -565,7 +574,7 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `status`, `rejected_by_id`, `department_head_acted_at`, `purchasing_head_acted_at`, `delivered_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 7, 'PENDING_DELIVERY', NULL, '2018-06-24 20:53:51', '2018-06-24 20:54:06', NULL, '2018-06-24 20:52:58', '2018-06-24 20:54:06', NULL);
+(1, 7, 'PENDING_DELIVERY', NULL, '2018-06-26 05:59:42', '2018-06-26 06:00:50', NULL, '2018-06-26 05:59:00', '2018-06-26 06:00:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -590,10 +599,9 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at_purchase`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, 1, 1, 106.52, 'ACCEPTED_BY_SUPPLIER', '2018-06-24 20:52:58', '2018-06-24 20:54:49', NULL),
-(2, 1, 2, 1, 115.23, 'ACCEPTED_BY_SUPPLIER', '2018-06-24 20:52:58', '2018-06-24 20:58:33', NULL),
-(3, 1, 3, 1, 160.98, 'ACCEPTED_BY_SUPPLIER', '2018-06-24 20:52:58', '2018-06-24 20:58:33', NULL),
-(4, 1, 4, 1, 48.23, 'REJECTED_BY_SUPPLIER', '2018-06-24 20:52:59', '2018-06-24 20:58:33', NULL);
+(1, 1, 1, 1, 25.68, 'ACCEPTED_BY_SUPPLIER', '2018-06-26 05:59:00', '2018-06-26 06:01:21', NULL),
+(2, 1, 2, 1, 106.27, 'ACCEPTED_BY_SUPPLIER', '2018-06-26 05:59:00', '2018-06-26 06:01:21', NULL),
+(3, 1, 3, 1, 67.33, 'ACCEPTED_BY_SUPPLIER', '2018-06-26 05:59:00', '2018-06-26 06:01:21', NULL);
 
 -- --------------------------------------------------------
 
@@ -632,21 +640,21 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `category_id`, `supplier_id`, `name`, `image`, `slug`, `price`, `description`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 5, 4, 'Highlighter', 'images/product_default.jpg', NULL, 106.52, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(2, 5, 4, 'Permanent marker (Texta / Sharpie)', 'images/product_default.jpg', NULL, 115.23, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(3, 5, 4, 'Pencil and pencil sharpener', 'images/product_default.jpg', NULL, 160.98, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(4, 5, 4, 'Colored pencils', 'images/product_default.jpg', NULL, 48.23, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(5, 5, 4, 'Colored pens', 'images/product_default.jpg', NULL, 171.63, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(6, 5, 4, 'Correction tape / fluid / Liquid Paper', 'images/product_default.jpg', NULL, 166.42, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(7, 5, 4, 'Eraser', 'images/product_default.jpg', NULL, 75.16, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(8, 5, 4, 'Mechanical pencil and spare leads', 'images/product_default.jpg', NULL, 34.13, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(9, 5, 4, 'Plain paper (for printer)', 'images/product_default.jpg', NULL, 67.88, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(10, 5, 4, 'Notebooks, ruled paper, binder books', 'images/product_default.jpg', NULL, 75.57, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(11, 5, 4, 'Scrapbook, art book', 'images/product_default.jpg', NULL, 149.29, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(12, 5, 4, 'Ruler', 'images/product_default.jpg', NULL, 170.58, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(13, 5, 4, 'Glue', 'images/product_default.jpg', NULL, 79.16, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(14, 5, 4, 'Sticky tape + dispenser', 'images/product_default.jpg', NULL, 68.82, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(15, 5, 4, 'Packing tape + dispenser', 'images/product_default.jpg', NULL, 160.3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL);
+(1, 5, 4, 'Highlighter', 'images/product_default.jpg', NULL, 25.68, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(2, 5, 4, 'Permanent marker (Texta / Sharpie)', 'images/product_default.jpg', NULL, 106.27, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(3, 5, 4, 'Pencil and pencil sharpener', 'images/product_default.jpg', NULL, 67.33, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(4, 5, 4, 'Colored pencils', 'images/product_default.jpg', NULL, 140.38, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(5, 5, 4, 'Colored pens', 'images/product_default.jpg', NULL, 33.68, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(6, 5, 4, 'Correction tape / fluid / Liquid Paper', 'images/product_default.jpg', NULL, 52.48, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(7, 5, 4, 'Eraser', 'images/product_default.jpg', NULL, 55.14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(8, 5, 4, 'Mechanical pencil and spare leads', 'images/product_default.jpg', NULL, 44.26, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(9, 5, 4, 'Plain paper (for printer)', 'images/product_default.jpg', NULL, 111.64, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(10, 5, 4, 'Notebooks, ruled paper, binder books', 'images/product_default.jpg', NULL, 127.66, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:49', '2018-06-26 05:56:49', NULL),
+(11, 5, 4, 'Scrapbook, art book', 'images/product_default.jpg', NULL, 43.64, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(12, 5, 4, 'Ruler', 'images/product_default.jpg', NULL, 194.55, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(13, 5, 4, 'Glue', 'images/product_default.jpg', NULL, 85.01, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(14, 5, 4, 'Sticky tape + dispenser', 'images/product_default.jpg', NULL, 83.84, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(15, 5, 4, 'Packing tape + dispenser', 'images/product_default.jpg', NULL, 108.65, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -668,14 +676,14 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `display_name`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'ADMIN', 'Administrator', '2018-06-24 20:44:01', '2018-06-24 20:44:01', NULL),
-(2, 'OPERATIONS', 'Operations', '2018-06-24 20:44:01', '2018-06-24 20:44:01', NULL),
-(3, 'SUPPLIER', 'Supplier', '2018-06-24 20:44:01', '2018-06-24 20:44:01', NULL),
-(4, 'CLIENT_ADMIN', 'Client Administrator', '2018-06-24 20:44:01', '2018-06-24 20:44:01', NULL),
-(5, 'PURCHASING_HEAD', 'Purchasing Head', '2018-06-24 20:44:01', '2018-06-24 20:44:01', NULL),
-(6, 'DEPARTMENT_HEAD', 'Department Head', '2018-06-24 20:44:01', '2018-06-24 20:44:01', NULL),
-(7, 'DEPARTMENT_USER', 'Department User', '2018-06-24 20:44:02', '2018-06-24 20:44:02', NULL),
-(8, 'RIDER', 'Rider', '2018-06-24 20:44:02', '2018-06-24 20:44:02', NULL);
+(1, 'ADMIN', 'Administrator', '2018-06-26 05:56:45', '2018-06-26 05:56:45', NULL),
+(2, 'OPERATIONS', 'Operations', '2018-06-26 05:56:45', '2018-06-26 05:56:45', NULL),
+(3, 'SUPPLIER', 'Supplier', '2018-06-26 05:56:45', '2018-06-26 05:56:45', NULL),
+(4, 'CLIENT_ADMIN', 'Client Administrator', '2018-06-26 05:56:45', '2018-06-26 05:56:45', NULL),
+(5, 'PURCHASING_HEAD', 'Purchasing Head', '2018-06-26 05:56:45', '2018-06-26 05:56:45', NULL),
+(6, 'DEPARTMENT_HEAD', 'Department Head', '2018-06-26 05:56:45', '2018-06-26 05:56:45', NULL),
+(7, 'DEPARTMENT_USER', 'Department User', '2018-06-26 05:56:45', '2018-06-26 05:56:45', NULL),
+(8, 'RIDER', 'Rider', '2018-06-26 05:56:45', '2018-06-26 05:56:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -740,29 +748,29 @@ CREATE TABLE `service_request_options` (
 --
 
 INSERT INTO `service_request_options` (`id`, `type`, `description`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'IT', 'Computer is slow', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(2, 'IT', 'Computer keeps restarting', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(3, 'IT', 'Keyboard, mouse, printer or other peripherals aren’t working properly', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(4, 'IT', 'Computer not booting', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(5, 'IT', 'Frozen screen', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(6, 'IT', 'Strange noises', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(7, 'IT', 'Slow internet', '2018-06-24 20:44:06', '2018-06-24 20:44:06', NULL),
-(8, 'IT', 'Overheating', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(9, 'IT', 'Downloads take forever', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(10, 'IT', 'Computer freezes', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(11, 'IT', 'Attachments not opening', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(12, 'IT', 'Pop-up ads', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(13, 'IT', 'Corrupt files', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(14, 'IT', 'Long delays accessing files', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(15, 'IT', 'Sudden Shut off', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(16, 'IT', 'Computer not turning On', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(17, 'IT', 'Applications not installing', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(18, 'IT', 'Applications running slowly', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(19, 'IT', 'Blue Screen of Death (BSoD)', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(20, 'REPAIR', 'Wall Painting', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(21, 'REPAIR', 'Broken Chair', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(22, 'REPAIR', 'Broken Desk', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL),
-(23, 'REPAIR', 'Broken Door Handle', '2018-06-24 20:44:07', '2018-06-24 20:44:07', NULL);
+(1, 'IT', 'Computer is slow', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(2, 'IT', 'Computer keeps restarting', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(3, 'IT', 'Keyboard, mouse, printer or other peripherals aren’t working properly', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(4, 'IT', 'Computer not booting', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(5, 'IT', 'Frozen screen', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(6, 'IT', 'Strange noises', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(7, 'IT', 'Slow internet', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(8, 'IT', 'Overheating', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(9, 'IT', 'Downloads take forever', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(10, 'IT', 'Computer freezes', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(11, 'IT', 'Attachments not opening', '2018-06-26 05:56:50', '2018-06-26 05:56:50', NULL),
+(12, 'IT', 'Pop-up ads', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(13, 'IT', 'Corrupt files', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(14, 'IT', 'Long delays accessing files', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(15, 'IT', 'Sudden Shut off', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(16, 'IT', 'Computer not turning On', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(17, 'IT', 'Applications not installing', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(18, 'IT', 'Applications running slowly', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(19, 'IT', 'Blue Screen of Death (BSoD)', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(20, 'REPAIR', 'Wall Painting', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(21, 'REPAIR', 'Broken Chair', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(22, 'REPAIR', 'Broken Desk', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL),
+(23, 'REPAIR', 'Broken Door Handle', '2018-06-26 05:56:51', '2018-06-26 05:56:51', NULL);
 
 -- --------------------------------------------------------
 
@@ -858,9 +866,9 @@ CREATE TABLE `subscription_options` (
 --
 
 INSERT INTO `subscription_options` (`id`, `name`, `delivery_cost`, `description`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Newspaper', 5, NULL, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(2, 'Milk', 10, NULL, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(3, 'Water', 5, NULL, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL);
+(1, 'Newspaper', 5, NULL, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(2, 'Milk', 10, NULL, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(3, 'Water', 5, NULL, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL);
 
 -- --------------------------------------------------------
 
@@ -883,20 +891,20 @@ CREATE TABLE `subscription_option_items` (
 --
 
 INSERT INTO `subscription_option_items` (`id`, `name`, `subscription_option_id`, `price`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Daily Nation', 1, 65, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(2, 'The Standard', 1, 65, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(3, 'The Star', 1, 65, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(4, 'The EastAfrican', 1, 65, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(5, 'Business Daily Africa', 1, 65, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(6, 'Taifa Leo', 1, 65, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(7, 'Kenya Times', 1, 65, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(8, 'Kenya Gazzette', 1, 65, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(9, 'Brookside 500 ML', 2, 55, '2018-06-24 20:44:04', '2018-06-24 20:44:04', NULL),
-(10, 'Tuzo 500 ML', 2, 55, '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(11, 'Ilara 500 ML', 2, 55, '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(12, 'Gold Crown 500 ML', 2, 55, '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(13, 'Molo Milk 500 ML', 2, 55, '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL),
-(14, 'Aqua', 3, 200, '2018-06-24 20:44:05', '2018-06-24 20:44:05', NULL);
+(1, 'Daily Nation', 1, 65, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(2, 'The Standard', 1, 65, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(3, 'The Star', 1, 65, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(4, 'The EastAfrican', 1, 65, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(5, 'Business Daily Africa', 1, 65, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(6, 'Taifa Leo', 1, 65, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(7, 'Kenya Times', 1, 65, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(8, 'Kenya Gazzette', 1, 65, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(9, 'Brookside 500 ML', 2, 55, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(10, 'Tuzo 500 ML', 2, 55, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(11, 'Ilara 500 ML', 2, 55, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(12, 'Gold Crown 500 ML', 2, 55, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(13, 'Molo Milk 500 ML', 2, 55, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL),
+(14, 'Aqua', 3, 200, '2018-06-26 05:56:48', '2018-06-26 05:56:48', NULL);
 
 -- --------------------------------------------------------
 
@@ -918,7 +926,7 @@ CREATE TABLE `top_ups` (
 --
 
 INSERT INTO `top_ups` (`id`, `client_id`, `amount`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, 5000, '2018-06-24 20:43:56', '2018-06-24 20:43:56', NULL);
+(1, 1, 5000, '2018-06-26 05:56:40', '2018-06-26 05:56:40', NULL);
 
 -- --------------------------------------------------------
 
@@ -948,18 +956,18 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `client_id`, `department_id`, `role_id`, `avatar`, `name`, `email`, `phone`, `password`, `password_recovery_code`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, NULL, NULL, 1, 'users/default.png', 'Administrator', 'admin@cube-messenger.com', '254700000000', '$2y$10$8gr86rP9ibPNJyvRIIIgQecvsptP.LbqgP6oi3gMmgIn5s4Z29AqW', NULL, 'FRJOxZWMfOKDWShkZnvVXqqjzjzM3KAREdw4gIUTfXBFaEAEZQV4uWxDnlav', '2018-06-24 20:44:02', '2018-06-24 20:44:02', NULL),
-(2, NULL, NULL, 2, 'users/default.png', 'Operations', 'operations@cube-messenger.com', '254700000001', '$2y$10$0SBcM5A.Hh4azthkk8hjFeUv65nJQdDF4TD88zK2eNo8iV8ZUhqcq', NULL, 'Gsr0ECNDGZZbPIdqFtDWnwMtAd3oPsMjIK2jmGi3AEIWrSyPGQy4Z6hG6aLv', '2018-06-24 20:44:02', '2018-06-24 20:44:02', NULL),
-(3, 1, NULL, 4, 'users/default.png', 'Test Admin', 'testadmin@cube-messenger.com', NULL, '$2y$10$UIIGTxdyCaTsQzSc6mnVt.FFckdb6bzsSICZtz4r4j3DIa.HstM.C', NULL, 'k0TTdvd23unl6d50XEdE9a9vPQKYIAjZLdiIIIbDEn1wwGKJ9uDrPs0iY5kN', '2018-06-24 20:44:02', '2018-06-24 20:44:02', NULL),
-(4, NULL, NULL, 3, 'users/default.png', 'Test Supplier', 'testsupplier@cube-messenger.com', NULL, '$2y$10$Edqx/gWSSoJKFbVVuzrNHeH/iCZ5K4hr46wdXDK3bV7yCT0OpemWK', NULL, 'DvrgyRWkxfoJHAbuHJYmprrYriaFl5xnThHUzOKUfnYs4jwYqQlgRO7BD0GR', '2018-06-24 20:44:02', '2018-06-24 20:44:02', NULL),
-(5, 1, NULL, 5, 'users/default.png', 'Test Purchasing Head', 'testpurchasinghead@cube-messenger.com', NULL, '$2y$10$7Ha01DNgCvq6ALvvVGQlOuvyHminrIO3V/Qs0qtUs334VWhNfHOM.', NULL, '38Z0qfCfRHGLCmkbY3xqdzWnNzSeNdz1pusK3t3GLUs9VurF8PkfyBbaVoX9', '2018-06-24 20:44:02', '2018-06-24 20:44:02', NULL),
-(6, 1, 1, 6, 'users/default.png', 'Test Department Head', 'testdepartmenthead@cube-messenger.com', NULL, '$2y$10$z6bSo6z7Wd0.SIGlPqv/rempOoK/A4hJLMNY5dnHXX4XZZcAzEw16', NULL, 'evZLnDeTVtRzXu7hObbgnPXe5hPl7PN9eDvOPrVVQ4AqHwusyon1uFcyHlyV', '2018-06-24 20:44:03', '2018-06-24 20:44:03', NULL),
-(7, 1, 1, 7, 'users/default.png', 'Test Department User', 'testdepartmentuser@cube-messenger.com', NULL, '$2y$10$.LKb9WlfE8Jjbu1T8xzJ6e6QRKL72nOHLJDQ1paFn9Cdvpc602hPy', NULL, 'vmZG9z3GZpQnfQ6F1UnvIqJoa7j2dqlJgpaqTwWAI3DnDT2nakeQ2ZtSCHOk', '2018-06-24 20:44:03', '2018-06-24 20:44:03', NULL),
-(8, NULL, NULL, 8, 'users/default.png', 'Test Rider ', 'testrider@cube-messenger.com', '443-936-7402 x069', '$2y$10$d68MsH3ZCSYNgw55EyZ46.G.A3z7nHdpjsanQl9HOkJM/14Cs3XRS', NULL, 'nnaVk6MOJtPlYVbp6McihIR7fNZVNzhRJlGA2X5U2W5XwYVPHS3AnTndqi14', '2018-06-24 20:44:03', '2018-06-24 20:44:03', NULL),
-(9, NULL, NULL, 8, 'users/default.png', 'Test Rider 1', 'testrider1@cube-messenger.com', '771-930-7154', '$2y$10$iJYemNiwvGw455GS9w8tTeim57vYmEcEFtMqAsofgNeWTD5gdilXy', NULL, '8v7lfii65s68gZP7sO4CwNfjaTFkHErl4wwSyShQuSpnB28YYHTkOjxX1p8j', '2018-06-24 20:44:03', '2018-06-24 20:44:03', NULL),
-(10, NULL, NULL, 8, 'users/default.png', 'Test Rider 2', 'testrider2@cube-messenger.com', '(559) 895-1620 x77247', '$2y$10$xeWOmOMTPrre3BVaTHLd8uKuEUoV2O2gD0ZA.n/7nR/075O92fylO', NULL, 'g658HnnMEARnPoOy6Tg0dNbpY7zYKHj5dmP2ajhWRnpe709TbcNjKT2fZptl', '2018-06-24 20:44:03', '2018-06-24 20:44:03', NULL),
-(11, NULL, NULL, 8, 'users/default.png', 'Test Rider 3', 'testrider3@cube-messenger.com', '685-672-7529 x58916', '$2y$10$3SjtiG7Fe8Rl1PJaLpEjj.FmwCx8r5W6uV4YtMekJK4BVl2xYxiwa', NULL, 'mQnqret1WsnrfNbkjJhMtO9nAY3LDoJA52zn7nMo9SUUhlc5deWWNK47HiOw', '2018-06-24 20:44:03', '2018-06-24 20:44:03', NULL),
-(12, NULL, NULL, 8, 'users/default.png', 'Test Rider 4', 'testrider4@cube-messenger.com', '(313) 334-0086 x38654', '$2y$10$gkA0B86bHwU3XN1dCiHUqecIJz4Mo3SlWMHb0pSSNEESq7GZFBYDW', NULL, 'Kgan2OaI1VMZOwicq7XeAe4JMzasok5OF8kStmSK92elQ0HiqRp5AVLhGDwY', '2018-06-24 20:44:03', '2018-06-24 20:44:03', NULL);
+(1, NULL, NULL, 1, 'users/default.png', 'Administrator', 'admin@cube-messenger.com', '254700000000', '$2y$10$cndsTndn0vRmqoUdykNszO0eZFJClbmFkVgwNeEXtr78XzWnlovNS', NULL, 'QVnFf7N5AEHp9raASnKTcsjOhWGjRmduSB5E8x9VwNuX1PplAtNcx25shAwM', '2018-06-26 05:56:46', '2018-06-26 05:56:46', NULL),
+(2, NULL, NULL, 2, 'users/default.png', 'Operations', 'operations@cube-messenger.com', '254700000001', '$2y$10$a04fmPQ4q8RbDv1uuc4P4.Eq0xH7zgrSKLncbmhOAdaXEqPfoPIn6', NULL, 'mSDhqE0fTjRWzJHOPWNRjQ6TqdyPzWYQafvtLhNVR5q3JhsLGgqjk3r3kCc6', '2018-06-26 05:56:46', '2018-06-26 05:56:46', NULL),
+(3, 1, NULL, 4, 'users/default.png', 'Test Admin', 'testadmin@cube-messenger.com', NULL, '$2y$10$3QMJJz2MlLWTOEl8CWs6EuFRLFb6L2CaRkKvRpbasM6VuHdmYdPfy', NULL, 'zjPjg8tZU2apZBOcaBaFT6C2A1TzkQWqSgAebKXyCI27aQVxLt1KxHDnW8Df', '2018-06-26 05:56:46', '2018-06-26 05:56:46', NULL),
+(4, NULL, NULL, 3, 'users/default.png', 'Test Supplier', 'testsupplier@cube-messenger.com', NULL, '$2y$10$MxNDUL49.tW3TfjuL1QSgOjhiKmjffsFz.S9056wKWu2bMAkLou6S', NULL, 'dc3poVYnkuKxFfO4agS0wAcfDPuhikArJez3D0FJZrhtu5OYu7Vnb8at86yr', '2018-06-26 05:56:46', '2018-06-26 05:56:46', NULL),
+(5, 1, NULL, 5, 'users/default.png', 'Test Purchasing Head', 'testpurchasinghead@cube-messenger.com', NULL, '$2y$10$4oVTqFgNubkM.l9ZZOo0e.941uOnutPx6klqfFHDR8eTipKV8Y696', NULL, 'FC4y44w5YdKO61W0aAzFz3UgpbzWXV0D39lBgqgnHMD3S1j7WT4Ot60Gtkai', '2018-06-26 05:56:46', '2018-06-26 05:56:46', NULL),
+(6, 1, 1, 6, 'users/default.png', 'Test Department Head', 'testdepartmenthead@cube-messenger.com', NULL, '$2y$10$ylrBpyGegPc3yDmPTKR4GuOyBRaorhCduEtgvC.NQ.8WxOFstvU0y', NULL, 'Nn1DTw4wwjrymHEuF4cHcIZYqhu67aVFc365qxeUIg2HyioauPTaeQktn1F1', '2018-06-26 05:56:46', '2018-06-26 05:56:46', NULL),
+(7, 1, 1, 7, 'users/default.png', 'Test Department User', 'testdepartmentuser@cube-messenger.com', NULL, '$2y$10$k/ubBhlfyWPaWRUMlQ7gXeZM4ga0PDMT.kS1tLjj3sSFPO3glNJVm', NULL, 'n9PbGjLk7VmGGE38lxZI8iBFIiVlqlAQ54WU9OqmcD4vVJLpVHRrem9SYTY1', '2018-06-26 05:56:47', '2018-06-26 05:56:47', NULL),
+(8, NULL, NULL, 8, 'users/default.png', 'Test Rider ', 'testrider@cube-messenger.com', '1-731-975-7054 x4609', '$2y$10$hhTArdTlk8kTzzpnCZaqve5ZuMPJy1vLcpGXE7y1Gt2Buy6gvnugC', NULL, '4WTiRxaIKzeSjOBK9QtiGdlMupRFwBIxXzM6oGxXJuS3FOC4B4hkYdqhBJGc', '2018-06-26 05:56:47', '2018-06-26 05:56:47', NULL),
+(9, NULL, NULL, 8, 'users/default.png', 'Test Rider 1', 'testrider1@cube-messenger.com', '(661) 749-3934 x61435', '$2y$10$W7hhrhgtFGItj5MCzVHB4.WzYU5.apMY/Urc1erKdPG4pjGlvWLs2', NULL, 'ofXYVHqo7KlqP0HAu0Y85MxN6NAIShIF9I6sTQCrnba6MZcfUhgub1JMdGhE', '2018-06-26 05:56:47', '2018-06-26 05:56:47', NULL),
+(10, NULL, NULL, 8, 'users/default.png', 'Test Rider 2', 'testrider2@cube-messenger.com', '+1-279-298-7709', '$2y$10$iJCoFMUL7LZzanqYmZvBgenmlThEl4nVsizi6RaSL1aD5QSruPuVW', NULL, 'CaJw9DdAW47oDDOPvpR8CoetUCEf51Pe6KytjVqKKCzO0EDXo2wxrYzFtTS0', '2018-06-26 05:56:47', '2018-06-26 05:56:47', NULL),
+(11, NULL, NULL, 8, 'users/default.png', 'Test Rider 3', 'testrider3@cube-messenger.com', '913.853.2636 x90984', '$2y$10$8bThn4JMarqMyKs7KE6BluqFGdYP9g.JvMgS9dnFnOlAPfF7us/Cq', NULL, 'QJIxKVK4QNQ6mubpJ0ipZf2kJAGWvS5e71ZbHt64OY8xcdsJf8rAEULFkhU1', '2018-06-26 05:56:47', '2018-06-26 05:56:47', NULL),
+(12, NULL, NULL, 8, 'users/default.png', 'Test Rider 4', 'testrider4@cube-messenger.com', '+1-421-499-5652', '$2y$10$GKmkttGd9jCgClP0vhIKneh6m3vgpgvJBTxM62qnTFGBeHJPATw9u', NULL, 'AeVdafZsVARQwvZ8XmCJdPiqnaVeZiVeivRAoigRHNh4QEq6KRGK3BtNO99h', '2018-06-26 05:56:47', '2018-06-26 05:56:47', NULL);
 
 --
 -- Indexes for dumped tables
@@ -1067,7 +1075,8 @@ ALTER TABLE `departments`
 --
 ALTER TABLE `local_purchase_orders`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `local_purchase_orders_supplier_id_foreign` (`supplier_id`);
+  ADD KEY `local_purchase_orders_supplier_id_foreign` (`supplier_id`),
+  ADD KEY `local_purchase_orders_delivery_note_received_by_id_foreign` (`delivery_note_received_by_id`);
 
 --
 -- Indexes for table `local_purchase_order_items`
@@ -1273,7 +1282,7 @@ ALTER TABLE `courier_options`
 -- AUTO_INCREMENT for table `crud_headers`
 --
 ALTER TABLE `crud_headers`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT for table `deliveries`
@@ -1297,19 +1306,19 @@ ALTER TABLE `departments`
 -- AUTO_INCREMENT for table `local_purchase_orders`
 --
 ALTER TABLE `local_purchase_orders`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `local_purchase_order_items`
 --
 ALTER TABLE `local_purchase_order_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=193;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -1321,7 +1330,7 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -1461,6 +1470,7 @@ ALTER TABLE `departments`
 -- Constraints for table `local_purchase_orders`
 --
 ALTER TABLE `local_purchase_orders`
+  ADD CONSTRAINT `local_purchase_orders_delivery_note_received_by_id_foreign` FOREIGN KEY (`delivery_note_received_by_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `local_purchase_orders_supplier_id_foreign` FOREIGN KEY (`supplier_id`) REFERENCES `users` (`id`);
 
 --

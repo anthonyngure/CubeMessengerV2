@@ -54,6 +54,7 @@
  * @method static \Illuminate\Database\Query\Builder|\App\User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\User withoutTrashed()
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\LocalPurchaseOrder[] $localPurchaseOrders
  */
 	class User extends Authenticatable implements JWTSubject
 	{
@@ -141,6 +142,14 @@
 		public function department()
 		{
 			return $this->belongsTo(Department::class);
+		}
+		
+		/**
+		 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+		 */
+		public function localPurchaseOrders()
+		{
+			return $this->hasMany(LocalPurchaseOrder::class, 'supplier_id');
 		}
 		
 		

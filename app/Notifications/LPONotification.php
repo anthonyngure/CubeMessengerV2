@@ -51,8 +51,15 @@
 		{
 			$items = $this->lpo->items()->with('orderItem.product')->get();
 			
+			/*$fileName = $this->lpo->id . '_' . $this->supplier->id . '.pdf';
+			
+			PDF::loadView('documents.lpo_items', $items)
+				->save(storage_path('app/public/documents/' . $fileName));
+			$file = Storage::disk('public')->path('documents/' . $fileName);*/
+			
 			return (new MailMessage)
 				->subject('LPO from CubeMessenger')
+				//->attach($file, ['as'   => 'name.pdf', 'mime' => 'application/pdf'])
 				->markdown('mail.lpo', ['items' => $items, 'supplier' => $this->supplier]);
 		}
 		

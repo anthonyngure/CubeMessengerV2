@@ -296,19 +296,27 @@
           return []
         }
       },
+
+      // An array if filters to show
       filters: {
         type: Array,
         required: false
       },
+
+      //If should show a custom view dialog
       customViewDialog: {
         type: Boolean,
         required: false
       },
+
+      //If the add button should be shown
       creatable: {
         type: Boolean,
         required: false,
         default: true
       },
+
+      //A manager
       manager: {
         type: Object,
         required: true
