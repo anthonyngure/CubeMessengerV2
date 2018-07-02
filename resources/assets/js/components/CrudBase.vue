@@ -94,7 +94,20 @@
           //Whether a top action should be shown
           showTopAction (action, items, filter) {
             return true
-          }
+          },
+
+          //Called when any specified inline action is clicked
+          // action: clicked action
+          //item: item in that row
+          // filter: current filter
+          onInlineActionClicked(action, item, filter){
+
+          },
+
+          //Whether an inline action should be shown
+          showInlineAction (action, item, filter) {
+            return true
+          },
 
         }
       }

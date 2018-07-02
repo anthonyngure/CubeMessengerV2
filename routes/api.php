@@ -102,6 +102,7 @@
 				->middleware('role:SUPPLIER');
 			Route::apiResource('orderItems', 'OrderItemController')
 				->middleware('role:ADMIN,OPERATIONS,SUPPLIER');
+			Route::post('lpos/{id}/deliveryNote', 'LocalPurchaseOrderController@deliveryNote');
 			Route::apiResource('lpos', 'LocalPurchaseOrderController')
 				->middleware('role:ADMIN,OPERATIONS,SUPPLIER');
 			Route::apiResource('reports', 'ReportsController')

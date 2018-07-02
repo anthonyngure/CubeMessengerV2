@@ -247,10 +247,12 @@
                     <v-card flat>
                         <v-card-actions>
                             <v-spacer/>
-                            <v-btn v-for="(action, index) in manager.extraOverflowActions"
+                            <v-btn v-for="(action, index) in extraInlineActions"
                                    :color="action.color"
                                    class="ml-0 mr-1"
                                    small
+                                   v-if="manager.showInlineAction(action, props.item, currentFilter)"
+                                   @click.native="manager.onInlineActionClicked(action, props.item, currentFilter)"
                                    :key="index">
                                 {{action.name}}
                             </v-btn>
@@ -396,18 +398,27 @@
           return header.creatable
         }
       },
+
+      //Remove all the items
       clearItems () {
         this.items = []
       },
+
+      //Set the items
       setItems (items) {
         this.items = items
       },
+
+      //Generate placeholder based on the value of a header
       toPlaceholder (value) {
         return 'Enter ' + (value.toLowerCase())
       },
+
+      //Generate an array where options for select header are comma separated
       toOptions (options) {
         return options.split(',')
       },
+
       initialize () {
         this.items = []
         let that = this
@@ -463,6 +474,8 @@
           }
         })
       },
+
+      //Updates the given item
       updateItem (updatedItem) {
         this.$utils.log('updateItem')
         let itemToUpdate = this.items.find(item => item.id === updatedItem.id)

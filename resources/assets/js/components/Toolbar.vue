@@ -186,7 +186,7 @@
       refreshBalance () {
         this.$utils.log('refreshBalance')
         this.balance = 0
-        if (this.$auth.check() && !this.isAdmin() && !this.isSupplier()) {
+        if (this.$auth.check() && !this.isAdmin() && !this.isSupplier() && !this.isOperations()) {
           this.axios.get('balance').then(response => {
             this.balance = response.data.data
           })

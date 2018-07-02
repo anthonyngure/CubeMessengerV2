@@ -4,13 +4,13 @@
 	
 	use App\Client;
 	use App\Exceptions\WrappedException;
-	use App\Notifications\BillCanceledNotification;
 	use App\Notifications\InsufficientBalance;
 	use App\Traits\Billable;
 	use App\Utils;
 	use Auth;
 	use Carbon\Carbon;
 	use Closure;
+	use Illuminate\Database\Eloquent\Builder;
 	use Illuminate\Database\Eloquent\Collection;
 	use Illuminate\Database\Eloquent\Model;
 	use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -23,6 +23,16 @@
 	{
 		use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 		
+		
+		protected function logQuery(Builder $builder)
+		{
+			$data = [
+				'query'    => $builder->toSql(),
+				'bindings' => $builder->getBindings(),
+			];
+			
+			dd($data);
+		}
 		
 		/**
 		 * @param \Illuminate\Http\Request                     $request
@@ -48,7 +58,7 @@
 			
 			//The item was earlier rejected and it is now being approved
 			//We have to restore the cancled bill
-			else if ($request->action == 'approve' && $approval->status == 'REJECTED' && $approval->rejectedBy->id == $user->id){
+			else if ($request->action == 'approve' && $approval->status == 'REJECTED' && $approval->rejectedBy->id == $user->id) {
 				$approval->rejected_by_id = null;
 				$bill->restore();
 			}
@@ -59,35 +69,27 @@
 				$approval->status = $request->action == 'approve' ? 'AT_PURCHASING_HEAD' : 'REJECTED';
 				$approval->department_head_acted_at = Carbon::now()->toDateTimeString();
 				$approval->save();
-			}
-			
-			//Purchasing head is approving an item that has been approved by the department head
+			} //Purchasing head is approving an item that has been approved by the department head
 			else if (($approval->status == 'AT_PURCHASING_HEAD' && $user->isPurchasingHead())) {
 				$approval->status = $request->action == 'approve' ? $statusAfterPurchasingHeadApproval : 'REJECTED';
 				$approval->purchasing_head_acted_at = Carbon::now()->toDateTimeString();
 				$approval->save();
-				if ($afterPurchasingHeadApproval){
+				if ($afterPurchasingHeadApproval) {
 					$afterPurchasingHeadApproval($approval);
 				}
-			}
-			
-			//Department head is requesting to approve a rejected item
+			} //Department head is requesting to approve a rejected item
 			else if ($request->action == 'approve' && $approval->status == 'REJECTED'
 				&& $approval->rejectedBy->id == $user->id && $user->isDepartmentHead()) {
 				$approval->status = 'AT_PURCHASING_HEAD';
 				$approval->department_head_acted_at = Carbon::now()->toDateTimeString();
 				$approval->save();
-			}
-			
-			//Purchasing head is requesting to approve a rejected item
+			} //Purchasing head is requesting to approve a rejected item
 			else if ($request->action == 'approve' && $approval->status == 'REJECTED'
 				&& $approval->rejectedBy->id == $user->id && $user->isPurchasingHead()) {
 				$approval->status = $statusAfterPurchasingHeadApproval;
 				$approval->purchasing_head_acted_at = Carbon::now()->toDateTimeString();
 				$approval->save();
-			}
-			
-			//We cannot really tell what is happening
+			} //We cannot really tell what is happening
 			else {
 				throw new WrappedException("You are not allowed to perform the requested operation");
 			}

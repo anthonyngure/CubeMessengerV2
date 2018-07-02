@@ -1203,6 +1203,676 @@ module.exports = (function (){
 
 /***/ }),
 
+/***/ "./node_modules/@websanova/vue-upload/src/index.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+var Upload = __webpack_require__("./node_modules/@websanova/vue-upload/src/upload.js")();
+
+module.exports = (function () {
+
+    return function install(Vue, options) {
+        var upload = new Upload(Vue, options),
+            _new = upload.new,
+            _reset = upload.reset;
+
+        Object.defineProperties(Vue.prototype, {
+            $upload: {
+                get: function () {
+                    upload.new = _new.bind(this);
+                    upload.reset = _reset.bind(this);
+
+                    return upload;
+                }
+            }
+        });
+    }
+})();
+
+/***/ }),
+
+/***/ "./node_modules/@websanova/vue-upload/src/upload.js":
+/***/ (function(module, exports) {
+
+module.exports = function () {
+    
+    function _toCamelCase(val) {
+        return val.replace(/^([A-Z])|[\s-_\:](\w)/g, function(match, p1, p2, offset) {
+            if (p2) {
+                return p2.toUpperCase();
+            }
+            
+            return p1.toLowerCase();
+        });
+    }
+
+    function _parseErrors(res) {
+        if (res.data.errors) {
+            return res.data.errors;
+        }
+
+        if (res.data.msg) {
+            return [{rule: 'fileError', message: res.data.msg}];
+        }
+
+        return [];
+    }
+
+    function _http(data) {
+        this.Vue.http.post(data.url, data.body, {progress: data.progress}).then(data.success, data.error);
+    }
+
+    function _calculatePercentComplete(name) {
+        var i, ii,
+            uploader = this.watch.uploaders[name],
+            totalFiles = uploader.meta.totalFiles,
+            percentComplete = (totalFiles - uploader.files.queued.length - uploader.files.progress.length) * 100;
+
+        // NOTE: totalFiles represents the current running batch.
+        //       So if more files are added while files are still in progress
+        //       it will ++. Otherwise it will be a a fresh count.
+        //       
+        //       Assume any files not in progress or queue are already complete.
+        
+        for (i = 0, ii = uploader.files.progress.length; i < ii; i++) {
+            percentComplete += uploader.files.progress[i].percentComplete;
+        }
+
+        uploader.meta.percentComplete = Math.ceil(percentComplete / (totalFiles * 100) * 100);
+    }
+
+    function _onFileInputChange(name) {
+        var files = document.getElementById('websanova-upload-' + name).files;
+        
+        _processFiles.call(this, name, files);
+        
+        document.getElementById('websanova-upload-' + name).value = null;
+    }
+
+    function _processFiles(name, files) {
+        var i, ii,
+            _this = this,
+            file,
+            _files = [],
+            uploader = this.watch.uploaders[name],
+            queueFiles = [];
+
+        if ( ! files.length) {
+            return; 
+        }
+
+        // First let's generate the files.
+        for (i = 0, ii = files.length; i < ii; i++) {
+            _files.push({
+                $file: files[i],
+                url: uploader.options.url,
+                body: Object.assign({}, uploader.options.body),
+                name: files[i].name,
+                size: files[i].size,
+                type: files[i].type,
+                status: 'ready',
+                errors: [],
+                percentComplete: 0,
+                preview: null
+            });
+        }
+
+        // Run top level validation.
+        if (uploader.options.multiple && ! _validateMultipleFiles.call(this, name, _files)) {
+
+            // If error, still fire off the onSelect.
+            if (uploader.options.onSelect) {
+                uploader.options.onSelect.call(uploader.ctx);
+            }
+
+            // If error, still fire off the onEnd.
+            if (uploader.options.onEnd) {
+                uploader.options.onEnd.call(uploader.ctx);
+            }
+
+            return;
+        }
+
+        // Prep file queue.
+        for (i = 0, ii = _files.length; i < ii; i++) {
+            (function (i) {
+                if (uploader.options.multiple) {
+                    uploader.files.all.push(_files[i]);
+                }
+                else {
+                    uploader.files.all = [_files[i]];
+                    uploader.files.success = [];
+                    uploader.files.uploaded = [];
+                    uploader.files.error = [];
+                    uploader.files.complete = [];
+                }
+
+                uploader.meta.totalFiles++;
+                
+                // Make sure we are pushing the watched file.
+                file = uploader.files.all[uploader.files.all.length - 1];
+
+                file.preview = (function (file) { return function (cb) { _getFilePreview(file, cb); }; })(file);
+
+                queueFiles.push(file);
+            })(i);
+        }
+
+        // Reset percentComplete if fresh batch.
+        if (uploader.meta.status === 'complete') {
+            uploader.meta.percentComplete = 0;
+        }
+
+        // Fire off files to queue.
+        for (i = 0, ii = queueFiles.length; i < ii; i++) {
+            (function (file) { _queueFile.call(_this, name, file); })(queueFiles[i]);
+        }
+
+        // If not errors fire off onSelect all the way here.
+        if (uploader.options.onSelect) {
+            uploader.options.onSelect.call(uploader.ctx, queueFiles);
+        }
+
+        // If on select fire off right away.
+        if (uploader.options.startOnSelect) {
+            _processQueue.call(this, name);
+        }
+    }
+
+    function _validateMultipleFiles(name, files) {
+        var errors = [],
+            options = this.watch.uploaders[name].options,
+            maxFilesAllowed = options.maxFiles - (options.currentFiles || 0);
+
+        // Check for max files selected
+        if (options.currentFiles !== null && options.currentFiles >= options.maxFiles) {
+            errors.push({
+                rule: 'maxfilesreached',
+                message: 'Maximum of ' + options.maxFiles + ' files reached.'
+            });
+        }
+        else if (files.length > maxFilesAllowed) {
+            errors.push({
+                rule: 'maxfilesexceeded',
+                message: 'Maximum of ' + maxFilesAllowed + ' files exceeded.'
+            });
+        }
+
+        if (errors.length) {
+            this.watch.uploaders[name].meta.status = 'error';
+        }
+
+        this.watch.uploaders[name].errors = errors;
+
+        return !errors.length;
+    }
+
+    function _validateFile(name, file) {
+        var options = this.watch.uploaders[name].options,
+            errors = [];
+
+        // Check extensions.
+        if (options.extensions && options.extensions.indexOf( file.name.split('.').pop().toLowerCase() ) < 0) {
+            errors.push({
+                rule: 'extension',
+                message: 'File must be of type: ' + options.extensions.join(', ') + '.'
+            });
+        }
+
+        // Check max size.
+        if ( (file.size / 1024) > options.maxSizePerFile) {
+            errors.push({
+                rule: 'size',
+                message: 'File is over the ' + options.maxSizePerFile + 'kb limit.'
+            });
+        }
+
+        // Send error.
+        if (errors.length) {
+            file.status = 'error';
+            file.errors = errors;
+
+            if (this.watch.uploaders[name].options.onError) {
+                this.watch.uploaders[name].options.onError.call(this.watch.uploaders[name].ctx, null, file);
+            }
+        }
+
+        if (errors.length) {
+            this.watch.uploaders[name].errors.push({
+                rule: 'fileError',
+                message: 'Some of the files could not be uploaded due to errors.'
+            });
+        }
+
+        return !file.errors.length;
+    }
+
+    function _getFilePreview(file, cb) {
+        var reader  = new FileReader();
+
+        reader.addEventListener('load', function () {
+            file.raw = reader.result;
+
+            if (cb) { cb(file); }
+        }, false);
+
+        if (file.$file) {
+            reader.readAsDataURL(file.$file);
+        }
+    }
+
+    function _queueFile(name, file) {
+        var uploader = this.watch.uploaders[name];
+
+        _validateFile.call(this, name, file);
+
+        if (file.status === 'error') {
+            uploader.files.error.push(file);
+            uploader.files.complete.push(file);
+            
+            return;
+        }
+
+        uploader.files.queued.push(file);
+
+        if (uploader.options.onQueue) {
+            uploader.options.onQueue.call(uploader.ctx, file);
+        }
+    }
+
+    function _processQueue(name) {
+        var uploader = this.watch.uploaders[name],
+            maxFilesInProgress = uploader.options.async ? uploader.options.maxFilesInProgress : 1;
+
+        if (uploader.meta.status !== 'sending' && uploader.options.onStart) {
+            uploader.options.onStart.call(uploader.ctx);
+        }
+
+        while (uploader.files.queued.length && uploader.files.progress.length < maxFilesInProgress) {
+            _startFileUpload.call(this, name, uploader.files.queued[0]);
+
+            uploader.files.progress.push(uploader.files.queued[0]);
+            uploader.files.queued.splice(0, 1);
+
+            if (uploader.options.onProgress) {
+                uploader.options.onProgress.call(uploader.ctx, uploader.files.progress[uploader.files.progress.length - 1]);
+            }
+        }
+    }
+
+    function _startFileUpload(name, file) {
+        var i,
+            key,
+            _this = this,
+            uploader = this.watch.uploaders[name],
+            fileUploadFormData;
+
+        fileUploadFormData = new FormData();
+                
+        fileUploadFormData.append(uploader.options.name, file.$file);
+        
+        for (key in file.body) {
+            fileUploadFormData.append(key, file.body[key]);
+        }
+
+        file.status = 'sending';
+        uploader.meta.status = 'sending';
+
+        uploader.options.http.call(this, {
+            url: file.url,
+            body: fileUploadFormData,
+            progress: function (e) {
+                if (e.lengthComputable) {
+                    file.percentComplete = Math.ceil(e.loaded / e.total * 100);
+                }
+
+                if (file.percentComplete >= 100) {
+                    if (uploader.options.multiple) {
+                        uploader.files.uploaded.push(file);
+                    }
+                    else {
+                        uploader.files.uploaded = [file];
+                    }
+
+                    if (uploader.options.onUpload) {
+                        uploader.options.onUpload.call(uploader.ctx, file);
+                    }
+                }
+
+                _calculatePercentComplete.call(_this, name);
+            },
+            success: function (res) {
+                file.status = 'success';
+            
+                if (uploader.options.multiple) {
+                    uploader.files.success.push(file);
+
+                    if (uploader.options.currentFiles !== null) {
+                        uploader.options.currentFiles++;
+                    }
+                }
+                else {
+                    uploader.files.success = [file];
+                }
+                
+                _completeFileUpload.call(_this, name, file);
+                    
+                if (uploader.options.onSuccess) {
+                    uploader.options.onSuccess.call(uploader.ctx, res, file);
+                }
+            },
+            error: function (res) {
+                file.status = 'error';
+
+                if (uploader.options.multiple) {
+                    uploader.files.error.push(file);
+                }
+                else {
+                    uploader.files.error = [file];
+                }
+                
+                _completeFileUpload.call(_this, name, file);
+
+                file.errors = uploader.options.parseErrors(res);
+
+                if (uploader.options.onError) {
+                    uploader.errors.push({
+                        rule: 'fileError',
+                        message: 'Some of the files could not be upload due to errors.'
+                    });
+
+                    uploader.options.onError.call(uploader.ctx, res, file);
+                }
+            }
+        });
+    }
+
+    function _completeFileUpload(name, file) {
+        var uploader = this.watch.uploaders[name],
+            index = uploader.files.progress.indexOf(file);
+
+        file.percentComplete = 100;
+
+        if (uploader.options.multiple) {
+            uploader.files.complete.push(file);
+        }
+        else {
+            uploader.files.complete = [file];
+        }
+
+        // Need to find the index each time in case of async.
+        uploader.files.progress.splice(index, 1);
+
+        if (uploader.options.onComplete) {
+            uploader.options.onComplete.call(uploader.ctx, file);
+        }
+
+        _calculatePercentComplete.call(this, name);
+
+        if (!uploader.files.queued.length && !uploader.files.progress.length) {
+            uploader.meta.status = 'complete';
+            uploader.meta.totalFiles = 0;
+
+            if (uploader.options.onEnd) {
+                uploader.options.onEnd.call(uploader.ctx);
+            }
+        }
+
+        _processQueue.call(this, name);
+    }
+
+    function _initDropzone(name) {
+        var _this = this,
+            uploader = this.watch.uploaders[name],
+            dz = document.getElementById(uploader.options.dropzoneId);
+
+        if (uploader.dropzone) {
+
+            // Means we should remove the dropzone events.
+            if (uploader.options.dropzoneId === null) {
+                uploader.dropzone.removeEventListener('dragenter', uploader._dropzoneDragenter, false);
+                uploader.dropzone.removeEventListener('dragover', uploader._dropzoneDragover, false);
+                uploader.dropzone.removeEventListener('dragleave', uploader._dropzoneDragleave, false);
+                uploader.dropzone.removeEventListener('drop', uploader._dropzoneDrop, false);
+
+                uploader._dropzoneDragenter = null;
+                uploader._dropzoneDragover = null;
+                uploader._dropzoneDragleave = null;
+                uploader._dropzoneDrop = null;
+                uploader.dropzone = null;
+            }
+
+            return;
+        }
+        
+        // TODO: Can also check for dropzone browser support here.
+        if ( ! dz) {
+            return;
+        }
+
+        uploader._dropzoneDragoverCounter = 0;
+
+        // Need to keep reference here.
+        uploader._dropzoneDragenter = function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            uploader._dropzoneDragoverCounter++;
+            uploader.meta.dropzoneActive = true;
+        };
+
+        uploader._dropzoneDragover = function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            uploader.meta.dropzoneActive = true;
+            e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+        };
+
+        uploader._dropzoneDragleave = function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            uploader._dropzoneDragoverCounter--;
+
+            if (uploader._dropzoneDragoverCounter === 0) {
+                uploader.meta.dropzoneActive = false;
+            }
+        };
+
+        uploader._dropzoneDrop = function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            uploader.meta.dropzoneActive = false;
+
+            _processFiles.call(_this, name, e.dataTransfer.files);
+        };
+
+        dz.addEventListener('dragenter', uploader._dropzoneDragenter, false);
+        dz.addEventListener('dragover', uploader._dropzoneDragover, false);
+        dz.addEventListener('dragleave', uploader._dropzoneDragleave, false);
+        dz.addEventListener('drop', uploader._dropzoneDrop, false);
+        
+        uploader.dropzone = dz;
+    }
+
+    var defaultOptions = {
+        url: null,
+        name: 'file',
+        body: {},
+        onSelect: null,
+        onStart: null,
+        onQueue: null,
+        onProgress: null,
+        onUpload: null,
+        onError: null,
+        onSuccess: null,
+        onComplete: null,
+        onEnd: null,
+        parseErrors: _parseErrors,
+        http: _http,
+        multiple: false,
+        async: false,
+        startOnSelect: true,
+        extensions: ['jpeg', 'jpg', 'png', 'gif'],
+        maxFiles: 4,
+        maxFilesInProgress: 2,
+        currentFiles: null,
+        maxSizePerFile: 1024,
+        dropzoneId: null 
+    };
+
+    function Upload(Vue, options) {
+        this.options = Object.assign(defaultOptions, options);
+        this.Vue = Vue;
+
+        this.watch = new this.Vue({
+            data: function () {
+                return {
+                    uploaders: {}
+                };
+            }
+        });
+    }
+
+    Upload.prototype.new = function (name, options) {
+        var _this = this.$upload;
+
+        name = _toCamelCase(name);
+
+        if (_this.watch.uploaders[name]) {
+            _this.watch.uploaders[name].ctx = this; // Update context always.
+
+            return;
+        }
+
+        _this.Vue.set(_this.watch.uploaders, name, {
+            dropzone: null,
+            options: Object.assign({}, _this.options, options || {}),
+            ctx: this
+        });
+
+        var input = document.createElement('input');
+        
+        input.type = 'file';
+        input.id = 'websanova-upload-' + name;
+        input.style.display = 'none';
+        input.onchange = function () { _onFileInputChange.call(_this, name); }
+
+        if (_this.watch.uploaders[name].options.multiple) {
+            input.multiple = true;
+        }
+
+        document.body.appendChild(input);
+        
+        _this.reset(name); // Init the values.
+    };
+
+    Upload.prototype.reset = function (name, options) {
+        var _this = this.$upload,
+            uploader;
+
+        name = _toCamelCase(name);
+        options = options || {};
+        uploader = _this.watch.uploaders[name];
+
+        uploader.ctx = this; // Make sure to update the context here.
+
+        _this.Vue.set(uploader, 'options', Object.assign({}, uploader.options, options));
+        _this.Vue.set(uploader, 'files', {all: [], queued: [], progress: [], uploaded: [], error: [], success: [], complete: []});
+        _this.Vue.set(uploader, 'meta', {status: 'ready', totalFiles: 0, percentComplete: 0, dropzoneActive: false});
+        _this.Vue.set(uploader, 'errors', []);
+
+        _initDropzone.call(_this, name);
+
+        document.getElementById('websanova-upload-' + name).value = null;
+    };
+
+    Upload.prototype.select = function (name) {
+        name = _toCamelCase(name);
+
+        document.getElementById('websanova-upload-' + name).click();
+    };
+
+    Upload.prototype.start = function (name) {
+        name = _toCamelCase(name);
+
+        _processQueue.call(this, name);
+    }; 
+
+    Upload.prototype.files = function (name) {
+        name = _toCamelCase(name);
+        
+        return (this.watch.uploaders[name] || {}).files || {all: [], queued: [], progress: [], uploaded: [], error: [], success: [], complete: []};
+    };
+
+    Upload.prototype.meta = function (name) {
+        name = _toCamelCase(name);
+        
+        return (this.watch.uploaders[name] || {}).meta || {};
+    };
+
+    Upload.prototype.errors = function (name) {
+        name = _toCamelCase(name);
+        
+        return (this.watch.uploaders[name] || {}).errors || [];
+    };
+
+    Upload.prototype.remove = function (name, file) {
+        var i,
+            index,
+            files,
+            uploader;
+
+        if ( ! file) {
+            return;
+        }
+
+        name = _toCamelCase(name);
+        uploader = this.watch.uploaders[name];
+        files = uploader.files || {};
+
+        for (i in files) {
+            index = files[i].indexOf(file);
+
+            if (index > -1) {
+                files[i].splice(index, 1);
+            }
+        }
+    };
+
+    Upload.prototype.option = function (name, key, val) {
+        var options,
+            uploader;
+
+        name = _toCamelCase(name);
+        uploader = this.watch.uploaders[name];
+        options = (uploader || {}).options || {};
+        
+        if (uploader && key && val) {
+            uploader.options[key] = val;
+        }
+        else if (key) {
+            return options[key];
+        }
+
+        return options;
+    };
+
+    Upload.prototype.dropzone = function (name, id) {
+        if (id) {
+            this.option(name, 'dropzoneId', id)
+        }
+
+        _initDropzone.call(this, name);
+    };
+
+    return Upload;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/assert/assert.js":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7822,42 +8492,57 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         _this.onFailure(error, callbacks);
       });
     },
-    get: function get(relativePath, callbacks, params) {
+    upload: function upload(relativePath, callbacks, formData) {
       var _this2 = this;
+
+      this.connecting = true;
+      this.error = false;
+      this.axios.post(relativePath, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        _this2.onSuccess(response, callbacks);
+      }).catch(function (error) {
+        _this2.onFailure(error, callbacks);
+      });
+    },
+    get: function get(relativePath, callbacks, params) {
+      var _this3 = this;
 
       this.$utils.log(relativePath);
       this.$utils.log(params);
       this.connecting = true;
       this.error = false;
       this.axios.get(relativePath, { params: params }).then(function (response) {
-        _this2.onSuccess(response, callbacks);
+        _this3.onSuccess(response, callbacks);
       }).catch(function (error) {
-        _this2.onFailure(error, callbacks);
+        _this3.onFailure(error, callbacks);
       });
     },
     patch: function patch(relativePath, callbacks, data) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$utils.log(relativePath);
       this.$utils.log(data);
       this.connecting = true;
       this.error = false;
       this.axios.patch(relativePath, data).then(function (response) {
-        _this3.onSuccess(response, callbacks);
+        _this4.onSuccess(response, callbacks);
       }).catch(function (error) {
-        _this3.onFailure(error, callbacks);
+        _this4.onFailure(error, callbacks);
       });
     },
     delete: function _delete(relativePath, callbacks) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.$utils.log(relativePath);
       this.connecting = true;
       this.error = false;
       this.axios.delete(relativePath).then(function (response) {
-        _this4.onSuccess(response, callbacks);
+        _this5.onSuccess(response, callbacks);
       }).catch(function (error) {
-        _this4.onFailure(error, callbacks);
+        _this5.onFailure(error, callbacks);
       });
     }
   }
@@ -8441,6 +9126,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -8575,15 +9262,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return header.creatable;
       }
     },
+
+
+    //Remove all the items
     clearItems: function clearItems() {
       this.items = [];
     },
+
+
+    //Set the items
     setItems: function setItems(items) {
       this.items = items;
     },
+
+
+    //Generate placeholder based on the value of a header
     toPlaceholder: function toPlaceholder(value) {
       return 'Enter ' + value.toLowerCase();
     },
+
+
+    //Generate an array where options for select header are comma separated
     toOptions: function toOptions(options) {
       return options.split(',');
     },
@@ -8640,6 +9339,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
       });
     },
+
+
+    //Updates the given item
     updateItem: function updateItem(updatedItem) {
       this.$utils.log('updateItem');
       var itemToUpdate = this.items.find(function (item) {
@@ -8802,6 +9504,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         //Whether a top action should be shown
         showTopAction: function showTopAction(action, items, filter) {
+          return true;
+        },
+
+
+        //Called when any specified inline action is clicked
+        // action: clicked action
+        //item: item in that row
+        // filter: current filter
+        onInlineActionClicked: function onInlineActionClicked(action, item, filter) {},
+
+
+        //Whether an inline action should be shown
+        showInlineAction: function showInlineAction(action, item, filter) {
           return true;
         }
       };
@@ -9428,6 +10143,139 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/FilePicker.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'FilePicker',
+  props: {
+    label: {
+      type: String,
+      'default': 'Select input file...'
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    accept: {
+      type: String,
+      default: '.pdf'
+    },
+    moreData: {
+      default: ''
+    }
+  },
+  data: function data() {
+    return {
+      filename: this.label,
+      file: null,
+      dialog: false,
+      message: ''
+    };
+  },
+
+  methods: {
+    reset: function reset() {
+      /*this.$upload.reset(this.report, {
+        url: '/api/v1/' + this.report
+      })*/
+
+      this.file = null;
+      this.dialog = false;
+      this.filename = this.label;
+    }
+  },
+
+  created: function created() {
+    this.$upload.new('file', {
+      startOnSelect: false,
+      maxSizePerFile: 1024 * 1024 * 2,
+      extensions: ['pdf'],
+      body: {
+        //report: this.report,
+        data: this.moreData
+      },
+      onSuccess: function onSuccess(res) {},
+      onError: function onError(error) {
+        console.error(error);
+      },
+      onSelect: function onSelect(files) {
+        this.file = files[0];
+        this.filename = files[0].name;
+        this.$emit('onFilePicked', files[0]);
+        /* files[0].preview((file) => {
+          // this.brandImage = file.raw
+          console.info('File Content ' + file.raw)
+        }) */
+      }
+    });
+  },
+  mounted: function mounted() {
+    this.reset();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/GooglePlaceInput.vue":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -9950,6 +10798,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Crud___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Crud__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CrudBase_vue__ = __webpack_require__("./resources/assets/js/components/CrudBase.vue");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CrudBase_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__CrudBase_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UploadButton__ = __webpack_require__("./resources/assets/js/components/UploadButton.vue");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UploadButton___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__UploadButton__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Guide__ = __webpack_require__("./resources/assets/js/components/Guide.vue");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Guide___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__Guide__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ConnectionManager__ = __webpack_require__("./resources/assets/js/components/ConnectionManager.vue");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ConnectionManager___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__ConnectionManager__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__FilePicker__ = __webpack_require__("./resources/assets/js/components/FilePicker.vue");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__FilePicker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__FilePicker__);
 //
 //
 //
@@ -9962,6 +10818,52 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
 
 
 
@@ -9969,17 +10871,80 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'LPOs',
   extends: __WEBPACK_IMPORTED_MODULE_1__CrudBase_vue___default.a,
-  components: { Crud: __WEBPACK_IMPORTED_MODULE_0__Crud___default.a },
+  components: {
+    FilePicker: __WEBPACK_IMPORTED_MODULE_5__FilePicker___default.a,
+    ConnectionManager: __WEBPACK_IMPORTED_MODULE_4__ConnectionManager___default.a,
+    Guide: __WEBPACK_IMPORTED_MODULE_3__Guide___default.a,
+    UploadButton: __WEBPACK_IMPORTED_MODULE_2__UploadButton___default.a,
+    Crud: __WEBPACK_IMPORTED_MODULE_0__Crud___default.a
+  },
   data: function data() {
     return {
-      extraOverflowActions: [{
+      uploadingDeliveryNote: false,
+      connecting: false,
+      selectedItems: [],
+      items: [],
+      item: null,
+      headers: [{ text: 'Name', value: 'name' }, { text: 'Price', value: 'price' }],
+      extraInlineActions: [{
         name: 'Upload Delivery Note',
         color: 'primary'
-      }]
+      }],
+      file: null
     };
   },
 
   methods: {
+    closePloadingDeliveryNoteDialog: function closePloadingDeliveryNoteDialog() {
+      this.$refs.connectionManager.reset();
+      this.uploadingDeliveryNote = false;
+      this.selectedItems = [];
+      this.item = null;
+    },
+    uploadDeliveryNote: function uploadDeliveryNote() {
+      var itemIds = [];
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.selectedItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var item = _step.value;
+
+          itemIds.push(item.id);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      var formData = new FormData();
+      formData.append('file', this.file.$file);
+      formData.append('items', itemIds.join(','));
+      this.$utils.log(formData);
+      var that = this;
+      this.$refs.connectionManager.upload('lpos/' + this.item.id + '/deliveryNote', {
+        onSuccess: function onSuccess(response) {
+          that.$refs.crud.setItems(response.data.data);
+          that.closePloadingDeliveryNoteDialog();
+          //alert(JSON.stringify(response))
+        }
+      }, formData);
+    },
+    onFilePicked: function onFilePicked(file) {
+      this.file = file;
+      this.$utils.log(file.$file);
+    },
     initialize: function initialize() {
       var that = this;
       this.manager.deletable = function (item) {
@@ -9994,6 +10959,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         } else {
           return item[header.value] ? item[header.value] : that.defaultValue;
         }
+      };
+      this.manager.onInlineActionClicked = function (action, item, filter) {
+        //that.$utils.log(item)
+        that.items = item.items;
+        that.item = item;
+        that.uploadingDeliveryNote = true;
+      };
+      this.manager.showInlineAction = function (action, item, filter) {
+        return item.deliveryNotePath === null;
       };
     }
   }
@@ -10130,6 +11104,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     closeGeneratingLPODialog: function closeGeneratingLPODialog() {
       this.$refs.connectionManager.reset();
       this.selectingItems = false;
+      this.selectedItems = [];
+      this.item = null;
     },
     generateLPO: function generateLPO() {
       var that = this;
@@ -11886,7 +12862,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
       this.$utils.log('refreshBalance');
       this.balance = 0;
-      if (this.$auth.check() && !this.isAdmin() && !this.isSupplier()) {
+      if (this.$auth.check() && !this.isAdmin() && !this.isSupplier() && !this.isOperations()) {
         this.axios.get('balance').then(function (response) {
           _this.balance = response.data.data;
         });
@@ -11978,6 +12954,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/UploadButton.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'UploadButton',
+  props: {
+    selectedCallback: Function,
+    title: String
+  },
+  methods: {
+    fileSelected: function fileSelected(e) {
+      if (this.selectedCallback) {
+        if (e.target.files[0]) {
+          this.selectedCallback(e.target.files[0]);
+        } else {
+          this.selectedCallback(null);
+        }
+      }
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/Users.vue":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -12052,7 +13060,22 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0cdd7a0a\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/UploadButton.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.jbtn-file[data-v-0cdd7a0a] {\n    cursor: pointer;\n    position: relative;\n    overflow: hidden;\n}\n.jbtn-file input[type=file][data-v-0cdd7a0a] {\n    position: absolute;\n    top: 0;\n    right: 0;\n    min-width: 100%;\n    min-height: 100%;\n    text-align: right;\n    filter: alpha(opacity=0);\n    opacity: 0;\n    outline: none;\n    cursor: inherit;\n    display: block;\n}\n", ""]);
 
 // exports
 
@@ -12442,7 +13465,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -12487,7 +13510,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -12637,7 +13660,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -12652,7 +13675,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -40169,6 +41192,30 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0cdd7a0a\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/UploadButton.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "btn btn-primary jbtn-file" }, [
+    _vm._v(" " + _vm._s(_vm.title)),
+    _c("input", { attrs: { type: "file" }, on: { change: _vm.fileSelected } })
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0cdd7a0a", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0f0908e1\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/Clients.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -46608,25 +47655,40 @@ var render = function() {
                           [
                             _c("v-spacer"),
                             _vm._v(" "),
-                            _vm._l(_vm.manager.extraOverflowActions, function(
+                            _vm._l(_vm.extraInlineActions, function(
                               action,
                               index
                             ) {
-                              return _c(
-                                "v-btn",
-                                {
-                                  key: index,
-                                  staticClass: "ml-0 mr-1",
-                                  attrs: { color: action.color, small: "" }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n                            " +
-                                      _vm._s(action.name) +
-                                      "\n                        "
-                                  )
-                                ]
+                              return _vm.manager.showInlineAction(
+                                action,
+                                props.item,
+                                _vm.currentFilter
                               )
+                                ? _c(
+                                    "v-btn",
+                                    {
+                                      key: index,
+                                      staticClass: "ml-0 mr-1",
+                                      attrs: { color: action.color, small: "" },
+                                      nativeOn: {
+                                        click: function($event) {
+                                          _vm.manager.onInlineActionClicked(
+                                            action,
+                                            props.item,
+                                            _vm.currentFilter
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                            " +
+                                          _vm._s(action.name) +
+                                          "\n                        "
+                                      )
+                                    ]
+                                  )
+                                : _vm._e()
                             })
                           ],
                           2
@@ -48322,13 +49384,181 @@ var render = function() {
         { attrs: { xs12: "" } },
         [
           _c("crud", {
+            ref: "crud",
             attrs: {
               resource: "lpos",
               creatable: false,
               manager: _vm.manager,
-              extraOverflowActions: _vm.extraOverflowActions
+              extraInlineActions:
+                _vm.isAdmin() || _vm.isOperations()
+                  ? _vm.extraInlineActions
+                  : []
             }
           })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "600px", persistent: "" },
+          model: {
+            value: _vm.uploadingDeliveryNote,
+            callback: function($$v) {
+              _vm.uploadingDeliveryNote = $$v
+            },
+            expression: "uploadingDeliveryNote"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-card-text",
+                [
+                  _c("connection-manager", {
+                    ref: "connectionManager",
+                    model: {
+                      value: _vm.connecting,
+                      callback: function($$v) {
+                        _vm.connecting = $$v
+                      },
+                      expression: "connecting"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("guide", {
+                    attrs: {
+                      text:
+                        "Select all the items that you have confirmed have been delivered"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("v-data-table", {
+                    attrs: {
+                      headers: _vm.headers,
+                      items: _vm.items,
+                      "select-all": "",
+                      "item-key": "id",
+                      "hide-actions": ""
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "items",
+                        fn: function(props) {
+                          return [
+                            _c(
+                              "tr",
+                              {
+                                attrs: { active: props.selected },
+                                on: {
+                                  click: function($event) {
+                                    props.selected = !props.selected
+                                  }
+                                }
+                              },
+                              [
+                                _c(
+                                  "td",
+                                  [
+                                    _c("v-checkbox", {
+                                      attrs: {
+                                        "input-value": props.selected,
+                                        primary: "",
+                                        "hide-details": ""
+                                      }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(props.item.orderItem.product.name)
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(props.item.orderItem.priceAtPurchase)
+                                  )
+                                ])
+                              ]
+                            )
+                          ]
+                        }
+                      }
+                    ]),
+                    model: {
+                      value: _vm.selectedItems,
+                      callback: function($$v) {
+                        _vm.selectedItems = $$v
+                      },
+                      expression: "selectedItems"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("file-picker", {
+                    attrs: {
+                      disabled: _vm.connecting || !_vm.selectedItems.length,
+                      label: "Select Delivery Note File..."
+                    },
+                    on: { onFilePicked: _vm.onFilePicked }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                [
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        color: "red",
+                        flat: "",
+                        disabled: _vm.connecting
+                      },
+                      nativeOn: {
+                        click: function($event) {
+                          _vm.uploadingDeliveryNote = false
+                        }
+                      }
+                    },
+                    [_vm._v("Close\n                ")]
+                  ),
+                  _vm._v(" "),
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        color: "primary",
+                        disabled:
+                          _vm.connecting ||
+                          !_vm.selectedItems.length ||
+                          !this.file
+                      },
+                      nativeOn: {
+                        click: function($event) {
+                          return _vm.uploadDeliveryNote($event)
+                        }
+                      }
+                    },
+                    [_vm._v("Submit\n                ")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
         ],
         1
       )
@@ -48385,7 +49615,11 @@ var render = function() {
                     expression: "error"
                   }
                 },
-                [_vm._v("\n      " + _vm._s(_vm.errorText) + "\n    ")]
+                [
+                  _vm._v(
+                    "\n            " + _vm._s(_vm.errorText) + "\n        "
+                  )
+                ]
               ),
               _vm._v(" "),
               _c(
@@ -48752,6 +49986,158 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-a357e8da", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-c5023a3e\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/FilePicker.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("v-text-field", {
+        ref: "fileTextField",
+        attrs: {
+          "prepend-icon": "attach_file",
+          "single-line": "",
+          label: _vm.label,
+          accept: _vm.accept,
+          disabled:
+            _vm.$upload.meta("file").status === "sending" || _vm.disabled
+        },
+        on: {
+          click: function($event) {
+            _vm.$upload.select("file")
+          }
+        },
+        model: {
+          value: _vm.filename,
+          callback: function($$v) {
+            _vm.filename = $$v
+          },
+          expression: "filename"
+        }
+      }),
+      _vm._v(" "),
+      _c("v-progress-linear", {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.$upload.meta("file").percentComplete === 100,
+            expression: "$upload.meta('file').percentComplete === 100"
+          }
+        ],
+        attrs: { indeterminate: true }
+      }),
+      _vm._v(" "),
+      _c("v-progress-linear", {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value:
+              _vm.$upload.meta("file").status === "sending" &&
+              _vm.$upload.meta("file").percentComplete < 100,
+            expression:
+              "$upload.meta('file').status === 'sending' && $upload.meta('file').percentComplete < 100"
+          }
+        ],
+        attrs: { color: "teal" },
+        model: {
+          value: _vm.$upload.meta("file").percentComplete,
+          callback: function($$v) {
+            _vm.$set(_vm.$upload.meta("file"), "percentComplete", $$v)
+          },
+          expression: "$upload.meta('file').percentComplete"
+        }
+      }),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { persistent: "", "max-width": "800px" },
+          model: {
+            value: _vm.dialog,
+            callback: function($$v) {
+              _vm.dialog = $$v
+            },
+            expression: "dialog"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-card-text",
+                [
+                  _vm._l(_vm.$upload.errors("file"), function(error) {
+                    return _c("div", [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(error.rule) +
+                          ": " +
+                          _vm._s(error.message) +
+                          "\n                    "
+                      )
+                    ])
+                  }),
+                  _vm._v(" "),
+                  _c("div", [
+                    _c("pre", [
+                      _vm._v("                        "),
+                      _c("code", [_vm._v(_vm._s(_vm.message))]),
+                      _vm._v("\n                    ")
+                    ])
+                  ])
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                [
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "green darken-1", flat: "" },
+                      nativeOn: {
+                        click: function($event) {
+                          _vm.reset()
+                        }
+                      }
+                    },
+                    [_vm._v("Okay")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-c5023a3e", module.exports)
   }
 }
 
@@ -53469,6 +54855,33 @@ if(false) {
  if(!content.locals) {
    module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-082a78ca\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./OrderedItems.vue", function() {
      var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-082a78ca\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./OrderedItems.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0cdd7a0a\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/UploadButton.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0cdd7a0a\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/UploadButton.vue");
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("49883438", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0cdd7a0a\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UploadButton.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0cdd7a0a\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./UploadButton.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -85010,6 +86423,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_vue_timeago___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_vue_timeago__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_format_currency__ = __webpack_require__("./node_modules/format-currency/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_format_currency___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_format_currency__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__websanova_vue_upload__ = __webpack_require__("./node_modules/@websanova/vue-upload/src/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__websanova_vue_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__websanova_vue_upload__);
 
 
 
@@ -85086,6 +86501,10 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__webpack_require__("./node_modu
   refreshData: { url: 'auth/refresh', method: 'GET', enabled: false, interval: 0 },
   authRedirect: { path: 'auth/signIn' }
 });
+
+
+
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_12__websanova_vue_upload___default.a);
 
 __webpack_require__("./node_modules/vuetify/dist/vuetify.min.css");
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_9_vuetify___default.a, {
@@ -86689,6 +88108,54 @@ module.exports = Component.exports
 
 /***/ }),
 
+/***/ "./resources/assets/js/components/FilePicker.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/FilePicker.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-c5023a3e\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/FilePicker.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\FilePicker.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-c5023a3e", Component.options)
+  } else {
+    hotAPI.reload("data-v-c5023a3e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
 /***/ "./resources/assets/js/components/GooglePlaceInput.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -87714,6 +89181,58 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-6965985a", Component.options)
   } else {
     hotAPI.reload("data-v-6965985a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/UploadButton.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0cdd7a0a\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/UploadButton.vue")
+}
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/UploadButton.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0cdd7a0a\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/UploadButton.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-0cdd7a0a"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\UploadButton.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0cdd7a0a", Component.options)
+  } else {
+    hotAPI.reload("data-v-0cdd7a0a", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true

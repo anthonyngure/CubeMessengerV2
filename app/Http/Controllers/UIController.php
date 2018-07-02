@@ -46,10 +46,7 @@
 			} else {
 				$client = Auth::user()->getClient();
 				$pendingOrders = Order::whereIn('user_id', $client->users->pluck('id'))
-					->whereHas('items', function (Builder $builder) {
-						$builder->where('status', '!=', 'DELIVERED')
-							->where('status', '!=', 'REJECTED');
-					})
+					->where('status', '!=', 'PENDING_DELIVERY')
 					->count();
 				$pendingDeliveries = Delivery::whereIn('user_id', $client->users->pluck('id'))
 					->whereHas('items', function (Builder $builder) {

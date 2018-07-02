@@ -76,6 +76,10 @@ Vue.use(require('@websanova/vue-auth'), {
   authRedirect: {path: 'auth/signIn'}
 })
 
+import VueUpload from '@websanova/vue-upload'
+
+Vue.use(VueUpload);
+
 require('vuetify/dist/vuetify.min.css')
 Vue.use(Vuetify, {
   theme: {

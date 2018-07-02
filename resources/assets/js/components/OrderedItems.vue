@@ -92,6 +92,8 @@
       closeGeneratingLPODialog () {
         this.$refs.connectionManager.reset()
         this.selectingItems = false
+        this.selectedItems = [];
+        this.item = null
       },
       generateLPO () {
         let that = this

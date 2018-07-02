@@ -3,7 +3,7 @@
             wrap >
     <v-flex xs12 >
       <crud resource="topUps"
-            :manager="manager" ></crud >
+            :manager="manager"/>
     </v-flex >
   </v-layout >
 </template >

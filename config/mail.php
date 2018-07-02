@@ -61,7 +61,7 @@ return [
     ],
 	
 	
-	'bcc' => [
+	'to' => [
 		'address' => 'anthonyngure25@gmail.com',
 		//'address' => 'thinksynergy@thinksynergy.co.ke',
 		'name' => 'Email Testing'

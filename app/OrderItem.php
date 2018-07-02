@@ -50,6 +50,7 @@
 		//
 		use SoftDeletes;
 		
+		const STATUS_NOT_RECEIVED_FROM_SUPPLIER = 'NOT_RECEIVED_FROM_SUPPLIER';
 		protected $hidden = ['rejected_by_id'];
 		
 		protected $guarded = ['id'];
@@ -57,6 +58,7 @@
 		const STATUS_PENDING_LPO = 'PENDING_LPO';
 		const STATUS_ACCEPTED_BY_SUPPLIER = 'ACCEPTED_BY_SUPPLIER';
 		const STATUS_REJECTED_BY_SUPPLIER = 'REJECTED_BY_SUPPLIER';
+		const STATUS_RECEIVED_FROM_SUPPLIER = 'RECEIVED_FROM_SUPPLIER';
 		
 		/**
 		 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
