@@ -30,6 +30,8 @@
  * @method static \Illuminate\Database\Eloquent\Builder|\App\LocalPurchaseOrder whereDeliveryNoteReceivedById($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\LocalPurchaseOrder whereLpoGeneratedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\LocalPurchaseOrder whereLpoPdfPath($value)
+ * @property string|null $invoice_pdf_path
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\LocalPurchaseOrder whereInvoicePdfPath($value)
  */
 	class LocalPurchaseOrder extends Model
 	{

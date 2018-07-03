@@ -3,40 +3,28 @@
         <v-text-field
                 prepend-icon="attach_file"
                 single-line
-                v-on:click="$upload.select('file')"
+                v-on:click="$upload.select(name)"
                 v-model="filename"
                 :label="label"
                 :accept="accept"
-                :disabled="$upload.meta('file').status === 'sending' || disabled"
+                :disabled="$upload.meta(name).status === 'sending' || disabled"
                 ref="fileTextField">
         </v-text-field>
 
         <v-progress-linear v-bind:indeterminate="true"
-                           v-show="$upload.meta('file').percentComplete === 100">
+                           v-show="$upload.meta(name).percentComplete === 100">
         </v-progress-linear>
 
         <v-progress-linear
-                v-show="$upload.meta('file').status === 'sending' && $upload.meta('file').percentComplete < 100"
-                v-model="$upload.meta('file').percentComplete"
+                v-show="$upload.meta(name).status === 'sending' && $upload.meta(name).percentComplete < 100"
+                v-model="$upload.meta(name).percentComplete"
                 color="teal">
         </v-progress-linear>
-
-<!--
-        <v-btn
-                v-show="$upload.meta('file').status === 'ready' && file && $upload.errors('file').length === 0 "
-                color="info"
-                block
-                v-on:click="$upload.start('file')"
-                :disabled="$upload.meta('file').status === 'sending'">
-            Process
-        </v-btn>
--->
-
 
         <v-dialog v-model="dialog" persistent max-width="800px">
             <v-card>
                 <v-card-text>
-                    <div v-for="error in $upload.errors('file')">
+                    <div v-for="error in $upload.errors(name)">
                         {{ error.rule }}: {{ error.message }}
                     </div>
                     <div>
@@ -72,6 +60,10 @@
       },
       moreData: {
         default: ''
+      },
+      name: {
+        type: String,
+        required: true
       }
     },
     data () {
@@ -95,7 +87,7 @@
     },
 
     created () {
-      this.$upload.new('file', {
+      this.$upload.new(this.name, {
         startOnSelect: false,
         maxSizePerFile: 1024 * 1024 * 2,
         extensions: ['pdf'],
@@ -111,7 +103,7 @@
         onSelect (files) {
           this.file = files[0]
           this.filename = files[0].name
-          this.$emit('onFilePicked', files[0]);
+          this.$emit('onFilePicked', files[0])
           /* files[0].preview((file) => {
             // this.brandImage = file.raw
             console.info('File Content ' + file.raw)

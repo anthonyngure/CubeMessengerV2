@@ -10192,18 +10192,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'FilePicker',
@@ -10222,6 +10210,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     moreData: {
       default: ''
+    },
+    name: {
+      type: String,
+      required: true
     }
   },
   data: function data() {
@@ -10246,7 +10238,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   created: function created() {
-    this.$upload.new('file', {
+    this.$upload.new(this.name, {
       startOnSelect: false,
       maxSizePerFile: 1024 * 1024 * 2,
       extensions: ['pdf'],
@@ -10860,6 +10852,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -10887,15 +10885,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       item: null,
       headers: [{ text: 'Name', value: 'name' }, { text: 'Price', value: 'price' }],
       extraInlineActions: [{
-        name: 'Upload Delivery Note',
+        name: 'Upload Delivery Note & Invoice',
         color: 'primary'
       }],
-      file: null
+      deliveryNoteFile: null,
+      invoiceFile: null
     };
   },
 
   methods: {
-    closePloadingDeliveryNoteDialog: function closePloadingDeliveryNoteDialog() {
+    closeUploadingDeliveryNoteDialog: function closeUploadingDeliveryNoteDialog() {
       this.$refs.connectionManager.reset();
       this.uploadingDeliveryNote = false;
       this.selectedItems = [];
@@ -10929,20 +10928,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
 
       var formData = new FormData();
-      formData.append('file', this.file.$file);
+      formData.append('deliveryNoteFile', this.deliveryNoteFile.$file);
+      formData.append('invoiceFile', this.invoiceFile.$file);
       formData.append('items', itemIds.join(','));
       this.$utils.log(formData);
       var that = this;
       this.$refs.connectionManager.upload('lpos/' + this.item.id + '/deliveryNote', {
         onSuccess: function onSuccess(response) {
           that.$refs.crud.setItems(response.data.data);
-          that.closePloadingDeliveryNoteDialog();
+          that.closeUploadingDeliveryNoteDialog();
           //alert(JSON.stringify(response))
         }
       }, formData);
     },
-    onFilePicked: function onFilePicked(file) {
-      this.file = file;
+    onDeliveryNotePicked: function onDeliveryNotePicked(file) {
+      this.deliveryNoteFile = file;
+      alert(file.$file.name);
+    },
+    onInvoicePicked: function onInvoicePicked(file) {
+      this.invoiceFile = file;
       this.$utils.log(file.$file);
     },
     initialize: function initialize() {
@@ -11090,7 +11094,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       connecting: false,
       selectingItems: false,
       selectedItems: [],
-      filters: [{ value: 'PENDING_LPO', name: 'Pending LPO' }, { value: 'ACCEPTED_BY_SUPPLIER', name: 'Accepted' }, { value: 'REJECTED_BY_SUPPLIER', name: 'Rejected' }],
+      adminAndOperationsFilters: [{ value: 'PENDING_LPO', name: 'Pending LPO' }, { value: 'ACCEPTED_BY_SUPPLIER', name: 'Accepted By Supplier' }, { value: 'REJECTED_BY_SUPPLIER', name: 'Rejected By Supplier' }, { value: 'RECEIVED_FROM_SUPPLIER', name: 'Received From Supplier' }],
+      supplierFilters: [{ value: 'PENDING_LPO', name: 'Pending LPO' }, { value: 'ACCEPTED_BY_SUPPLIER', name: 'Accepted' }, { value: 'REJECTED_BY_SUPPLIER', name: 'Rejected' }, { value: 'RECEIVED_FROM_SUPPLIER', name: 'Delivered' }],
       extraTopActions: [{
         name: 'Select Items To Supply',
         key: 'generateLPO'
@@ -11299,7 +11304,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       connecting: false,
       viewableHeaders: [],
       viewItemHeaders: [],
-      filters: [{ value: 'pendingApproval', name: 'Pending Approval' }, { value: 'pendingDelivery', name: 'Pending Delivery' }, { value: 'delivered', name: 'Delivered' }, { value: 'rejected', name: 'Rejected' }],
+      filters: [{ value: 'pendingApproval', name: 'Pending Approval' }, { value: 'pendingDelivery', name: 'Approved & Pending Delivery' }, { value: 'delivered', name: 'Delivered' }, { value: 'rejected', name: 'Rejected' }],
       productHeaders: [{ text: 'Name', value: 'product.name' }, { text: 'Price', value: 'product.price' }, { text: 'Quantity', value: 'quantity' }, { text: 'Total', value: 'total' }]
     };
   },
@@ -13060,7 +13065,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -13660,7 +13665,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -41020,7 +41025,9 @@ var render = function() {
               manager: _vm.manager,
               "extra-top-actions": _vm.extraTopActions,
               creatable: false,
-              filters: _vm.filters
+              filters: _vm.isSupplier()
+                ? _vm.supplierFilters
+                : _vm.adminAndOperationsFilters
             }
           }),
           _vm._v(" "),
@@ -49502,10 +49509,20 @@ var render = function() {
                   _vm._v(" "),
                   _c("file-picker", {
                     attrs: {
+                      name: "deliveryNote",
                       disabled: _vm.connecting || !_vm.selectedItems.length,
                       label: "Select Delivery Note File..."
                     },
-                    on: { onFilePicked: _vm.onFilePicked }
+                    on: { onFilePicked: _vm.onDeliveryNotePicked }
+                  }),
+                  _vm._v(" "),
+                  _c("file-picker", {
+                    attrs: {
+                      name: "invoice",
+                      disabled: _vm.connecting || !_vm.selectedItems.length,
+                      label: "Select Invoice File..."
+                    },
+                    on: { onFilePicked: _vm.onInvoicePicked }
                   })
                 ],
                 1
@@ -49543,7 +49560,8 @@ var render = function() {
                         disabled:
                           _vm.connecting ||
                           !_vm.selectedItems.length ||
-                          !this.file
+                          !_vm.deliveryNoteFile ||
+                          !_vm.invoiceFile
                       },
                       nativeOn: {
                         click: function($event) {
@@ -49551,7 +49569,7 @@ var render = function() {
                         }
                       }
                     },
-                    [_vm._v("Submit\n                ")]
+                    [_vm._v("\n                    Submit\n                ")]
                   )
                 ],
                 1
@@ -50009,11 +50027,11 @@ var render = function() {
           label: _vm.label,
           accept: _vm.accept,
           disabled:
-            _vm.$upload.meta("file").status === "sending" || _vm.disabled
+            _vm.$upload.meta(_vm.name).status === "sending" || _vm.disabled
         },
         on: {
           click: function($event) {
-            _vm.$upload.select("file")
+            _vm.$upload.select(_vm.name)
           }
         },
         model: {
@@ -50030,8 +50048,8 @@ var render = function() {
           {
             name: "show",
             rawName: "v-show",
-            value: _vm.$upload.meta("file").percentComplete === 100,
-            expression: "$upload.meta('file').percentComplete === 100"
+            value: _vm.$upload.meta(_vm.name).percentComplete === 100,
+            expression: "$upload.meta(name).percentComplete === 100"
           }
         ],
         attrs: { indeterminate: true }
@@ -50043,19 +50061,19 @@ var render = function() {
             name: "show",
             rawName: "v-show",
             value:
-              _vm.$upload.meta("file").status === "sending" &&
-              _vm.$upload.meta("file").percentComplete < 100,
+              _vm.$upload.meta(_vm.name).status === "sending" &&
+              _vm.$upload.meta(_vm.name).percentComplete < 100,
             expression:
-              "$upload.meta('file').status === 'sending' && $upload.meta('file').percentComplete < 100"
+              "$upload.meta(name).status === 'sending' && $upload.meta(name).percentComplete < 100"
           }
         ],
         attrs: { color: "teal" },
         model: {
-          value: _vm.$upload.meta("file").percentComplete,
+          value: _vm.$upload.meta(_vm.name).percentComplete,
           callback: function($$v) {
-            _vm.$set(_vm.$upload.meta("file"), "percentComplete", $$v)
+            _vm.$set(_vm.$upload.meta(_vm.name), "percentComplete", $$v)
           },
-          expression: "$upload.meta('file').percentComplete"
+          expression: "$upload.meta(name).percentComplete"
         }
       }),
       _vm._v(" "),
@@ -50078,23 +50096,23 @@ var render = function() {
               _c(
                 "v-card-text",
                 [
-                  _vm._l(_vm.$upload.errors("file"), function(error) {
+                  _vm._l(_vm.$upload.errors(_vm.name), function(error) {
                     return _c("div", [
                       _vm._v(
-                        "\n                        " +
+                        "\n                    " +
                           _vm._s(error.rule) +
                           ": " +
                           _vm._s(error.message) +
-                          "\n                    "
+                          "\n                "
                       )
                     ])
                   }),
                   _vm._v(" "),
                   _c("div", [
                     _c("pre", [
-                      _vm._v("                        "),
+                      _vm._v("                    "),
                       _c("code", [_vm._v(_vm._s(_vm.message))]),
-                      _vm._v("\n                    ")
+                      _vm._v("\n                ")
                     ])
                   ])
                 ],
@@ -86440,7 +86458,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_4_vue_notification___default.a);
 
-var DEBUG = false;
+var DEBUG = true;
 
 var GOOGLE_MAPS_KEY = 'AIzaSyAS_9BsQpqTP8EVuMZ7rQ9gMCl0wmqhm7k';
 var PRIMARY_COLOR = '#1A75BA';

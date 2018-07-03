@@ -101,7 +101,7 @@
         viewItemHeaders: [],
         filters: [
           {value: 'pendingApproval', name: 'Pending Approval'},
-          {value: 'pendingDelivery', name: 'Pending Delivery'},
+          {value: 'pendingDelivery', name: 'Approved & Pending Delivery'},
           {value: 'delivered', name: 'Delivered'},
           {value: 'rejected', name: 'Rejected'}
         ],

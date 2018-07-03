@@ -7,7 +7,7 @@
                   :manager="manager"
                   :extra-top-actions="extraTopActions"
                   :creatable="false"
-                  :filters="filters"/>
+                  :filters="isSupplier() ? supplierFilters : adminAndOperationsFilters"/>
             <v-dialog v-model="selectingItems" max-width="600px">
                 <v-card>
                     <v-card-text>
@@ -70,10 +70,17 @@
         connecting: false,
         selectingItems: false,
         selectedItems: [],
-        filters: [
+        adminAndOperationsFilters: [
+          {value: 'PENDING_LPO', name: 'Pending LPO'},
+          {value: 'ACCEPTED_BY_SUPPLIER', name: 'Accepted By Supplier'},
+          {value: 'REJECTED_BY_SUPPLIER', name: 'Rejected By Supplier'},
+          {value: 'RECEIVED_FROM_SUPPLIER', name: 'Received From Supplier'},
+        ],
+        supplierFilters: [
           {value: 'PENDING_LPO', name: 'Pending LPO'},
           {value: 'ACCEPTED_BY_SUPPLIER', name: 'Accepted'},
           {value: 'REJECTED_BY_SUPPLIER', name: 'Rejected'},
+          {value: 'RECEIVED_FROM_SUPPLIER', name: 'Delivered'},
         ],
         extraTopActions: [
           {
@@ -92,7 +99,7 @@
       closeGeneratingLPODialog () {
         this.$refs.connectionManager.reset()
         this.selectingItems = false
-        this.selectedItems = [];
+        this.selectedItems = []
         this.item = null
       },
       generateLPO () {

@@ -22,7 +22,7 @@
 		public function index(Request $request)
 		{
 			$this->validate($request, [
-				'filter' => 'required|in:PENDING_LPO,ACCEPTED_BY_SUPPLIER,REJECTED_BY_SUPPLIER',
+				'filter' => 'required|in:PENDING_LPO,ACCEPTED_BY_SUPPLIER,REJECTED_BY_SUPPLIER,RECEIVED_FROM_SUPPLIER',
 			]);
 			
 			
@@ -135,7 +135,6 @@
 				$orderItem->status = OrderItem::STATUS_REJECTED_BY_SUPPLIER;
 				$orderItem->save();
 			}
-			
 			
 			
 			//Send notification

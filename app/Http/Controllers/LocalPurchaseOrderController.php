@@ -107,8 +107,9 @@
 		public function deliveryNote(Request $request, $id)
 		{
 			$this->validate($request, [
-				'file'  => 'required|mimes:pdf|max:10000',
-				'items' => ['required', new CommaSeparatedIds(LocalPurchaseOrderItem::class)],
+				'deliveryNoteFile' => 'required|mimes:pdf|max:10000',
+				'invoiceFile'      => 'required|mimes:pdf|max:10000',
+				'items'            => ['required', new CommaSeparatedIds(LocalPurchaseOrderItem::class)],
 			]);
 			
 			
@@ -139,11 +140,13 @@
 				]);
 			}
 			
-			$notePath = \Storage::disk('public')->putFile('delivery_notes', $request->file('file'));
+			$deliveryNotePath = \Storage::putFile('delivery_notes', $request->file('deliveryNoteFile'));
+			$invoicePath = \Storage::putFile('invoices', $request->file('invoiceFile'));
 			
 			$lpo->delivery_note_received_by_id = Auth::user()->id;
 			$lpo->delivery_note_received_at = now()->toDateTimeString();
-			$lpo->delivery_note_path = $notePath;
+			$lpo->delivery_note_path = $deliveryNotePath;
+			$lpo->invoice_pdf_path = $invoicePath;
 			$lpo->save();
 			
 			return $this->index();

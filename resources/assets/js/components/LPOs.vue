@@ -34,8 +34,13 @@
                             </tr>
                         </template>
                     </v-data-table>
-                    <file-picker :disabled="connecting || !selectedItems.length" label="Select Delivery Note File..."
-                                 @onFilePicked="onFilePicked"/>
+                    <file-picker name="deliveryNote" :disabled="connecting || !selectedItems.length"
+                                 label="Select Delivery Note File..."
+                                 @onFilePicked="onDeliveryNotePicked"/>
+                    <file-picker name="invoice" :disabled="connecting || !selectedItems.length"
+                                 label="Select Invoice File..."
+                                 @onFilePicked="onInvoicePicked"/>
+
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer/>
@@ -44,7 +49,8 @@
                     </v-btn>
                     <v-spacer/>
                     <v-btn color="primary" @click.native="uploadDeliveryNote"
-                           :disabled="connecting || !selectedItems.length || !this.file">Submit
+                           :disabled="connecting || !selectedItems.length || !deliveryNoteFile || !invoiceFile">
+                        Submit
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -83,15 +89,16 @@
         ],
         extraInlineActions: [
           {
-            name: 'Upload Delivery Note',
+            name: 'Upload Delivery Note & Invoice',
             color: 'primary'
           }
         ],
-        file: null
+        deliveryNoteFile: null,
+        invoiceFile: null,
       }
     },
     methods: {
-      closePloadingDeliveryNoteDialog () {
+      closeUploadingDeliveryNoteDialog () {
         this.$refs.connectionManager.reset()
         this.uploadingDeliveryNote = false
         this.selectedItems = []
@@ -103,20 +110,25 @@
           itemIds.push(item.id)
         }
         let formData = new FormData()
-        formData.append('file', this.file.$file)
+        formData.append('deliveryNoteFile', this.deliveryNoteFile.$file)
+        formData.append('invoiceFile', this.invoiceFile.$file)
         formData.append('items', itemIds.join(','))
         this.$utils.log(formData)
         let that = this
         this.$refs.connectionManager.upload('lpos/' + this.item.id + '/deliveryNote', {
           onSuccess (response) {
             that.$refs.crud.setItems(response.data.data)
-            that.closePloadingDeliveryNoteDialog()
+            that.closeUploadingDeliveryNoteDialog()
             //alert(JSON.stringify(response))
           }
         }, formData)
       },
-      onFilePicked (file) {
-        this.file = file
+      onDeliveryNotePicked (file) {
+        this.deliveryNoteFile = file
+        alert(file.$file.name)
+      },
+      onInvoicePicked (file) {
+        this.invoiceFile = file
         this.$utils.log(file.$file)
       },
       initialize () {
