@@ -7,8 +7,9 @@
                   :manager="manager"
                   :extra-top-actions="extraTopActions"
                   :creatable="false"
-                  :filters="isSupplier() ? supplierFilters : adminAndOperationsFilters"/>
-            <v-dialog v-model="selectingItems" max-width="600px">
+                  :filters="isSupplier() ? supplierFilters : adminAndOperationsFilters"
+                  :hiddenHeaders="isSupplier() ? supplierHiddenHeaders : []"/>
+            <v-dialog v-model="selectingItems" max-width="800px">
                 <v-card>
                     <v-card-text>
                         <connection-manager ref="connectionManager" v-model="connecting"/>
@@ -28,7 +29,11 @@
                                                 hide-details/>
                                     </td>
                                     <td>{{ props.item.product.name }}</td>
-                                    <td>{{ props.item.product.price }}</td>
+                                    <td>{{ props.item.priceAtPurchase }}</td>
+                                    <td>{{ props.item.quantity }}</td>
+                                    <td>{{ $utils.formatMoney((props.item.quantity *
+                                        props.item.priceAtPurchase)) }}
+                                    </td>
                                 </tr>
                             </template>
                         </v-data-table>
@@ -92,6 +97,11 @@
         headers: [
           {text: 'Name', value: 'name'},
           {text: 'Price', value: 'price'},
+          {text: 'Quantity', value: 'quantity'},
+          {text: 'Total', value: 'total'},
+        ],
+        supplierHiddenHeaders: [
+          {text: 'Supplier'}
         ]
       }
     },
@@ -144,7 +154,7 @@
           if (action.key === 'generateLPO' && filter && this.isSupplier()) {
             return filter.value === 'PENDING_LPO' && items.length
           } else {
-            return false
+            return true
           }
         }
         this.manager.onTopAction = (action, items, filter) => {

@@ -23,7 +23,7 @@
 			/** @var User $user */
 			$user = User::with('role')->findOrFail(Auth::user()->id);
 			
-			if($user->isSupplier()){
+			if ($user->isSupplier()) {
 				$items = [
 					['icon' => 'dashboard', 'title' => 'Dashboard', 'route' => 'dashboard', 'pendingApprovals' => 0],
 					['icon' => 'shopping_cart', 'title' => 'Ordered Products', 'route' => 'orderItems', 'pendingApprovals' => 0],
@@ -46,7 +46,8 @@
 			} else {
 				$client = Auth::user()->getClient();
 				$pendingOrders = Order::whereIn('user_id', $client->users->pluck('id'))
-					->where('status', '!=', 'PENDING_DELIVERY')
+					->where('status', 'AT_DEPARTMENT_HEAD')
+					->orWhere('status', 'AT_PURCHASING_HEAD')
 					->count();
 				$pendingDeliveries = Delivery::whereIn('user_id', $client->users->pluck('id'))
 					->whereHas('items', function (Builder $builder) {

@@ -11,24 +11,26 @@
         defaultValue: '_____', //Displayed when a value is null
         extraInlineActions: [
           /*
-          Actions should be name,color objects e.g
+          Actions should be name,color,key objects e.g
           {
             name: 'Approve',
-            color: 'accent'
+            color: 'accent',
+            key:'approve'
           }, {
             name: 'Reject',
-            color: 'primary'
+            color: 'primary',
+            key:'reject'
           }*/
         ],
         extraOverflowActions: [
           /*
-          Actions should be name,color objects e.g
+          Actions should be name,key objects e.g
           {
             name: 'Approve',
-            color: 'accent'
+            key:'approve'
           }, {
             name: 'Reject',
-            color: 'primary'
+            key:'reject'
           }*/
 
         ],
@@ -41,7 +43,8 @@
             key: 'ddd'
           }, {
             name: 'Reject',
-            color: 'primary'
+            color: 'primary',
+            key: 'ddd'
           }*/
         ]
       }
@@ -108,6 +111,11 @@
           showInlineAction (action, item, filter) {
             return true
           },
+
+          //Determine if a header should be hidden
+          hideHeader(header, filter){
+            return false;
+          }
 
         }
       }

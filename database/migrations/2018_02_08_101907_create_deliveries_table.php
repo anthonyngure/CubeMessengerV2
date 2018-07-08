@@ -32,7 +32,7 @@
 				$table->timestamp('pickup_time')->nullable();
 				$table->double('pickup_latitude', 8, 5)->nullable();
 				$table->double('pickup_longitude', 8, 5)->nullable();
-				$table->enum('status', ['AT_DEPARTMENT_HEAD', 'AT_PURCHASING_HEAD', 'REJECTED', 'PENDING_DELIVERY'])
+				$table->enum('status', ['AT_DEPARTMENT_HEAD', 'AT_PURCHASING_HEAD', 'REJECTED', 'APPROVED'])
 					->default('AT_DEPARTMENT_HEAD');
 				$table->timestamp('department_head_acted_at')->nullable();
 				$table->timestamp('purchasing_head_acted_at')->nullable();

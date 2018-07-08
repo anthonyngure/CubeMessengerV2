@@ -9136,10 +9136,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'Crud',
   components: { CrudRemoteSelect: __WEBPACK_IMPORTED_MODULE_1__CrudRemoteSelect___default.a, ConnectionManager: __WEBPACK_IMPORTED_MODULE_0__ConnectionManager___default.a },
   props: {
+
+    //Specify the endpoint to connect to
     resource: {
       type: String,
       required: true
     },
+
+    //Actions to be shown at the top, next to the search bar
     extraTopActions: {
       type: Array,
       required: false,
@@ -9147,6 +9151,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return [];
       }
     },
+
+    //Actions to be shown inline, below the row when the item is clicked
     extraInlineActions: {
       type: Array,
       required: false,
@@ -9154,6 +9160,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return [];
       }
     },
+
+    //Actions to be shown when the overflow icon is clicked
     extraOverflowActions: {
       type: Array,
       required: false,
@@ -9162,7 +9170,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
     },
 
-    // An array if filters to show
+    // An array of filters to show, filters are show at the right of the search
     filters: {
       type: Array,
       required: false
@@ -9185,6 +9193,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     manager: {
       type: Object,
       required: true
+    },
+
+    //Headers that should not be shown
+    hiddenHeaders: {
+      type: Array,
+      required: false,
+      default: function _default() {
+        return [];
+      }
     }
   },
   data: function data() {
@@ -9286,6 +9303,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     toOptions: function toOptions(options) {
       return options.split(',');
     },
+    isHiddenHeader: function isHiddenHeader() {
+      return this.hiddenHeaders.find();
+    },
     initialize: function initialize() {
       this.items = [];
       var that = this;
@@ -9298,10 +9318,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           that.headers = [];
           that.headers = that.headers.concat(response.data.meta.headers);
           that.browsableHeaders = that.headers.filter(function (header) {
-            return header.browsable;
+            //Find if the header is in the hidden headers
+            return header.browsable && !that.hiddenHeaders.find(function (h) {
+              return h.text === header.text;
+            }) && !that.manager.hideHeader(header, that.currentFilter);
           });
           that.viewableHeaders = that.headers.filter(function (header) {
-            return header.viewable;
+            return header.viewable && !that.hiddenHeaders.find(function (h) {
+              return h.text === header.text;
+            }) && !that.manager.hideHeader(header, that.currentFilter);
           });
           that.browsableHeaders.push({
             text: 'Actions',
@@ -9420,24 +9445,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       defaultValue: '_____', //Displayed when a value is null
       extraInlineActions: [
         /*
-        Actions should be name,color objects e.g
+        Actions should be name,color,key objects e.g
         {
           name: 'Approve',
-          color: 'accent'
+          color: 'accent',
+          key:'approve'
         }, {
           name: 'Reject',
-          color: 'primary'
+          color: 'primary',
+          key:'reject'
         }*/
       ],
       extraOverflowActions: [
         /*
-        Actions should be name,color objects e.g
+        Actions should be name,key objects e.g
         {
           name: 'Approve',
-          color: 'accent'
+          key:'approve'
         }, {
           name: 'Reject',
-          color: 'primary'
+          key:'reject'
         }*/
 
       ],
@@ -9450,7 +9477,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           key: 'ddd'
         }, {
           name: 'Reject',
-          color: 'primary'
+          color: 'primary',
+          key: 'ddd'
         }*/
       ]
     };
@@ -9518,6 +9546,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         //Whether an inline action should be shown
         showInlineAction: function showInlineAction(action, item, filter) {
           return true;
+        },
+
+
+        //Determine if a header should be hidden
+        hideHeader: function hideHeader(header, filter) {
+          return false;
         }
       };
     }
@@ -10858,6 +10892,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -10883,11 +10922,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       selectedItems: [],
       items: [],
       item: null,
-      headers: [{ text: 'Name', value: 'name' }, { text: 'Price', value: 'price' }],
+      headers: [{ text: 'Name', value: 'name' }, { text: 'Price', value: 'price' }, { text: 'Quantity', value: 'quantity' }, { text: 'Total', value: 'total' }],
       extraInlineActions: [{
         name: 'Upload Delivery Note & Invoice',
-        color: 'primary'
+        color: 'primary',
+        key: 'uploadDocuments'
       }],
+      supplierHiddenHeaders: [{ text: 'Supplier' }],
       deliveryNoteFile: null,
       invoiceFile: null
     };
@@ -10971,7 +11012,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         that.uploadingDeliveryNote = true;
       };
       this.manager.showInlineAction = function (action, item, filter) {
-        return item.deliveryNotePath === null;
+        return item.key === 'uploadDocuments' && item.deliveryNotePath === null && (that.isOperations() || that.isAdmin());
       };
     }
   }
@@ -11075,6 +11116,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -11101,7 +11147,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         key: 'generateLPO'
       }],
       items: [],
-      headers: [{ text: 'Name', value: 'name' }, { text: 'Price', value: 'price' }]
+      headers: [{ text: 'Name', value: 'name' }, { text: 'Price', value: 'price' }, { text: 'Quantity', value: 'quantity' }, { text: 'Total', value: 'total' }],
+      supplierHiddenHeaders: [{ text: 'Supplier' }]
     };
   },
 
@@ -11176,7 +11223,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         if (action.key === 'generateLPO' && filter && _this.isSupplier()) {
           return filter.value === 'PENDING_LPO' && items.length;
         } else {
-          return false;
+          return true;
         }
       };
       this.manager.onTopAction = function (action, items, filter) {
@@ -11287,6 +11334,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -11302,10 +11369,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       item: null,
       viewDialogHere: false,
       connecting: false,
+      dispatchingItem: null,
+      dispatching: false,
       viewableHeaders: [],
       viewItemHeaders: [],
-      filters: [{ value: 'pendingApproval', name: 'Pending Approval' }, { value: 'pendingDelivery', name: 'Approved & Pending Delivery' }, { value: 'delivered', name: 'Delivered' }, { value: 'rejected', name: 'Rejected' }],
-      productHeaders: [{ text: 'Name', value: 'product.name' }, { text: 'Price', value: 'product.price' }, { text: 'Quantity', value: 'quantity' }, { text: 'Total', value: 'total' }]
+      adminAndOperationsFilters: [{ value: 'PENDING_DISPATCH', name: 'Pending Dispatch' }, { value: 'DISPATCHED', name: 'Dispatched' }, { value: 'DELIVERED', name: 'Delivered' }, { value: 'AT_DEPARTMENT_HEAD', name: 'At Department Head' }, { value: 'AT_PURCHASING_HEAD', name: 'At Purchasing Head' }, { value: 'APPROVED', name: 'Approved' }, { value: 'REJECTED', name: 'Rejected' }],
+      clientFilters: [{ value: 'AT_DEPARTMENT_HEAD', name: 'At Department Head' }, { value: 'AT_PURCHASING_HEAD', name: 'At Purchasing Head' }, { value: 'APPROVED', name: 'Approved' }, { value: 'DELIVERED', name: 'Delivered' }, { value: 'REJECTED', name: 'Rejected' }, { value: 'DISPATCHED', name: 'Dispatched' }, { value: 'PENDING_DISPATCH', name: 'Pending Dispatch' }],
+      productHeaders: [{ text: 'Name', value: 'product.name' }, { text: 'Price', value: 'product.price' }, { text: 'Quantity', value: 'quantity' }, { text: 'Total', value: 'total' }],
+      extraInlineActions: [{
+        name: 'Dispatch',
+        key: 'dispatch',
+        color: 'accent'
+      }, {
+        name: 'View',
+        key: 'view',
+        color: 'primary'
+      }]
     };
   },
 
@@ -11315,6 +11394,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.viewDialogHere = false;
     },
     initialize: function initialize() {
+      var _this = this;
+
       var that = this;
       this.manager.editable = function (item) {
         return false;
@@ -11342,6 +11423,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         that.viewItemHeaders = viewItemHeaders;
         return true;
       };
+      this.manager.showInlineAction = function (action, item, filter) {
+        if (action.key === 'dispatch' && filter) {
+          return filter.value === 'PENDING_DISPATCH' && (_this.isAdmin() || _this.isOperations());
+        } else {
+          return true;
+        }
+      };
+      this.manager.onInlineActionClicked = function (action, item, filter) {
+        if (action.key === 'view') {
+          that.$refs.crud.viewItem(item);
+        } else {
+          that.dispatchingItem = item;
+          that.dispatching = action.key === 'dispatch';
+        }
+      };
+      this.manager.hideHeader = function (header, filter) {
+        return header.value === 'rejectedBy' && filter.value !== 'REJECTED';
+      };
     },
     approveOrReject: function approveOrReject(action) {
       var that = this;
@@ -11352,11 +11451,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           that.selected = [];
           that.viewDialogHere = false;
           var item = response.data.data;
-          if (item.status === 'REJECTED' || item.status === 'PENDING_DELIVERY') {
-            that.$refs.crud.removeItem(item);
-          } else {
-            that.$refs.crud.updateItem(item);
-          }
+          that.$refs.crud.removeItem(item);
         }
       }, { action: action });
     },
@@ -13065,7 +13160,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -13440,7 +13535,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -13470,7 +13565,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -13515,7 +13610,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -13665,7 +13760,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -41027,14 +41122,15 @@ var render = function() {
               creatable: false,
               filters: _vm.isSupplier()
                 ? _vm.supplierFilters
-                : _vm.adminAndOperationsFilters
+                : _vm.adminAndOperationsFilters,
+              hiddenHeaders: _vm.isSupplier() ? _vm.supplierHiddenHeaders : []
             }
           }),
           _vm._v(" "),
           _c(
             "v-dialog",
             {
-              attrs: { "max-width": "600px" },
+              attrs: { "max-width": "800px" },
               model: {
                 value: _vm.selectingItems,
                 callback: function($$v) {
@@ -41104,7 +41200,22 @@ var render = function() {
                                     ]),
                                     _vm._v(" "),
                                     _c("td", [
-                                      _vm._v(_vm._s(props.item.product.price))
+                                      _vm._v(_vm._s(props.item.priceAtPurchase))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(_vm._s(props.item.quantity))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.$utils.formatMoney(
+                                            props.item.quantity *
+                                              props.item.priceAtPurchase
+                                          )
+                                        ) + "\n                                "
+                                      )
                                     ])
                                   ]
                                 )
@@ -46685,8 +46796,12 @@ var render = function() {
             attrs: {
               resource: "orders",
               manager: _vm.manager,
-              filters: _vm.filters,
+              filters:
+                _vm.isAdmin() || _vm.isOperations()
+                  ? _vm.adminAndOperationsFilters
+                  : _vm.clientFilters,
               creatable: false,
+              "extra-inline-actions": _vm.extraInlineActions,
               "custom-view-dialog": true
             }
           })
@@ -46884,6 +46999,70 @@ var render = function() {
                 1
               )
             : _vm._e()
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "600px" },
+          model: {
+            value: _vm.dispatching,
+            callback: function($$v) {
+              _vm.dispatching = $$v
+            },
+            expression: "dispatching"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c("v-card-text"),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                [
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        color: "red",
+                        flat: "",
+                        disabled: _vm.connecting
+                      },
+                      nativeOn: {
+                        click: function($event) {
+                          _vm.dispatching = false
+                        }
+                      }
+                    },
+                    [_vm._v("Close\n                ")]
+                  ),
+                  _vm._v(" "),
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "primary", disabled: _vm.connecting },
+                      nativeOn: {
+                        click: function($event) {
+                          return _vm.generateLPO($event)
+                        }
+                      }
+                    },
+                    [_vm._v("Submit\n                ")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
         ],
         1
       )
@@ -49396,6 +49575,7 @@ var render = function() {
               resource: "lpos",
               creatable: false,
               manager: _vm.manager,
+              hiddenHeaders: _vm.isSupplier() ? _vm.supplierHiddenHeaders : [],
               extraInlineActions:
                 _vm.isAdmin() || _vm.isOperations()
                   ? _vm.extraInlineActions
@@ -49409,7 +49589,7 @@ var render = function() {
       _c(
         "v-dialog",
         {
-          attrs: { "max-width": "600px", persistent: "" },
+          attrs: { "max-width": "800px", persistent: "" },
           model: {
             value: _vm.uploadingDeliveryNote,
             callback: function($$v) {
@@ -49490,6 +49670,21 @@ var render = function() {
                                 _c("td", [
                                   _vm._v(
                                     _vm._s(props.item.orderItem.priceAtPurchase)
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(_vm._s(props.item.orderItem.quantity))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.$utils.formatMoney(
+                                        props.item.orderItem.quantity *
+                                          props.item.orderItem.priceAtPurchase
+                                      )
+                                    ) + "\n                            "
                                   )
                                 ])
                               ]

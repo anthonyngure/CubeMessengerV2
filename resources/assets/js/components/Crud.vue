@@ -273,10 +273,14 @@
     name: 'Crud',
     components: {CrudRemoteSelect, ConnectionManager},
     props: {
+
+      //Specify the endpoint to connect to
       resource: {
         type: String,
         required: true
       },
+
+      //Actions to be shown at the top, next to the search bar
       extraTopActions: {
         type: Array,
         required: false,
@@ -284,6 +288,8 @@
           return []
         }
       },
+
+      //Actions to be shown inline, below the row when the item is clicked
       extraInlineActions: {
         type: Array,
         required: false,
@@ -291,6 +297,8 @@
           return []
         }
       },
+
+      //Actions to be shown when the overflow icon is clicked
       extraOverflowActions: {
         type: Array,
         required: false,
@@ -299,7 +307,7 @@
         }
       },
 
-      // An array if filters to show
+      // An array of filters to show, filters are show at the right of the search
       filters: {
         type: Array,
         required: false
@@ -322,6 +330,15 @@
       manager: {
         type: Object,
         required: true
+      },
+
+      //Headers that should not be shown
+      hiddenHeaders: {
+        type: Array,
+        required: false,
+        default: function () {
+          return []
+        }
       }
     },
     data: () => ({
@@ -419,6 +436,10 @@
         return options.split(',')
       },
 
+      isHiddenHeader () {
+        return this.hiddenHeaders.find()
+      },
+
       initialize () {
         this.items = []
         let that = this
@@ -431,10 +452,13 @@
             that.headers = []
             that.headers = that.headers.concat(response.data.meta.headers)
             that.browsableHeaders = that.headers.filter((header) => {
-              return header.browsable
+              //Find if the header is in the hidden headers
+              return header.browsable && !that.hiddenHeaders.find(h => h.text === header.text)
+                && !that.manager.hideHeader(header, that.currentFilter)
             })
             that.viewableHeaders = that.headers.filter((header) => {
-              return header.viewable
+              return header.viewable && !that.hiddenHeaders.find(h => h.text === header.text)
+                && !that.manager.hideHeader(header, that.currentFilter)
             })
             that.browsableHeaders.push({
               text: 'Actions',

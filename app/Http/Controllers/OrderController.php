@@ -26,43 +26,25 @@
 		 */
 		public function index(Request $request)
 		{
+			$this->validate($request, [
+				'filter' => 'required|in:AT_DEPARTMENT_HEAD,AT_PURCHASING_HEAD,DELIVERED,REJECTED,DISPATCHED,APPROVED,PENDING_DISPATCH',
+			]);
 			
-			$headers = CrudHeader::whereModel(Order::class)->get();
+			$headers = CrudHeader::whereModel(Order::class)->orderBy('priority')->get();
 			
 			if (Auth::user()->isAdmin() || Auth::user()->isOperations()) {
-				$orders = Order::with('items.product')->get();
+				$orders = Order::with('items.product');
 			} else {
 				$client = Auth::user()->getClient();
-				$this->validate($request, [
-					'filter' => 'required|in:pendingApproval,pendingDelivery,delivered,rejected',
-				]);
-				
-				if ($request->filter === 'pendingApproval') {
-					$orders = Order::whereIn('user_id', $client->users->pluck('id'))
-						->where('status', 'AT_DEPARTMENT_HEAD')
-						->orWhere('status', 'AT_PURCHASING_HEAD')
-						->with(['items.product'])
-						->get();
-				} else if ($request->filter === 'pendingDelivery') {
-					$orders = Order::whereIn('user_id', $client->users->pluck('id'))
-						->where('status', 'PENDING_DELIVERY')
-						->with(['items.product'])
-						->get();
-				} else if ($request->filter === 'delivered') {
-					$orders = Order::whereIn('user_id', $client->users->pluck('id'))
-						->where('status', 'DELIVERED')
-						->with(['items.product'])
-						->get();
-				} else {
-					$orders = Order::whereIn('user_id', $client->users->pluck('id'))
-						->where('status', 'REJECTED')
-						->with(['items.product', 'rejectedBy.role'])
-						->get();
-				}
+				$orders = Order::whereIn('user_id', $client->users->pluck('id'));
 				
 			}
 			
-			return $this->collectionResponse($orders, ['headers' => $headers]);
+			$data = $orders->with(['items.product', 'rejectedBy.role'])
+				->where('status', $request->input('filter'))
+				->withCount(Order::COUNTS)->get();
+			
+			return $this->collectionResponse($data, ['headers' => $headers]);
 			
 		}
 		
@@ -172,8 +154,8 @@
 			/** @var \App\Order $order */
 			$order = Order::with('items.product')->findOrFail($id);
 			
-			$this->handleApprovals($request, $order, 'PENDING_DELIVERY', function (Order $order) {
-				if ($order->status == 'PENDING_DELIVERY') {
+			$this->handleApprovals($request, $order, 'APPROVED', function (Order $order) {
+				if ($order->status == 'APPROVED') {
 					$order->items()->update(['status' => 'PENDING_LPO']);
 				}
 			});

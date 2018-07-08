@@ -6,10 +6,11 @@
                   ref="crud"
                   :creatable="false"
                   :manager="manager"
+                  :hiddenHeaders="isSupplier() ? supplierHiddenHeaders : []"
                   :extraInlineActions="isAdmin() || isOperations() ? extraInlineActions : []"/>
         </v-flex>
 
-        <v-dialog v-model="uploadingDeliveryNote" max-width="600px" persistent>
+        <v-dialog v-model="uploadingDeliveryNote" max-width="800px" persistent>
             <v-card>
                 <v-card-text>
                     <connection-manager ref="connectionManager" v-model="connecting"/>
@@ -31,6 +32,10 @@
                                 </td>
                                 <td>{{ props.item.orderItem.product.name }}</td>
                                 <td>{{ props.item.orderItem.priceAtPurchase }}</td>
+                                <td>{{ props.item.orderItem.quantity }}</td>
+                                <td>{{ $utils.formatMoney((props.item.orderItem.quantity *
+                                    props.item.orderItem.priceAtPurchase)) }}
+                                </td>
                             </tr>
                         </template>
                     </v-data-table>
@@ -86,12 +91,18 @@
         headers: [
           {text: 'Name', value: 'name'},
           {text: 'Price', value: 'price'},
+          {text: 'Quantity', value: 'quantity'},
+          {text: 'Total', value: 'total'},
         ],
         extraInlineActions: [
           {
             name: 'Upload Delivery Note & Invoice',
-            color: 'primary'
+            color: 'primary',
+            key: 'uploadDocuments'
           }
+        ],
+        supplierHiddenHeaders: [
+          {text: 'Supplier'}
         ],
         deliveryNoteFile: null,
         invoiceFile: null,
@@ -153,7 +164,9 @@
           that.uploadingDeliveryNote = true
         }
         this.manager.showInlineAction = (action, item, filter) => {
-          return item.deliveryNotePath === null
+          return item.key === 'uploadDocuments'
+            && item.deliveryNotePath === null
+            && (that.isOperations() || that.isAdmin())
         }
       }
     }

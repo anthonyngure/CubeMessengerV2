@@ -5,11 +5,13 @@
             <crud resource="orders"
                   ref="crud"
                   :manager="manager"
-                  :filters="filters"
+                  :filters="(isAdmin() || isOperations()) ? adminAndOperationsFilters : clientFilters"
                   :creatable="false"
+                  :extra-inline-actions="extraInlineActions"
                   :custom-view-dialog="true"/>
         </v-flex>
 
+        <!--View Dialog-->
         <v-dialog v-model="viewDialogHere"
                   max-width="800px">
             <v-card v-if="item">
@@ -78,6 +80,24 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <!--Dispatch dialog-->
+        <v-dialog v-model="dispatching" max-width="600px">
+            <v-card>
+                <v-card-text>
+
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer/>
+                    <v-btn color="red" @click.native="dispatching = false" flat
+                           :disabled="connecting">Close
+                    </v-btn>
+                    <v-spacer/>
+                    <v-btn color="primary" @click.native="generateLPO"
+                           :disabled="connecting">Submit
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
 
     </v-layout>
 </template>
@@ -97,20 +117,46 @@
         item: null,
         viewDialogHere: false,
         connecting: false,
+        dispatchingItem: null,
+        dispatching: false,
         viewableHeaders: [],
         viewItemHeaders: [],
-        filters: [
-          {value: 'pendingApproval', name: 'Pending Approval'},
-          {value: 'pendingDelivery', name: 'Approved & Pending Delivery'},
-          {value: 'delivered', name: 'Delivered'},
-          {value: 'rejected', name: 'Rejected'}
+        adminAndOperationsFilters: [
+          {value: 'PENDING_DISPATCH', name: 'Pending Dispatch'},
+          {value: 'DISPATCHED', name: 'Dispatched'},
+          {value: 'DELIVERED', name: 'Delivered'},
+          {value: 'AT_DEPARTMENT_HEAD', name: 'At Department Head'},
+          {value: 'AT_PURCHASING_HEAD', name: 'At Purchasing Head'},
+          {value: 'APPROVED', name: 'Approved'},
+          {value: 'REJECTED', name: 'Rejected'},
+        ],
+        clientFilters: [
+          {value: 'AT_DEPARTMENT_HEAD', name: 'At Department Head'},
+          {value: 'AT_PURCHASING_HEAD', name: 'At Purchasing Head'},
+          {value: 'APPROVED', name: 'Approved'},
+          {value: 'DELIVERED', name: 'Delivered'},
+          {value: 'REJECTED', name: 'Rejected'},
+          {value: 'DISPATCHED', name: 'Dispatched'},
+          {value: 'PENDING_DISPATCH', name: 'Pending Dispatch'}
         ],
         productHeaders: [
           {text: 'Name', value: 'product.name'},
           {text: 'Price', value: 'product.price'},
           {text: 'Quantity', value: 'quantity'},
           {text: 'Total', value: 'total'},
-        ]
+        ],
+        extraInlineActions: [
+          {
+            name: 'Dispatch',
+            key: 'dispatch',
+            color: 'accent'
+          },
+          {
+            name: 'View',
+            key: 'view',
+            color: 'primary'
+          }
+        ],
       }
     },
     methods: {
@@ -146,6 +192,24 @@
           that.viewItemHeaders = viewItemHeaders
           return true
         }
+        this.manager.showInlineAction = (action, item, filter) => {
+          if (action.key === 'dispatch' && filter) {
+            return filter.value === 'PENDING_DISPATCH' && (this.isAdmin() || this.isOperations())
+          } else {
+            return true
+          }
+        }
+        this.manager.onInlineActionClicked = (action, item, filter) => {
+          if (action.key === 'view') {
+            that.$refs.crud.viewItem(item)
+          } else {
+            that.dispatchingItem = item
+            that.dispatching = action.key === 'dispatch'
+          }
+        }
+        this.manager.hideHeader = (header, filter) => {
+          return header.value === 'rejectedBy' && filter.value !== 'REJECTED'
+        }
       },
       approveOrReject (action) {
         let that = this
@@ -156,11 +220,7 @@
             that.selected = []
             that.viewDialogHere = false
             const item = response.data.data
-            if ((item.status === 'REJECTED') || (item.status === 'PENDING_DELIVERY')) {
-              that.$refs.crud.removeItem(item)
-            } else {
-              that.$refs.crud.updateItem(item)
-            }
+            that.$refs.crud.removeItem(item)
           }
         }, {action: action})
       },
@@ -174,7 +234,8 @@
         return (item.status === 'REJECTED' && item.rejectedBy && item.rejectedBy.id === this.$auth.user().id)
           || (this.isPurchasingHead() && item.status === 'AT_PURCHASING_HEAD')
           || (this.isDepartmentHead() && item.status === 'AT_DEPARTMENT_HEAD')
-      }
+      },
+
     }
   }
 </script>
