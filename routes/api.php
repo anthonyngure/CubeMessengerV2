@@ -91,8 +91,7 @@
 			Route::get('appointments/userSuggestions', 'AppointmentController@userSuggestions');
 			Route::apiResource('appointments', 'AppointmentController');
 			
-			Route::apiResource('products', 'ProductController')
-				->middleware('role:ADMIN,OPERATIONS');
+			Route::apiResource('products', 'ProductController');
 			Route::apiResource('categories', 'CategoryController');
 			Route::apiResource('serviceRequests', 'ServiceRequestController');
 			Route::apiResource('serviceRequestQuotes', 'ServiceRequestQuoteController');
@@ -102,7 +101,8 @@
 				->middleware('role:SUPPLIER');
 			Route::apiResource('orderItems', 'OrderItemController')
 				->middleware('role:ADMIN,OPERATIONS,SUPPLIER');
-			Route::post('lpos/{id}/deliveryNote', 'LocalPurchaseOrderController@deliveryNote');
+			Route::post('lpos/{id}/deliveryDocuments', 'LocalPurchaseOrderController@deliveryDocuments')
+				->middleware('role:ADMIN,OPERATIONS');
 			Route::apiResource('lpos', 'LocalPurchaseOrderController')
 				->middleware('role:ADMIN,OPERATIONS,SUPPLIER');
 			Route::apiResource('reports', 'ReportsController')

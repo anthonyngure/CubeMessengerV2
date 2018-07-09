@@ -32,6 +32,7 @@
  * @method static \Illuminate\Database\Eloquent\Builder|\App\LocalPurchaseOrder whereLpoPdfPath($value)
  * @property string|null $invoice_pdf_path
  * @method static \Illuminate\Database\Eloquent\Builder|\App\LocalPurchaseOrder whereInvoicePdfPath($value)
+ * @property-read \App\User|null $deliveryNoteReceivedBy
  */
 	class LocalPurchaseOrder extends Model
 	{
@@ -50,5 +51,13 @@
 		public function supplier()
 		{
 			return $this->belongsTo(User::class, 'supplier_id');
+		}
+		
+		/**
+		 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+		 */
+		public function deliveryNoteReceivedBy()
+		{
+			return $this->belongsTo(User::class, "delivery_note_received_by_id");
 		}
 	}

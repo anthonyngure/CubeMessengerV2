@@ -121,7 +121,7 @@
         this.$refs.connectionManager.post('orderItems/generateLPO', {
           onSuccess (response) {
             that.$refs.crud.setItems(response.data.data)
-            that.closeGeneratingLPODialog()
+            //that.closeGeneratingLPODialog()
           }
         }, {
           items: orderItemIds.join(',')
@@ -151,8 +151,8 @@
           }
         }
         this.manager.showTopAction = (action, items, filter) => {
-          if (action.key === 'generateLPO' && filter && this.isSupplier()) {
-            return filter.value === 'PENDING_LPO' && items.length
+          if (action.key === 'generateLPO' && filter) {
+            return filter.value === 'PENDING_LPO' && items.length && this.isSupplier()
           } else {
             return true
           }

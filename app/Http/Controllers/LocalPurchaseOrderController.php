@@ -5,6 +5,7 @@
 	use App\CrudHeader;
 	use App\LocalPurchaseOrder;
 	use App\LocalPurchaseOrderItem;
+	use App\Order;
 	use App\OrderItem;
 	use App\Rules\CommaSeparatedIds;
 	use Auth;
@@ -15,23 +16,30 @@
 		/**
 		 * Display a listing of the resource.
 		 *
+		 * @param \Illuminate\Http\Request $request
 		 * @return \Illuminate\Http\Response
 		 */
-		public function index()
+		public function index(Request $request)
 		{
+			$this->validate($request, [
+				'filter' => 'in:pending,received',
+			]);
+			
 			$headers = CrudHeader::whereModel(LocalPurchaseOrder::class)->get();
 			
 			$user = Auth::user();
 			
 			if ($user->isAdmin() || $user->isOperations()) {
-				$lpos = LocalPurchaseOrder::with(['supplier', 'items.orderItem.product'])
-					->whereNull('delivery_note_path');
+				$lpos = LocalPurchaseOrder::with(['supplier', 'items.orderItem.product', 'deliveryNoteReceivedBy']);
 			} else {
-				$lpos = $user->localPurchaseOrders()->with('supplier')
-					->whereNull('delivery_note_path');
+				$lpos = $user->localPurchaseOrders()->with(['supplier', 'items.orderItem.product', 'deliveryNoteReceivedBy']);
 			}
 			
-			//$this->logQuery($lpos);
+			if ($request->input('filter') == 'received') {
+				$lpos = $lpos->whereNotNull('delivery_note_path');
+			} else {
+				$lpos = $lpos->whereNull('delivery_note_path');
+			}
 			
 			return $this->collectionResponse($lpos->withCount('items')->get(), ['headers' => $headers]);
 			
@@ -104,7 +112,7 @@
 		}
 		
 		
-		public function deliveryNote(Request $request, $id)
+		public function deliveryDocuments(Request $request, $id)
 		{
 			$this->validate($request, [
 				'deliveryNoteFile' => 'required|mimes:pdf|max:10000',
@@ -126,6 +134,11 @@
 				$lpoItem->orderItem()->update([
 					'status' => OrderItem::STATUS_RECEIVED_FROM_SUPPLIER,
 				]);
+				/** @var \App\OrderItem $orderItem */
+				$orderItem = $lpoItem->orderItem()->firstOrFail();
+				$orderItem->order()->update([
+					'status' => Order::STATUS_PENDING_DISPATCH,
+				]);
 			}
 			
 			//Update all unselected items to not received
@@ -138,6 +151,11 @@
 				$lpoItem->orderItem()->update([
 					'status' => OrderItem::STATUS_NOT_RECEIVED_FROM_SUPPLIER,
 				]);
+				/** @var \App\OrderItem $orderItem */
+				$orderItem = $lpoItem->orderItem()->firstOrFail();
+				$orderItem->order()->update([
+					'status' => Order::STATUS_PENDING_DISPATCH,
+				]);
 			}
 			
 			$deliveryNotePath = \Storage::putFile('delivery_notes', $request->file('deliveryNoteFile'));
@@ -149,6 +167,6 @@
 			$lpo->invoice_pdf_path = $invoicePath;
 			$lpo->save();
 			
-			return $this->index();
+			return $this->index($request);
 		}
 	}

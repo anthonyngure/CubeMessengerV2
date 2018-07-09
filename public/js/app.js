@@ -10897,6 +10897,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -10922,11 +10923,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       selectedItems: [],
       items: [],
       item: null,
+      adminAndOperationsFilters: [{ value: 'pending', name: 'Pending' }, { value: 'received', name: 'Received' }],
+      supplierFilters: [{ value: 'pending', name: 'New' }, { value: 'received', name: 'Delivered' }],
       headers: [{ text: 'Name', value: 'name' }, { text: 'Price', value: 'price' }, { text: 'Quantity', value: 'quantity' }, { text: 'Total', value: 'total' }],
       extraInlineActions: [{
         name: 'Upload Delivery Note & Invoice',
-        color: 'primary',
+        color: 'accent',
         key: 'uploadDocuments'
+      }, {
+        name: 'View',
+        color: 'primary',
+        key: 'view'
       }],
       supplierHiddenHeaders: [{ text: 'Supplier' }],
       deliveryNoteFile: null,
@@ -10974,7 +10981,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       formData.append('items', itemIds.join(','));
       this.$utils.log(formData);
       var that = this;
-      this.$refs.connectionManager.upload('lpos/' + this.item.id + '/deliveryNote', {
+      this.$refs.connectionManager.upload('lpos/' + this.item.id + '/deliveryDocuments', {
         onSuccess: function onSuccess(response) {
           that.$refs.crud.setItems(response.data.data);
           that.closeUploadingDeliveryNoteDialog();
@@ -10984,7 +10991,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     onDeliveryNotePicked: function onDeliveryNotePicked(file) {
       this.deliveryNoteFile = file;
-      alert(file.$file.name);
     },
     onInvoicePicked: function onInvoicePicked(file) {
       this.invoiceFile = file;
@@ -11001,18 +11007,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.manager.toValue = function (header, item) {
         if (header.value === 'supplier') {
           return item.supplier ? item.supplier.name : that.defaultValue;
+        } else if (header.value === 'deliveryNoteReceivedBy') {
+          return item.deliveryNoteReceivedBy ? item.deliveryNoteReceivedBy.name : that.defaultValue;
         } else {
           return item[header.value] ? item[header.value] : that.defaultValue;
         }
       };
+      this.manager.hideHeader = function (header, filter) {
+        return (header.value === 'deliveryNoteReceivedBy' || header.value === 'deliveryNoteReceivedAt') && filter.value === 'pending';
+      };
       this.manager.onInlineActionClicked = function (action, item, filter) {
         //that.$utils.log(item)
-        that.items = item.items;
-        that.item = item;
-        that.uploadingDeliveryNote = true;
+        if (action.key === 'view') {
+          that.$refs.crud.viewItem(item);
+        } else {
+          that.items = item.items;
+          that.item = item;
+          that.uploadingDeliveryNote = true;
+        }
       };
       this.manager.showInlineAction = function (action, item, filter) {
-        return item.key === 'uploadDocuments' && item.deliveryNotePath === null && (that.isOperations() || that.isAdmin());
+        if (action.key === 'uploadDocuments') {
+          return !item.deliveryNotePath && (that.isOperations() || that.isAdmin());
+        }
+        return true;
       };
     }
   }
@@ -11190,7 +11208,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.$refs.connectionManager.post('orderItems/generateLPO', {
         onSuccess: function onSuccess(response) {
           that.$refs.crud.setItems(response.data.data);
-          that.closeGeneratingLPODialog();
+          //that.closeGeneratingLPODialog()
         }
       }, {
         items: orderItemIds.join(',')
@@ -11220,8 +11238,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
       };
       this.manager.showTopAction = function (action, items, filter) {
-        if (action.key === 'generateLPO' && filter && _this.isSupplier()) {
-          return filter.value === 'PENDING_LPO' && items.length;
+        if (action.key === 'generateLPO' && filter) {
+          return filter.value === 'PENDING_LPO' && items.length && _this.isSupplier();
         } else {
           return true;
         }
@@ -13760,7 +13778,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -48588,7 +48606,7 @@ var render = function() {
                 {
                   attrs: {
                     color: "primary",
-                    disabled: !_vm.cartProducts.length
+                    disabled: !_vm.cartProducts.length || _vm.connecting
                   },
                   nativeOn: {
                     click: function($event) {
@@ -49575,6 +49593,9 @@ var render = function() {
               resource: "lpos",
               creatable: false,
               manager: _vm.manager,
+              filters: _vm.isSupplier()
+                ? _vm.supplierFilters
+                : _vm.adminAndOperationsFilters,
               hiddenHeaders: _vm.isSupplier() ? _vm.supplierHiddenHeaders : [],
               extraInlineActions:
                 _vm.isAdmin() || _vm.isOperations()
@@ -86653,7 +86674,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_4_vue_notification___default.a);
 
-var DEBUG = true;
+var DEBUG = false;
 
 var GOOGLE_MAPS_KEY = 'AIzaSyAS_9BsQpqTP8EVuMZ7rQ9gMCl0wmqhm7k';
 var PRIMARY_COLOR = '#1A75BA';

@@ -44,6 +44,7 @@
  * @mixin \Eloquent
  * @property-read \App\Product   $product
  * @property-read \App\User      $rejectedBy
+ * @property-read \App\Order $order
  */
 	class OrderItem extends Model
 	{
@@ -66,5 +67,13 @@
 		public function product()
 		{
 			return $this->belongsTo(Product::class);
+		}
+		
+		/**
+		 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+		 */
+		public function order()
+		{
+			return $this->belongsTo(Order::class);
 		}
 	}

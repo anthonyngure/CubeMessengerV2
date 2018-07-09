@@ -184,4 +184,9 @@
 			
 			return $this->itemDeletedResponse($order);
 		}
+		
+		public function dispatchToClient($id)
+		{
+		
+		}
 	}

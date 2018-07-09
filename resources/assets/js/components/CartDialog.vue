@@ -5,7 +5,7 @@
               lazy>
         <v-card>
             <connection-manager ref="connectionManager"
-                                v-model="connecting"></connection-manager>
+                                v-model="connecting"/>
             <v-data-table
                     :style="'max-height: '+($vuetify.breakpoint.height * 0.45)+'px;'" class="scroll-y"
                     :headers="headers"
@@ -40,7 +40,7 @@
                     Clear All
                 </v-btn>
                 <v-btn color="primary"
-                       :disabled="!cartProducts.length"
+                       :disabled="!cartProducts.length || connecting"
                        @click.native="submit">Submit
                 </v-btn>
                 <v-spacer></v-spacer>

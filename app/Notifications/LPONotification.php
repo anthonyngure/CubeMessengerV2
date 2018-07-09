@@ -57,10 +57,16 @@
 				->save(storage_path('app/public/documents/' . $fileName));
 			$file = Storage::disk('public')->path('documents/' . $fileName);*/
 			
+			$total = 0;
+			/** @var \App\LocalPurchaseOrderItem $item */
+			foreach ($items as $item) {
+				$total += ($item->orderItem->quantity * $item->orderItem->price_at_purchase);
+			}
+			
 			return (new MailMessage)
 				->subject('LPO from CubeMessenger')
 				//->attach($file, ['as'   => 'name.pdf', 'mime' => 'application/pdf'])
-				->markdown('mail.lpo', ['items' => $items, 'supplier' => $this->supplier]);
+				->markdown('mail.lpo', ['items' => $items, 'supplier' => $this->supplier, 'total' => $total]);
 		}
 		
 		/**

@@ -16,7 +16,6 @@
     |:----------|:----------|:------------|:----------|
     |{{\App\Utils::toCurrencyText($client->getBalance())}}|{{\App\Utils::toCurrencyText($client->limit)}}|{{\App\Utils::toCurrencyText($client->getSpent())}}|{{\App\Utils::toCurrencyText($client->getBlocked())}}|
 @endcomponent
-
 Thanks,<br>
 {{ config('app.name') }}
 @endcomponent
