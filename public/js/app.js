@@ -11208,7 +11208,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.$refs.connectionManager.post('orderItems/generateLPO', {
         onSuccess: function onSuccess(response) {
           that.$refs.crud.setItems(response.data.data);
-          //that.closeGeneratingLPODialog()
+          that.closeGeneratingLPODialog();
         }
       }, {
         items: orderItemIds.join(',')
@@ -11372,6 +11372,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -11395,6 +11422,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       clientFilters: [{ value: 'AT_DEPARTMENT_HEAD', name: 'At Department Head' }, { value: 'AT_PURCHASING_HEAD', name: 'At Purchasing Head' }, { value: 'APPROVED', name: 'Approved' }, { value: 'DELIVERED', name: 'Delivered' }, { value: 'REJECTED', name: 'Rejected' }, { value: 'DISPATCHED', name: 'Dispatched' }, { value: 'PENDING_DISPATCH', name: 'Pending Dispatch' }],
       productHeaders: [{ text: 'Name', value: 'product.name' }, { text: 'Price', value: 'product.price' }, { text: 'Quantity', value: 'quantity' }, { text: 'Total', value: 'total' }],
       extraInlineActions: [{
+        name: 'Confirm Received',
+        key: 'confirmReceived',
+        color: 'accent'
+      }, {
         name: 'Dispatch',
         key: 'dispatch',
         color: 'accent'
@@ -11407,6 +11438,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   methods: {
+    closeDispatchingDialog: function closeDispatchingDialog() {
+      this.dispatchingItem = null;
+      this.dispatching = false;
+      this.connecting = false;
+    },
+    dispatch: function dispatch() {
+      var that = this;
+      this.$refs.dispatchConnectionManager.post('orders/dispatch/' + this.dispatchingItem.id, {
+        onSuccess: function onSuccess(response) {
+          that.$refs.crud.setItems(response.data.data);
+          that.closeDispatchingDialog();
+        }
+      });
+    },
     close: function close() {
       this.item = null;
       this.viewDialogHere = false;
@@ -11427,6 +11472,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.manager.toValue = function (header, item) {
         if (header.value === 'rejectedBy') {
           return item.rejectedBy ? item.rejectedBy.name + ' - (' + item.rejectedBy.role.name + ')' : that.defaultValue;
+        } else if (header.value === 'dispatchedBy') {
+          return item.dispatchedBy ? item.dispatchedBy.name : that.defaultValue;
+        } else if (header.value === 'dispatchRider') {
+          return item.dispatchRider ? item.dispatchRider.name : that.defaultValue;
         } else {
           return item[header.value] ? item[header.value] : that.defaultValue;
         }
@@ -11444,6 +11493,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.manager.showInlineAction = function (action, item, filter) {
         if (action.key === 'dispatch' && filter) {
           return filter.value === 'PENDING_DISPATCH' && (_this.isAdmin() || _this.isOperations());
+        }
+        if (action.key === 'confirmReceived' && filter) {
+          return filter.value === 'DISPATCHED' && _this.isDepartmentUser();
         } else {
           return true;
         }
@@ -11452,12 +11504,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         if (action.key === 'view') {
           that.$refs.crud.viewItem(item);
         } else {
+          that.viewableHeaders = that.$refs.crud.viewableHeaders;
+          that.viewItemHeaders = that.$refs.crud.viewItemHeaders;
           that.dispatchingItem = item;
           that.dispatching = action.key === 'dispatch';
         }
       };
       this.manager.hideHeader = function (header, filter) {
-        return header.value === 'rejectedBy' && filter.value !== 'REJECTED';
+        if (header.value === 'rejectedBy') {
+          return filter.value === 'REJECTED';
+        } else if (header.value === 'dispatchedAt') {
+          return filter.value !== 'DISPATCHED' || that.isSupplier();
+        } else if (header.value === 'dispatchedBy') {
+          return filter.value !== 'DISPATCHED' || !that.isSupplier();
+        } else if (header.value === 'dispatchRider') {
+          return filter.value !== 'DISPATCHED';
+        } else {
+          return false;
+        }
       };
     },
     approveOrReject: function approveOrReject(action) {
@@ -13553,7 +13617,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46907,7 +46971,13 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("td", [
-                                  _vm._v(_vm._s(props.item.product.price))
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.$utils.formatMoney(
+                                        props.item.priceAtPurchase
+                                      )
+                                    )
+                                  )
                                 ]),
                                 _vm._v(" "),
                                 _c("td", [_vm._v(_vm._s(props.item.quantity))]),
@@ -46916,7 +46986,7 @@ var render = function() {
                                   _vm._v(
                                     _vm._s(
                                       _vm.$utils.formatMoney(
-                                        props.item.product.price *
+                                        props.item.priceAtPurchase *
                                           props.item.quantity
                                       )
                                     )
@@ -46934,6 +47004,8 @@ var render = function() {
                   _c(
                     "v-card-actions",
                     [
+                      _c("v-spacer"),
+                      _vm._v(" "),
                       _c(
                         "v-btn",
                         {
@@ -47024,7 +47096,7 @@ var render = function() {
       _c(
         "v-dialog",
         {
-          attrs: { "max-width": "600px" },
+          attrs: { "max-width": "800px" },
           model: {
             value: _vm.dispatching,
             callback: function($$v) {
@@ -47034,53 +47106,156 @@ var render = function() {
           }
         },
         [
-          _c(
-            "v-card",
-            [
-              _c("v-card-text"),
-              _vm._v(" "),
-              _c(
-                "v-card-actions",
+          _vm.dispatchingItem
+            ? _c(
+                "v-card",
                 [
-                  _c("v-spacer"),
-                  _vm._v(" "),
                   _c(
-                    "v-btn",
-                    {
-                      attrs: {
-                        color: "red",
-                        flat: "",
-                        disabled: _vm.connecting
-                      },
-                      nativeOn: {
-                        click: function($event) {
-                          _vm.dispatching = false
+                    "v-card-text",
+                    [
+                      _c("guide", {
+                        attrs: {
+                          text:
+                            "The order will be assigned to the available rider!"
                         }
-                      }
-                    },
-                    [_vm._v("Close\n                ")]
+                      }),
+                      _vm._v(" "),
+                      _c("connection-manager", {
+                        ref: "dispatchConnectionManager",
+                        model: {
+                          value: _vm.connecting,
+                          callback: function($$v) {
+                            _vm.connecting = $$v
+                          },
+                          expression: "connecting"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-data-table", {
+                        attrs: {
+                          "hide-headers": "",
+                          "hide-actions": "",
+                          headers: _vm.viewItemHeaders,
+                          items: _vm.viewableHeaders
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "items",
+                            fn: function(props) {
+                              return [
+                                _c("td", [_vm._v(_vm._s(props.item.text))]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.manager.toValue(
+                                        props.item,
+                                        _vm.dispatchingItem
+                                      )
+                                    )
+                                  )
+                                ])
+                              ]
+                            }
+                          }
+                        ])
+                      }),
+                      _vm._v(" "),
+                      _c("v-data-table", {
+                        staticClass: "scroll-y",
+                        style:
+                          "max-height: " +
+                          _vm.$vuetify.breakpoint.height * 0.3 +
+                          "px;",
+                        attrs: {
+                          items: _vm.dispatchingItem.items,
+                          "hide-actions": "",
+                          "item-key": "id",
+                          headers: _vm.productHeaders
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "items",
+                            fn: function(props) {
+                              return [
+                                _c("td", [
+                                  _vm._v(_vm._s(props.item.product.name))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.$utils.formatMoney(
+                                        props.item.priceAtPurchase
+                                      )
+                                    )
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(props.item.quantity))]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.$utils.formatMoney(
+                                        props.item.priceAtPurchase *
+                                          props.item.quantity
+                                      )
+                                    )
+                                  )
+                                ])
+                              ]
+                            }
+                          }
+                        ])
+                      })
+                    ],
+                    1
                   ),
                   _vm._v(" "),
-                  _c("v-spacer"),
-                  _vm._v(" "),
                   _c(
-                    "v-btn",
-                    {
-                      attrs: { color: "primary", disabled: _vm.connecting },
-                      nativeOn: {
-                        click: function($event) {
-                          return _vm.generateLPO($event)
-                        }
-                      }
-                    },
-                    [_vm._v("Submit\n                ")]
+                    "v-card-actions",
+                    [
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: {
+                            color: "red",
+                            flat: "",
+                            disabled: _vm.connecting
+                          },
+                          nativeOn: {
+                            click: function($event) {
+                              _vm.dispatching = false
+                            }
+                          }
+                        },
+                        [_vm._v("Close\n                ")]
+                      ),
+                      _vm._v(" "),
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "primary", disabled: _vm.connecting },
+                          nativeOn: {
+                            click: function($event) {
+                              return _vm.dispatch($event)
+                            }
+                          }
+                        },
+                        [_vm._v("Dispatch\n                ")]
+                      )
+                    ],
+                    1
                   )
                 ],
                 1
               )
-            ],
-            1
-          )
+            : _vm._e()
         ],
         1
       )

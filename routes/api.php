@@ -96,6 +96,7 @@
 			Route::apiResource('serviceRequests', 'ServiceRequestController');
 			Route::apiResource('serviceRequestQuotes', 'ServiceRequestQuoteController');
 			Route::apiResource('serviceRequestOptions', 'ServiceRequestOptionController');
+			Route::post('orders/dispatch/{id}', 'OrderController@dispatchToClient');
 			Route::apiResource('orders', 'OrderController');
 			Route::post('orderItems/generateLPO', 'OrderItemController@generateLPO')
 				->middleware('role:SUPPLIER');

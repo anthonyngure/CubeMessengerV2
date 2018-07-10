@@ -121,7 +121,7 @@
         this.$refs.connectionManager.post('orderItems/generateLPO', {
           onSuccess (response) {
             that.$refs.crud.setItems(response.data.data)
-            //that.closeGeneratingLPODialog()
+            that.closeGeneratingLPODialog()
           }
         }, {
           items: orderItemIds.join(',')

@@ -10,6 +10,7 @@
 	
 	
 	use App\Mail\Demo;
+	use Illuminate\Database\Eloquent\Builder;
 	use Mail;
 	
 	class Utils
@@ -42,5 +43,15 @@
 		public static function toCurrencyText($amount)
 		{
 			return 'KSH ' . number_format($amount, 2);
+		}
+		
+		/**
+		 * @return \Illuminate\Database\Eloquent\Model|\App\User|null|object|static
+		 */
+		public static function availableRider()
+		{
+			return User::whereHas('role', function (Builder $builder){
+				$builder->where('name', 'RIDER');
+			})->inRandomOrder()->first();
 		}
 	}

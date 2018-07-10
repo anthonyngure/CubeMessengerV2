@@ -12,8 +12,7 @@
         </v-flex>
 
         <!--View Dialog-->
-        <v-dialog v-model="viewDialogHere"
-                  max-width="800px">
+        <v-dialog v-model="viewDialogHere" max-width="800px">
             <v-card v-if="item">
                 <v-card-text>
 
@@ -40,13 +39,14 @@
                             :headers="productHeaders">
                         <template slot="items" slot-scope="props">
                             <td>{{props.item.product.name}}</td>
-                            <td>{{props.item.product.price}}</td>
+                            <td>{{$utils.formatMoney(props.item.priceAtPurchase)}}</td>
                             <td>{{props.item.quantity}}</td>
-                            <td>{{$utils.formatMoney(props.item.product.price*props.item.quantity)}}</td>
+                            <td>{{$utils.formatMoney(props.item.priceAtPurchase*props.item.quantity)}}</td>
                         </template>
                     </v-data-table>
                 </v-card-text>
                 <v-card-actions>
+                    <v-spacer/>
                     <v-btn color="red darken-1"
                            flat
                            :disabled="connecting"
@@ -81,10 +81,37 @@
             </v-card>
         </v-dialog>
         <!--Dispatch dialog-->
-        <v-dialog v-model="dispatching" max-width="600px">
-            <v-card>
+        <v-dialog v-model="dispatching" max-width="800px">
+            <v-card v-if="dispatchingItem">
                 <v-card-text>
-
+                    <guide text="The order will be assigned to the available rider!"/>
+                    <connection-manager ref="dispatchConnectionManager"
+                                        v-model="connecting"/>
+                    <v-data-table
+                            hide-headers
+                            hide-actions
+                            :headers="viewItemHeaders"
+                            :items="viewableHeaders">
+                        <template slot="items"
+                                  slot-scope="props">
+                            <td>{{props.item.text}}</td>
+                            <td>{{manager.toValue(props.item, dispatchingItem)}}</td>
+                        </template>
+                    </v-data-table>
+                    <v-data-table
+                            :items="dispatchingItem.items"
+                            hide-actions
+                            item-key="id"
+                            :style="'max-height: '+($vuetify.breakpoint.height * 0.30)+'px;'"
+                            class="scroll-y"
+                            :headers="productHeaders">
+                        <template slot="items" slot-scope="props">
+                            <td>{{props.item.product.name}}</td>
+                            <td>{{$utils.formatMoney(props.item.priceAtPurchase)}}</td>
+                            <td>{{props.item.quantity}}</td>
+                            <td>{{$utils.formatMoney(props.item.priceAtPurchase*props.item.quantity)}}</td>
+                        </template>
+                    </v-data-table>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer/>
@@ -92,8 +119,8 @@
                            :disabled="connecting">Close
                     </v-btn>
                     <v-spacer/>
-                    <v-btn color="primary" @click.native="generateLPO"
-                           :disabled="connecting">Submit
+                    <v-btn color="primary" @click.native="dispatch"
+                           :disabled="connecting">Dispatch
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -147,6 +174,11 @@
         ],
         extraInlineActions: [
           {
+            name: 'Confirm Received',
+            key: 'confirmReceived',
+            color: 'accent'
+          },
+          {
             name: 'Dispatch',
             key: 'dispatch',
             color: 'accent'
@@ -160,6 +192,20 @@
       }
     },
     methods: {
+      closeDispatchingDialog () {
+        this.dispatchingItem = null
+        this.dispatching = false
+        this.connecting = false
+      },
+      dispatch () {
+        let that = this
+        this.$refs.dispatchConnectionManager.post('orders/dispatch/' + this.dispatchingItem.id, {
+          onSuccess (response) {
+            that.$refs.crud.setItems(response.data.data)
+            that.closeDispatchingDialog()
+          }
+        })
+      },
       close () {
         this.item = null
         this.viewDialogHere = false
@@ -178,7 +224,14 @@
         this.manager.toValue = (header, item) => {
           if (header.value === 'rejectedBy') {
             return item.rejectedBy ? item.rejectedBy.name + ' - (' + item.rejectedBy.role.name + ')' : that.defaultValue
-          } else {
+          }
+          else if (header.value === 'dispatchedBy') {
+            return item.dispatchedBy ? item.dispatchedBy.name : that.defaultValue
+          }
+          else if (header.value === 'dispatchRider') {
+            return item.dispatchRider ? item.dispatchRider.name : that.defaultValue
+          }
+          else {
             return item[header.value] ? item[header.value] : that.defaultValue
           }
         }
@@ -195,7 +248,11 @@
         this.manager.showInlineAction = (action, item, filter) => {
           if (action.key === 'dispatch' && filter) {
             return filter.value === 'PENDING_DISPATCH' && (this.isAdmin() || this.isOperations())
-          } else {
+          }
+          if (action.key === 'confirmReceived' && filter) {
+            return filter.value === 'DISPATCHED' && this.isDepartmentUser()
+          }
+          else {
             return true
           }
         }
@@ -203,12 +260,27 @@
           if (action.key === 'view') {
             that.$refs.crud.viewItem(item)
           } else {
+            that.viewableHeaders = that.$refs.crud.viewableHeaders
+            that.viewItemHeaders = that.$refs.crud.viewItemHeaders
             that.dispatchingItem = item
             that.dispatching = action.key === 'dispatch'
           }
         }
         this.manager.hideHeader = (header, filter) => {
-          return header.value === 'rejectedBy' && filter.value !== 'REJECTED'
+          if (header.value === 'rejectedBy') {
+            return filter.value === 'REJECTED'
+          } else if (header.value === 'dispatchedAt') {
+            return filter.value !== 'DISPATCHED' || that.isSupplier()
+          }
+          else if (header.value === 'dispatchedBy') {
+            return filter.value !== 'DISPATCHED' || !that.isSupplier()
+          }
+          else if (header.value === 'dispatchRider') {
+            return filter.value !== 'DISPATCHED'
+          }
+          else {
+            return false
+          }
         }
       },
       approveOrReject (action) {

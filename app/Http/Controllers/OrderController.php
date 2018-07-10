@@ -5,6 +5,7 @@
 	use App\Bill;
 	use App\CrudHeader;
 	use App\Exceptions\WrappedException;
+	use App\Notifications\OrderDispatchedNotification;
 	use App\Notifications\OrderNotification;
 	use App\Order;
 	use App\OrderItem;
@@ -35,12 +36,13 @@
 			if (Auth::user()->isAdmin() || Auth::user()->isOperations()) {
 				$orders = Order::with('items.product');
 			} else {
+				/** @var \App\Client $client */
 				$client = Auth::user()->getClient();
 				$orders = Order::whereIn('user_id', $client->users->pluck('id'));
 				
 			}
 			
-			$data = $orders->with(['items.product', 'rejectedBy.role'])
+			$data = $orders->with(['items.product', 'rejectedBy.role', 'dispatchRider', 'dispatchedBy'])
 				->where('status', $request->input('filter'))
 				->withCount(Order::COUNTS)->get();
 			
@@ -185,8 +187,27 @@
 			return $this->itemDeletedResponse($order);
 		}
 		
-		public function dispatchToClient($id)
+		/**
+		 * @param \Illuminate\Http\Request $request
+		 * @param                          $id
+		 * @return \Illuminate\Http\Response
+		 * @throws \App\Exceptions\WrappedException
+		 */
+		public function dispatchToClient(Request $request, $id)
 		{
-		
+			/** @var \App\Order $order */
+			$order = Order::with('user.client')->findOrFail($id);
+			$order->dispatched_at = now()->toDateTimeString();
+			$order->dispatched_by_id = Auth::user()->id;
+			$order->dispatch_rider_id = Utils::availableRider()->id;
+			$order->status = Order::STATUS_DISPATCHED;
+			$order->save();
+			$order->user->client->notify(new OrderDispatchedNotification($order));
+			
+			$data = $request->all();
+			$data['filter'] = Order::STATUS_PENDING_DISPATCH;
+			$request->replace($data);
+			
+			return $this->index($request);
 		}
 	}
