@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 08, 2018 at 09:11 PM
+-- Generation Time: Jul 10, 2018 at 11:01 PM
 -- Server version: 10.1.32-MariaDB
 -- PHP Version: 7.2.5
 
@@ -116,7 +116,12 @@ INSERT INTO `bills` (`id`, `client_id`, `billable_id`, `billable_type`, `amount`
 (2, 1, 2, 'App\\Order', 331.99, 'BLOCKED', 'Purchase of 3 products', '2018-07-02 21:24:36', '2018-07-02 21:24:36', NULL),
 (3, 1, 3, 'App\\Order', 492.45000000000005, 'BLOCKED', 'Purchase of 4 products', '2018-07-02 21:40:46', '2018-07-02 21:40:46', NULL),
 (4, 1, 4, 'App\\Order', 492.45000000000005, 'BLOCKED', 'Purchase of 4 products', '2018-07-03 18:50:15', '2018-07-03 18:50:15', NULL),
-(5, 1, 5, 'App\\Order', 492.45000000000005, 'BLOCKED', 'Purchase of 4 products', '2018-07-08 04:25:45', '2018-07-08 18:36:23', '2018-07-08 18:36:23');
+(5, 1, 5, 'App\\Order', 492.45000000000005, 'BLOCKED', 'Purchase of 4 products', '2018-07-08 04:25:45', '2018-07-08 18:36:23', '2018-07-08 18:36:23'),
+(6, 1, 6, 'App\\Order', 492.45000000000005, 'BLOCKED', 'Purchase of 4 products', '2018-07-09 18:39:07', '2018-07-09 18:40:45', '2018-07-09 18:40:45'),
+(7, 1, 7, 'App\\Order', 370.61, 'BLOCKED', 'Purchase of 4 products', '2018-07-09 19:34:17', '2018-07-09 19:34:17', NULL),
+(8, 1, 8, 'App\\Order', 333.38, 'BLOCKED', 'Purchase of 3 products', '2018-07-09 19:52:30', '2018-07-09 19:52:30', NULL),
+(9, 1, 9, 'App\\Order', 261.25, 'BLOCKED', 'Purchase of 2 products', '2018-07-09 19:59:47', '2018-07-09 19:59:47', NULL),
+(10, 1, 10, 'App\\Order', 593.06, 'BLOCKED', 'Purchase of 2 products', '2018-07-10 20:29:01', '2018-07-10 20:29:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -304,8 +309,8 @@ INSERT INTO `crud_headers` (`id`, `model`, `text`, `align`, `value`, `type`, `op
 (39, 'App\\Order', 'Id', 'left', 'id', 'number', NULL, NULL, 1, NULL, NULL, 1, 1, 0, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
 (40, 'App\\Order', 'Items', 'left', 'itemsCount', 'number', NULL, NULL, 2, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
 (41, 'App\\Order', 'Amount', 'left', 'amount', 'number', NULL, NULL, 5, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
-(42, 'App\\Order', 'Status', 'left', 'status', 'text', NULL, NULL, 6, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
-(43, 'App\\Order', 'RejectedBy', 'left', 'rejectedBy', 'text', NULL, NULL, 7, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
+(42, 'App\\Order', 'Status', 'left', 'status', 'text', NULL, NULL, 10, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
+(43, 'App\\Order', 'RejectedBy', 'left', 'rejectedBy', 'text', NULL, NULL, 7, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
 (44, 'App\\Order', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 8, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
 (45, 'App\\Order', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 9, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
 (46, 'App\\OrderItem', 'Id', 'left', 'id', 'number', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
@@ -340,8 +345,13 @@ INSERT INTO `crud_headers` (`id`, `model`, `text`, `align`, `value`, `type`, `op
 (75, 'App\\LocalPurchaseOrder', 'Items', 'left', 'itemsCount', 'text', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 1, 1, '2018-07-02 20:19:00', '2018-07-02 20:19:00'),
 (76, 'App\\LocalPurchaseOrder', 'Created At', 'left', 'createdAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:19:00', '2018-07-02 20:19:00'),
 (77, 'App\\LocalPurchaseOrder', 'Updated At', 'left', 'updatedAt', 'date', NULL, NULL, 0, NULL, NULL, 1, 1, 0, 0, 0, 0, '2018-07-02 20:19:00', '2018-07-02 20:19:00'),
-(78, 'App\\Order', 'Received From Supplier', 'left', 'itemsReceivedFromSupplierCount', 'text', NULL, NULL, 3, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
-(79, 'App\\Order', 'Not Received From Supplier', 'left', 'itemsNotReceivedFromSupplierCount', 'text', NULL, NULL, 4, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59');
+(78, 'App\\Order', 'RFS', 'left', 'itemsReceivedFromSupplierCount', 'text', NULL, NULL, 3, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
+(79, 'App\\Order', 'NRFS', 'left', 'itemsNotReceivedFromSupplierCount', 'text', NULL, NULL, 4, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
+(80, 'App\\Order', 'Dispatched At', 'left', 'dispatchedAt', 'text', NULL, NULL, 5, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
+(81, 'App\\Order', 'Dispatched By', 'left', 'dispatchedBy', 'text', NULL, NULL, 6, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
+(82, 'App\\Order', 'Rider', 'left', 'dispatchRider', 'text', NULL, NULL, 7, NULL, NULL, 1, 1, 1, 0, 0, 1, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
+(83, 'App\\Order', 'Status', 'left', 'status', 'text', NULL, NULL, 10, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-07-02 20:18:59', '2018-07-02 20:18:59'),
+(84, 'App\\Order', 'Status', 'left', 'status', 'text', NULL, NULL, 10, NULL, NULL, 1, 1, 1, 0, 0, 0, '2018-07-02 20:18:59', '2018-07-02 20:18:59');
 
 -- --------------------------------------------------------
 
@@ -458,7 +468,17 @@ INSERT INTO `local_purchase_orders` (`id`, `supplier_id`, `lpo_pdf_path`, `deliv
 (2, 4, NULL, 'delivery_notes/h471eO67olAPvOsnA1kabnQyAhYXBnmrDd5pt1ve.pdf', '2018-07-02 21:33:10', 2, NULL, '2018-07-02 21:27:43', '2018-07-02 21:33:10', NULL),
 (3, 4, NULL, 'delivery_notes/kbKlUce3jYhRKGGHbtZP3qlR4l1q8PilkjMTYWnM.pdf', '2018-07-02 21:42:58', 2, NULL, '2018-07-02 21:42:04', '2018-07-02 21:42:58', NULL),
 (4, 4, NULL, 'delivery_notes/rtcnNETqrWhrotXemnhWEpcHUhXWmNxQ0b9uzOdZ.pdf', '2018-07-03 19:36:22', 2, 'invoices/j5qdO4FNqqrQQzKJaEsBMHxra1EvOn4SbcefVVHX.pdf', '2018-07-03 18:55:02', '2018-07-03 19:36:22', NULL),
-(5, 4, NULL, NULL, NULL, NULL, NULL, '2018-07-08 18:42:17', '2018-07-08 18:42:17', NULL);
+(5, 4, NULL, 'delivery_notes/a2NZQGIE9RkE7tpDJtNl1azHlT4Dh8tJmFggkN3p.pdf', '2018-07-09 20:10:02', 1, 'invoices/SNGY8udHVwiABpuJi67L7sHtO6PEpdZRoutIgSR4.pdf', '2018-07-08 18:42:17', '2018-07-09 20:10:02', NULL),
+(6, 4, NULL, 'delivery_notes/PE9Zkc8fkmwDy17ogNBsdp7bKzGwFv2RNp6xMCK2.pdf', '2018-07-09 19:13:47', 1, 'invoices/AXrnyNpOECzFCH1AfpFlLxAzGqZ7MHa2wzNZdRcG.pdf', '2018-07-09 18:41:37', '2018-07-09 19:13:47', NULL),
+(7, 4, NULL, 'delivery_notes/mES2fPzZ4RoWNQKHsjrJWRWpxrGL5VO9rtTd9ZUW.pdf', '2018-07-09 19:39:20', 1, 'invoices/yj5lMpP9WLhrGDwjMnI9E4HooizP2ZRLcYXbsqey.pdf', '2018-07-09 19:37:22', '2018-07-09 19:39:20', NULL),
+(8, 4, NULL, 'delivery_notes/QPdOyYD6UXm8Dc1x0DUBK99T9eFr5Gmt5ySVAvFj.pdf', '2018-07-09 20:11:42', 1, 'invoices/RIU5CpKpdSmsFn9G4614LfgGhTo40xvg3GrxuwNw.pdf', '2018-07-09 19:54:04', '2018-07-09 20:11:42', NULL),
+(9, 4, NULL, NULL, NULL, NULL, NULL, '2018-07-09 19:56:39', '2018-07-09 19:56:39', NULL),
+(10, 4, NULL, NULL, NULL, NULL, NULL, '2018-07-09 19:58:22', '2018-07-09 19:58:22', NULL),
+(11, 4, NULL, 'delivery_notes/AGWg5o1CjcUVuUXamz2QE9iZrCAW9dClHF0ARL18.pdf', '2018-07-09 20:11:57', 1, 'invoices/g53P3jUV0hyELyVPxVNk4kYjmPYZJogZLxQtJ9Vk.pdf', '2018-07-09 20:01:48', '2018-07-09 20:11:57', NULL),
+(12, 4, NULL, NULL, NULL, NULL, NULL, '2018-07-09 20:03:08', '2018-07-09 20:03:08', NULL),
+(13, 4, NULL, NULL, NULL, NULL, NULL, '2018-07-09 20:03:24', '2018-07-09 20:03:24', NULL),
+(14, 4, NULL, NULL, NULL, NULL, NULL, '2018-07-09 20:03:47', '2018-07-09 20:03:47', NULL),
+(15, 4, NULL, 'delivery_notes/16Yre2zHUKxGtB5JOoslVq9dle6A1YHrPaKT0YoK.pdf', '2018-07-10 20:31:23', 1, 'invoices/AzeSnC2cK0OO69wmizGcfXcZiyMF1DEfKtaAYWFJ.pdf', '2018-07-10 20:30:24', '2018-07-10 20:31:23', NULL);
 
 -- --------------------------------------------------------
 
@@ -495,10 +515,25 @@ INSERT INTO `local_purchase_order_items` (`id`, `local_purchase_order_id`, `orde
 (12, 4, 13, 1, '2018-07-03 18:55:02', '2018-07-03 19:36:21', NULL),
 (13, 4, 14, 1, '2018-07-03 18:55:02', '2018-07-03 19:36:21', NULL),
 (14, 4, 15, 1, '2018-07-03 18:55:02', '2018-07-03 19:36:21', NULL),
-(15, 5, 5, 0, '2018-07-08 18:42:17', '2018-07-08 18:42:17', NULL),
-(16, 5, 7, 0, '2018-07-08 18:42:17', '2018-07-08 18:42:17', NULL),
-(17, 5, 8, 0, '2018-07-08 18:42:17', '2018-07-08 18:42:17', NULL),
-(18, 5, 12, 0, '2018-07-08 18:42:18', '2018-07-08 18:42:18', NULL);
+(15, 5, 5, 1, '2018-07-08 18:42:17', '2018-07-09 20:10:01', NULL),
+(16, 5, 7, 1, '2018-07-08 18:42:17', '2018-07-09 20:10:01', NULL),
+(17, 5, 8, 1, '2018-07-08 18:42:17', '2018-07-09 20:10:01', NULL),
+(18, 5, 12, 1, '2018-07-08 18:42:18', '2018-07-09 20:10:02', NULL),
+(19, 6, 20, 1, '2018-07-09 18:41:38', '2018-07-09 19:13:46', NULL),
+(20, 6, 21, 1, '2018-07-09 18:41:38', '2018-07-09 19:13:46', NULL),
+(21, 6, 22, 1, '2018-07-09 18:41:38', '2018-07-09 19:13:46', NULL),
+(22, 6, 23, 1, '2018-07-09 18:41:38', '2018-07-09 19:13:46', NULL),
+(23, 7, 24, 1, '2018-07-09 19:37:23', '2018-07-09 19:39:20', NULL),
+(24, 7, 25, 1, '2018-07-09 19:37:23', '2018-07-09 19:39:20', NULL),
+(25, 7, 26, 1, '2018-07-09 19:37:23', '2018-07-09 19:39:20', NULL),
+(26, 7, 27, 1, '2018-07-09 19:37:23', '2018-07-09 19:39:20', NULL),
+(27, 8, 28, 1, '2018-07-09 19:54:04', '2018-07-09 20:11:41', NULL),
+(28, 8, 29, 1, '2018-07-09 19:54:05', '2018-07-09 20:11:41', NULL),
+(29, 8, 30, 1, '2018-07-09 19:54:05', '2018-07-09 20:11:41', NULL),
+(30, 11, 31, 1, '2018-07-09 20:01:48', '2018-07-09 20:11:57', NULL),
+(31, 11, 32, 1, '2018-07-09 20:01:48', '2018-07-09 20:11:57', NULL),
+(32, 15, 33, 1, '2018-07-10 20:30:24', '2018-07-10 20:31:22', NULL),
+(33, 15, 34, 1, '2018-07-10 20:30:24', '2018-07-10 20:31:23', NULL);
 
 -- --------------------------------------------------------
 
@@ -572,10 +607,16 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `type`, `notifiable_id`, `notifiable_type`, `data`, `read_at`, `created_at`, `updated_at`) VALUES
+('00cda5b3-20ce-4ff1-8217-9e3c2b1cbe57', 'App\\Notifications\\BillNotification', 1, 'App\\Client', '[]', NULL, '2018-07-09 18:39:17', '2018-07-09 18:39:17'),
+('01a837e3-63f2-448d-b7a0-ebf6ada5d55f', 'App\\Notifications\\BillNotification', 1, 'App\\Client', '[]', NULL, '2018-07-09 19:52:39', '2018-07-09 19:52:39'),
 ('054b524e-5f0d-4796-9ed9-a027699cadc9', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-02 21:27:48', '2018-07-02 21:27:48'),
 ('1ca2dbe0-8677-4bde-9dc4-29399b804ef0', 'App\\Notifications\\BillNotification', 1, 'App\\Client', '[]', NULL, '2018-07-02 20:20:00', '2018-07-02 20:20:00'),
+('28dcb570-6e5e-43a4-b79f-0a5d499f867b', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-07-09 18:39:21', '2018-07-09 18:39:21'),
+('375e9453-ff5c-4f12-b95c-05a40e92c6c7', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-07-09 19:52:43', '2018-07-09 19:52:43'),
+('46dc702f-d561-4f9a-bd4b-e41f138d613a', 'App\\Notifications\\BillCanceledNotification', 1, 'App\\Client', '[]', NULL, '2018-07-09 18:40:50', '2018-07-09 18:40:50'),
 ('48f8e3b5-5bcf-40a0-9caf-b46a83d9fa49', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-02 20:56:07', '2018-07-02 20:56:07'),
 ('5037bfbc-a0a2-4c2c-a951-5e675f779fb8', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-02 21:42:09', '2018-07-02 21:42:09'),
+('57f69cf6-60b7-4786-849f-07f17d931334', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-09 20:01:53', '2018-07-09 20:01:53'),
 ('59ae13ea-e304-480c-83d9-846024518210', 'App\\Notifications\\BillNotification', 1, 'App\\Client', '[]', NULL, '2018-07-08 04:25:54', '2018-07-08 04:25:54'),
 ('608fa319-4058-4b1e-8e22-ade3a03c0773', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-02 20:24:39', '2018-07-02 20:24:39'),
 ('836fbf56-f8ec-442a-b6ca-b99166f9920d', 'App\\Notifications\\BillNotification', 1, 'App\\Client', '[]', NULL, '2018-07-02 21:40:52', '2018-07-02 21:40:52'),
@@ -584,14 +625,26 @@ INSERT INTO `notifications` (`id`, `type`, `notifiable_id`, `notifiable_type`, `
 ('8c8b8a5e-6e85-4681-9544-16aed73786e3', 'App\\Notifications\\BillCanceledNotification', 1, 'App\\Client', '[]', NULL, '2018-07-08 18:38:14', '2018-07-08 18:38:14'),
 ('91bd0a12-025f-4add-bdb7-66f5c02dd542', 'App\\Notifications\\BillCanceledNotification', 1, 'App\\Client', '[]', NULL, '2018-07-08 18:36:34', '2018-07-08 18:36:34'),
 ('aa62027f-a079-45f3-8177-0fdff2335927', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-07-02 21:40:57', '2018-07-02 21:40:57'),
+('ad88ce32-14f3-4e96-bd48-d4138df905ae', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-07-09 19:59:56', '2018-07-09 19:59:56'),
+('b54cc8b6-c4e9-4fe6-b9aa-854167973733', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-09 18:41:43', '2018-07-09 18:41:43'),
+('bc261543-f623-4b44-aabe-ff152a7dad2d', 'App\\Notifications\\BillNotification', 1, 'App\\Client', '[]', NULL, '2018-07-10 20:29:06', '2018-07-10 20:29:06'),
 ('bec6541a-6621-4ac8-86d2-19bb96b6bda0', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-08 18:42:24', '2018-07-08 18:42:24'),
 ('c50e1805-548d-4953-82d6-5d765e23a029', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-02 20:31:12', '2018-07-02 20:31:12'),
 ('c8353278-451d-4f4f-9778-16bdc0c1a819', 'App\\Notifications\\TopUpNotification', 1, 'App\\Client', '[]', NULL, '2018-07-02 20:18:51', '2018-07-02 20:18:51'),
+('c8b2fe2a-160b-4836-b6b6-837e62ec949e', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-07-10 20:29:10', '2018-07-10 20:29:10'),
+('ca370550-50cc-4a4d-83fb-61caa33ddb5f', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-07-09 19:34:26', '2018-07-09 19:34:26'),
+('d789f63c-a819-4b52-90b0-a0cf102e04bc', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-09 19:58:28', '2018-07-09 19:58:28'),
 ('d915f594-c8ce-45cd-97b0-abd38a653c61', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-07-02 20:20:04', '2018-07-02 20:20:04'),
+('e162d5cc-591b-4631-aeaa-0b877c0ceec3', 'App\\Notifications\\BillNotification', 1, 'App\\Client', '[]', NULL, '2018-07-09 19:59:51', '2018-07-09 19:59:51'),
+('e221d6b5-a8bc-4efc-828f-2b5d8882804f', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-09 20:03:51', '2018-07-09 20:03:51'),
+('e3d88e61-ddf6-428a-8820-57b73d051832', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-10 20:30:29', '2018-07-10 20:30:29'),
 ('e3ffda22-b519-4c5f-97cc-b664c5c74a92', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-03 18:55:07', '2018-07-03 18:55:07'),
 ('ea2951d1-5292-4d67-a882-fb7676ac7226', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-07-08 04:25:59', '2018-07-08 04:25:59'),
 ('ecb37cb9-56e6-41fe-8d72-27d181ce39f3', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-07-03 18:50:30', '2018-07-03 18:50:30'),
+('f24d9140-d047-4bf8-9e95-0437f37589d2', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-09 20:03:29', '2018-07-09 20:03:29'),
+('f6b47160-1c8d-4874-a05f-4a98b57d454d', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-09 19:37:28', '2018-07-09 19:37:28'),
 ('f7e3f71b-97bd-449d-8598-855ab09b092c', 'App\\Notifications\\OrderNotification', 1, 'App\\Client', '[]', NULL, '2018-07-02 21:24:46', '2018-07-02 21:24:46'),
+('f990da58-ec2c-4ff3-be26-e98bfcb57448', 'App\\Notifications\\BillNotification', 1, 'App\\Client', '[]', NULL, '2018-07-09 19:34:22', '2018-07-09 19:34:22'),
 ('fc18e773-b569-4e52-bc28-15845b2bc4b9', 'App\\Notifications\\LPONotification', 4, 'App\\User', '[]', NULL, '2018-07-02 20:28:43', '2018-07-02 20:28:43');
 
 -- --------------------------------------------------------
@@ -607,6 +660,9 @@ CREATE TABLE `orders` (
   `rejected_by_id` int(10) UNSIGNED DEFAULT NULL,
   `department_head_acted_at` timestamp NULL DEFAULT NULL,
   `purchasing_head_acted_at` timestamp NULL DEFAULT NULL,
+  `dispatched_at` timestamp NULL DEFAULT NULL,
+  `dispatched_by_id` int(10) UNSIGNED DEFAULT NULL,
+  `dispatch_rider_id` int(10) UNSIGNED DEFAULT NULL,
   `delivered_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -617,12 +673,17 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `user_id`, `status`, `rejected_by_id`, `department_head_acted_at`, `purchasing_head_acted_at`, `delivered_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 7, 'REJECTED', 5, '2018-07-08 06:30:39', '2018-07-08 18:38:15', NULL, '2018-07-02 20:19:54', '2018-07-08 18:38:15', NULL),
-(2, 7, 'APPROVED', NULL, '2018-07-08 10:04:28', '2018-07-08 18:40:57', NULL, '2018-07-02 21:24:36', '2018-07-08 18:40:57', NULL),
-(3, 7, 'APPROVED', NULL, '2018-07-08 18:36:13', '2018-07-08 18:41:02', NULL, '2018-07-02 21:40:46', '2018-07-08 18:41:02', NULL),
-(4, 7, 'APPROVED', NULL, '2018-07-08 18:37:08', '2018-07-08 18:41:10', NULL, '2018-07-03 18:50:14', '2018-07-08 18:41:10', NULL),
-(5, 7, 'AT_PURCHASING_HEAD', NULL, '2018-07-08 18:36:17', '2018-07-08 04:27:00', NULL, '2018-07-08 04:25:45', '2018-07-08 18:36:17', NULL);
+INSERT INTO `orders` (`id`, `user_id`, `status`, `rejected_by_id`, `department_head_acted_at`, `purchasing_head_acted_at`, `dispatched_at`, `dispatched_by_id`, `dispatch_rider_id`, `delivered_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 7, 'REJECTED', 5, '2018-07-08 06:30:39', '2018-07-08 18:38:15', NULL, 1, 1, NULL, '2018-07-02 20:19:54', '2018-07-08 18:38:15', NULL),
+(2, 7, 'DISPATCHED', NULL, '2018-07-08 10:04:28', '2018-07-08 18:40:57', '2018-07-10 20:01:38', 1, 11, NULL, '2018-07-02 21:24:36', '2018-07-10 20:01:38', NULL),
+(3, 7, 'DISPATCHED', NULL, '2018-07-08 18:36:13', '2018-07-08 18:41:02', '2018-07-10 20:03:53', 1, 11, NULL, '2018-07-02 21:40:46', '2018-07-10 20:03:53', NULL),
+(4, 7, 'DISPATCHED', NULL, '2018-07-08 18:37:08', '2018-07-08 18:41:10', '2018-07-10 20:04:43', 1, 12, NULL, '2018-07-03 18:50:14', '2018-07-10 20:04:43', NULL),
+(5, 7, 'APPROVED', NULL, '2018-07-08 18:36:17', '2018-07-08 04:27:00', NULL, 1, 1, NULL, '2018-07-08 04:25:45', '2018-07-08 18:36:17', NULL),
+(6, 7, 'APPROVED', NULL, '2018-07-09 18:39:49', '2018-07-09 18:40:35', NULL, 1, 1, NULL, '2018-07-09 18:39:06', '2018-07-09 18:40:36', NULL),
+(7, 7, 'APPROVED', NULL, '2018-07-09 19:35:25', '2018-07-09 19:35:46', NULL, 1, 1, NULL, '2018-07-09 19:34:17', '2018-07-09 19:35:46', NULL),
+(8, 7, 'DISPATCHED', NULL, '2018-07-09 19:53:11', '2018-07-09 19:53:31', '2018-07-10 20:03:06', 1, 8, NULL, '2018-07-09 19:52:30', '2018-07-10 20:03:06', NULL),
+(9, 7, 'DISPATCHED', NULL, '2018-07-09 20:00:16', '2018-07-09 20:00:35', '2018-07-10 20:04:51', 1, 12, NULL, '2018-07-09 19:59:47', '2018-07-10 20:04:51', NULL),
+(10, 7, 'DISPATCHED', NULL, '2018-07-10 20:29:26', '2018-07-10 20:29:49', '2018-07-10 20:32:11', 1, 12, NULL, '2018-07-10 20:29:00', '2018-07-10 20:32:12', NULL);
 
 -- --------------------------------------------------------
 
@@ -651,21 +712,36 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at
 (2, 1, 2, 1, 168.62, 'RECEIVED_FROM_SUPPLIER', '2018-07-02 20:19:54', '2018-07-02 21:03:11', NULL),
 (3, 1, 1, 1, 92.63, 'RECEIVED_FROM_SUPPLIER', '2018-07-02 20:19:54', '2018-07-02 21:03:11', NULL),
 (4, 1, 4, 1, 160.46, 'RECEIVED_FROM_SUPPLIER', '2018-07-02 20:19:54', '2018-07-02 21:03:11', NULL),
-(5, 2, 1, 1, 92.63, 'ACCEPTED_BY_SUPPLIER', '2018-07-02 21:24:36', '2018-07-08 18:42:17', NULL),
+(5, 2, 1, 1, 92.63, 'RECEIVED_FROM_SUPPLIER', '2018-07-02 21:24:36', '2018-07-09 20:07:07', NULL),
 (6, 2, 2, 1, 168.62, 'REJECTED_BY_SUPPLIER', '2018-07-02 21:24:36', '2018-07-08 18:42:18', NULL),
-(7, 2, 3, 1, 70.74, 'ACCEPTED_BY_SUPPLIER', '2018-07-02 21:24:36', '2018-07-08 18:42:17', NULL),
-(8, 3, 1, 1, 92.63, 'ACCEPTED_BY_SUPPLIER', '2018-07-02 21:40:46', '2018-07-08 18:42:17', NULL),
+(7, 2, 3, 1, 70.74, 'RECEIVED_FROM_SUPPLIER', '2018-07-02 21:24:36', '2018-07-09 20:10:01', NULL),
+(8, 3, 1, 1, 92.63, 'RECEIVED_FROM_SUPPLIER', '2018-07-02 21:40:46', '2018-07-09 20:10:01', NULL),
 (9, 3, 2, 1, 168.62, 'REJECTED_BY_SUPPLIER', '2018-07-02 21:40:46', '2018-07-08 18:42:18', NULL),
 (10, 3, 3, 1, 70.74, 'REJECTED_BY_SUPPLIER', '2018-07-02 21:40:46', '2018-07-08 18:42:18', NULL),
 (11, 3, 4, 1, 160.46, 'REJECTED_BY_SUPPLIER', '2018-07-02 21:40:46', '2018-07-08 18:42:18', NULL),
-(12, 4, 1, 1, 92.63, 'ACCEPTED_BY_SUPPLIER', '2018-07-03 18:50:14', '2018-07-08 18:42:17', NULL),
+(12, 4, 1, 1, 92.63, 'RECEIVED_FROM_SUPPLIER', '2018-07-03 18:50:14', '2018-07-09 20:10:02', NULL),
 (13, 4, 2, 1, 168.62, 'REJECTED_BY_SUPPLIER', '2018-07-03 18:50:14', '2018-07-08 18:42:18', NULL),
 (14, 4, 3, 1, 70.74, 'REJECTED_BY_SUPPLIER', '2018-07-03 18:50:15', '2018-07-08 18:42:18', NULL),
 (15, 4, 4, 1, 160.46, 'REJECTED_BY_SUPPLIER', '2018-07-03 18:50:15', '2018-07-08 18:42:18', NULL),
 (16, 5, 1, 1, 92.63, 'REJECTED_BY_SUPPLIER', '2018-07-08 04:25:45', '2018-07-08 18:42:18', NULL),
 (17, 5, 2, 1, 168.62, 'REJECTED_BY_SUPPLIER', '2018-07-08 04:25:45', '2018-07-08 18:42:18', NULL),
 (18, 5, 3, 1, 70.74, 'REJECTED_BY_SUPPLIER', '2018-07-08 04:25:45', '2018-07-08 18:42:18', NULL),
-(19, 5, 4, 1, 160.46, 'REJECTED_BY_SUPPLIER', '2018-07-08 04:25:45', '2018-07-08 18:42:18', NULL);
+(19, 5, 4, 1, 160.46, 'REJECTED_BY_SUPPLIER', '2018-07-08 04:25:45', '2018-07-08 18:42:18', NULL),
+(20, 6, 1, 1, 92.63, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 18:39:07', '2018-07-09 19:13:46', NULL),
+(21, 6, 2, 1, 168.62, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 18:39:07', '2018-07-09 19:13:46', NULL),
+(22, 6, 3, 1, 70.74, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 18:39:07', '2018-07-09 19:13:46', NULL),
+(23, 6, 4, 1, 160.46, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 18:39:07', '2018-07-09 19:13:46', NULL),
+(24, 7, 5, 1, 90.83, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 19:34:17', '2018-07-09 19:38:23', NULL),
+(25, 7, 6, 1, 42.32, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 19:34:17', '2018-07-09 19:38:23', NULL),
+(26, 7, 7, 1, 71.85, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 19:34:17', '2018-07-09 19:38:23', NULL),
+(27, 7, 8, 1, 165.61, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 19:34:17', '2018-07-09 19:38:24', NULL),
+(28, 8, 11, 1, 50.63, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 19:52:30', '2018-07-09 20:11:41', NULL),
+(29, 8, 12, 1, 195, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 19:52:30', '2018-07-09 20:11:41', NULL),
+(30, 8, 10, 1, 87.75, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 19:52:30', '2018-07-09 20:11:41', NULL),
+(31, 9, 1, 1, 92.63, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 19:59:47', '2018-07-09 20:11:57', NULL),
+(32, 9, 2, 1, 168.62, 'RECEIVED_FROM_SUPPLIER', '2018-07-09 19:59:47', '2018-07-09 20:11:57', NULL),
+(33, 10, 2, 1, 168.62, 'RECEIVED_FROM_SUPPLIER', '2018-07-10 20:29:00', '2018-07-10 20:31:23', NULL),
+(34, 10, 3, 6, 70.74, 'RECEIVED_FROM_SUPPLIER', '2018-07-10 20:29:01', '2018-07-10 20:31:23', NULL);
 
 -- --------------------------------------------------------
 
@@ -1169,7 +1245,9 @@ ALTER TABLE `notifications`
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
   ADD KEY `orders_user_id_foreign` (`user_id`),
-  ADD KEY `orders_rejected_by_id_foreign` (`rejected_by_id`);
+  ADD KEY `orders_rejected_by_id_foreign` (`rejected_by_id`),
+  ADD KEY `orders_dispatched_by_id_foreign` (`dispatched_by_id`),
+  ADD KEY `orders_dispatch_rider_id_foreign` (`dispatch_rider_id`);
 
 --
 -- Indexes for table `order_items`
@@ -1316,7 +1394,7 @@ ALTER TABLE `appointment_items`
 -- AUTO_INCREMENT for table `bills`
 --
 ALTER TABLE `bills`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -1346,7 +1424,7 @@ ALTER TABLE `courier_options`
 -- AUTO_INCREMENT for table `crud_headers`
 --
 ALTER TABLE `crud_headers`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- AUTO_INCREMENT for table `deliveries`
@@ -1370,13 +1448,13 @@ ALTER TABLE `departments`
 -- AUTO_INCREMENT for table `local_purchase_orders`
 --
 ALTER TABLE `local_purchase_orders`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `local_purchase_order_items`
 --
 ALTER TABLE `local_purchase_order_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -1388,13 +1466,13 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -1548,6 +1626,8 @@ ALTER TABLE `local_purchase_order_items`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_dispatch_rider_id_foreign` FOREIGN KEY (`dispatch_rider_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `orders_dispatched_by_id_foreign` FOREIGN KEY (`dispatched_by_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `orders_rejected_by_id_foreign` FOREIGN KEY (`rejected_by_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
