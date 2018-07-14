@@ -2,7 +2,22 @@
 	
 	namespace App\Http;
 	
+	use App\Http\Middleware\AddVariables;
+	use App\Http\Middleware\CrossOrigin;
+	use App\Http\Middleware\EncryptCookies;
+	use App\Http\Middleware\NormalizePhone;
+	use App\Http\Middleware\TrimStrings;
+	use App\Http\Middleware\TrustProxies;
+	use App\Http\Middleware\VerifyCsrfToken;
+	use Barryvdh\Cors\HandleCors;
+	use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 	use Illuminate\Foundation\Http\Kernel as HttpKernel;
+	use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
+	use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+	use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
+	use Illuminate\Routing\Middleware\SubstituteBindings;
+	use Illuminate\Session\Middleware\StartSession;
+	use Illuminate\View\Middleware\ShareErrorsFromSession;
 	
 	class Kernel extends HttpKernel
 	{
@@ -14,14 +29,15 @@
 		 * @var array
 		 */
 		protected $middleware = [
-			\Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
-			\Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-			\App\Http\Middleware\TrimStrings::class,
-			\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-			\App\Http\Middleware\TrustProxies::class,
-			\Barryvdh\Cors\HandleCors::class,
-			\App\Http\Middleware\AddVariables::class,
-			\App\Http\Middleware\NormalizePhone::class,
+			CheckForMaintenanceMode::class,
+			ValidatePostSize::class,
+			TrimStrings::class,
+			ConvertEmptyStringsToNull::class,
+			TrustProxies::class,
+			HandleCors::class,
+			AddVariables::class,
+			NormalizePhone::class,
+			CrossOrigin::class,
 		];
 		
 		/**
@@ -31,13 +47,13 @@
 		 */
 		protected $middlewareGroups = [
 			'web' => [
-				\App\Http\Middleware\EncryptCookies::class,
-				\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-				\Illuminate\Session\Middleware\StartSession::class,
+				EncryptCookies::class,
+				AddQueuedCookiesToResponse::class,
+				StartSession::class,
 				// \Illuminate\Session\Middleware\AuthenticateSession::class,
-				\Illuminate\View\Middleware\ShareErrorsFromSession::class,
-				\App\Http\Middleware\VerifyCsrfToken::class,
-				\Illuminate\Routing\Middleware\SubstituteBindings::class,
+				ShareErrorsFromSession::class,
+				VerifyCsrfToken::class,
+				SubstituteBindings::class,
 			],
 			
 			'api' => [
@@ -56,7 +72,7 @@
 		protected $routeMiddleware = [
 			'auth'         => \Illuminate\Auth\Middleware\Authenticate::class,
 			'auth.basic'   => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-			'bindings'     => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+			'bindings'     => SubstituteBindings::class,
 			'can'          => \Illuminate\Auth\Middleware\Authorize::class,
 			'guest'        => \App\Http\Middleware\RedirectIfAuthenticated::class,
 			'throttle'     => \Illuminate\Routing\Middleware\ThrottleRequests::class,

@@ -7951,13 +7951,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }, {
         icon: 'shopping_cart', title: 'Shopping', id: 'shopping',
         headers: [{ text: 'Item', sortable: false, value: 'item' }, { text: 'Quantity', sortable: false, value: 'quantity' }, { text: 'Cost', sortable: false, value: 'quantity' }, { text: 'Department', sortable: false, value: 'quantity' }, { text: 'Date/Time', sortable: false, value: 'quantity' }, { text: 'Approved By', sortable: false, value: 'quantity' }, { text: 'Approved Date/Time', sortable: false, value: 'quantity' }, { text: 'Delivery Date/Time', sortable: false, value: 'quantity' }, { text: 'Received By', sortable: false, value: 'quantity' }]
-      }, {
+      },
+      /*{
         icon: 'computer', title: 'IT Services', id: 'it',
-        headers: [{ text: 'Details', sortable: false, value: 'item' }, { text: 'Cost', sortable: false, value: 'quantity' }, { text: 'Requested By', sortable: false, value: 'quantity' }, { text: 'Approved By', sortable: false, value: 'quantity' }, { text: 'Attended Date/Time', sortable: false, value: 'quantity' }, { text: 'Finished Date/Time', sortable: false, value: 'quantity' }, { text: 'Duration', sortable: false, value: 'quantity' }, { text: 'Confirmed By', sortable: false, value: 'quantity' }]
-      }, {
+        headers: [
+          {text: 'Details', sortable: false, value: 'item'},
+          {text: 'Cost', sortable: false, value: 'quantity'},
+          {text: 'Requested By', sortable: false, value: 'quantity'},
+          {text: 'Approved By', sortable: false, value: 'quantity'},
+          {text: 'Attended Date/Time', sortable: false, value: 'quantity'},
+          {text: 'Finished Date/Time', sortable: false, value: 'quantity'},
+          {text: 'Duration', sortable: false, value: 'quantity'},
+          {text: 'Confirmed By', sortable: false, value: 'quantity'},
+        ],
+      },
+      {
         icon: 'build', title: 'Repair Services', id: 'repairs',
-        headers: [{ text: 'Details', sortable: false, value: 'item' }, { text: 'Cost', sortable: false, value: 'quantity' }, { text: 'Requested By', sortable: false, value: 'quantity' }, { text: 'Approved By', sortable: false, value: 'quantity' }, { text: 'Attended Date/Time', sortable: false, value: 'quantity' }, { text: 'Finished Date/Time', sortable: false, value: 'quantity' }, { text: 'Duration', sortable: false, value: 'quantity' }, { text: 'Confirmed By', sortable: false, value: 'quantity' }]
-      }, {
+        headers: [
+          {text: 'Details', sortable: false, value: 'item'},
+          {text: 'Cost', sortable: false, value: 'quantity'},
+          {text: 'Requested By', sortable: false, value: 'quantity'},
+          {text: 'Approved By', sortable: false, value: 'quantity'},
+          {text: 'Attended Date/Time', sortable: false, value: 'quantity'},
+          {text: 'Finished Date/Time', sortable: false, value: 'quantity'},
+          {text: 'Duration', sortable: false, value: 'quantity'},
+          {text: 'Confirmed By', sortable: false, value: 'quantity'},
+        ],
+      },*/
+      {
         icon: 'local_shipping', title: 'Courier', id: 'courier',
         headers: [{ text: 'Item(s)', sortable: false, value: 'item' }, { text: 'Cost', sortable: false, value: 'quantity' }, { text: 'Requested By', sortable: false, value: 'quantity' }, { text: 'Approved By', sortable: false, value: 'quantity' }, { text: 'Origin', sortable: false, value: 'item' }, { text: 'Destination', sortable: false, value: 'quantity' }, { text: 'Date/Time', sortable: false, value: 'quantity' }, { text: 'Pick Up Date/Time', sortable: false, value: 'quantity' }, { text: 'Drop Off Date/Time', sortable: false, value: 'quantity' }, { text: 'Duration', sortable: false, value: 'quantity' }, { text: 'Recipient name/contact', sortable: false, value: 'quantity' }]
       }],
@@ -9680,7 +9701,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
@@ -9691,7 +9711,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'dashboard',
   components: {
     SupplierDashboard: __WEBPACK_IMPORTED_MODULE_3__SupplierDashboard___default.a,
-    AdminDashboard: __WEBPACK_IMPORTED_MODULE_2__AdminDashboard___default.a,
     ClientDashboard: __WEBPACK_IMPORTED_MODULE_1__ClientDashboard___default.a
   },
   extends: __WEBPACK_IMPORTED_MODULE_0__Base_vue___default.a
@@ -13827,7 +13846,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -49722,13 +49741,7 @@ var render = function() {
       _c(
         "v-flex",
         { attrs: { xs12: "" } },
-        [
-          _vm.isAdmin() || _vm.isOperations()
-            ? _c("admin-dashboard")
-            : _vm.isSupplier()
-              ? _c("supplier-dashboard")
-              : _c("client-dashboard")
-        ],
+        [_vm.isSupplier() ? _c("supplier-dashboard") : _c("client-dashboard")],
         1
       )
     ],

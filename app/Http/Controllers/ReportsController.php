@@ -2,6 +2,8 @@
 	
 	namespace App\Http\Controllers;
 	
+	use App\Bill;
+	use Auth;
 	use Illuminate\Http\Request;
 	
 	class ReportsController extends Controller
@@ -15,13 +17,14 @@
 		 */
 		public function index(Request $request)
 		{
-			$client = \Auth::user()->getClient();
 			$this->validate($request, [
-				'filter' => 'required|in:bills,subscriptions,shopping,it,repairs,courier',
+				'filter' => 'required|in:bills,subscriptions,shopping,courier',
 			]);
 			
-			if ($request->filter == 'bills') {
-				$data = $client->bills()->get();
+			$user = Auth::user();
+			
+			if ($request->input('filter') == 'bills') {
+				$data = ($user->isAdmin() || $user->isOperations()) ? Bill::all() : $user->getClient()->bills()->get();
 			} else {
 				return $this->arrayResponse([]);
 			}

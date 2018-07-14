@@ -2,8 +2,7 @@
     <v-layout row
               wrap>
         <v-flex xs12>
-            <admin-dashboard v-if="isAdmin() || isOperations()"/>
-            <supplier-dashboard v-else-if="isSupplier()"/>
+            <supplier-dashboard v-if="isSupplier()"/>
             <client-dashboard v-else/>
         </v-flex>
     </v-layout>
@@ -19,7 +18,6 @@
     name: 'dashboard',
     components: {
       SupplierDashboard,
-      AdminDashboard,
       ClientDashboard
     },
     extends: Base

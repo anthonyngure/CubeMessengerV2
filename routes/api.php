@@ -106,8 +106,7 @@
 				->middleware('role:ADMIN,OPERATIONS');
 			Route::apiResource('lpos', 'LocalPurchaseOrderController')
 				->middleware('role:ADMIN,OPERATIONS,SUPPLIER');
-			Route::apiResource('reports', 'ReportsController')
-				->only(['index']);
+			Route::apiResource('reports', 'ReportsController')->only(['index']);
 		});
 		
 	});

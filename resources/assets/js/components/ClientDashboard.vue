@@ -122,7 +122,7 @@
               {text: 'Received By', sortable: false, value: 'quantity'},
             ],
           },
-          {
+          /*{
             icon: 'computer', title: 'IT Services', id: 'it',
             headers: [
               {text: 'Details', sortable: false, value: 'item'},
@@ -147,7 +147,7 @@
               {text: 'Duration', sortable: false, value: 'quantity'},
               {text: 'Confirmed By', sortable: false, value: 'quantity'},
             ],
-          },
+          },*/
           {
             icon: 'local_shipping', title: 'Courier', id: 'courier',
             headers: [
