@@ -37,7 +37,6 @@
 			HandleCors::class,
 			AddVariables::class,
 			NormalizePhone::class,
-			CrossOrigin::class,
 		];
 		
 		/**
