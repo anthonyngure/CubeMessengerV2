@@ -15,7 +15,12 @@
 		 */
 		public function handle($request, Closure $next)
 		{
+			/** @var \Illuminate\Http\Response $response */
 			$response = $next($request);
+			
+			$request->header('Origin');
+			
+			$response->header('Allowed-Origin', $request->header('Origin'));
 			
 			return $response;
 		}
