@@ -6,6 +6,7 @@
 	use App\Product;
 	use App\Traits\Paginates;
 	use Illuminate\Http\Request;
+	use Illuminate\Validation\Rule;
 	
 	class ProductController extends Controller
 	{
@@ -24,7 +25,7 @@
 			
 			$headers = CrudHeader::whereModel(Product::class)->get();
 			
-			$products = Product::with('supplier')->get();
+			$products = Product::with(['supplier', 'category'])->get();
 			
 			return $this->collectionResponse($products, ['headers' => $headers]);
 		}
@@ -38,9 +39,22 @@
 		 */
 		public function store(Request $request)
 		{
-			Product::create([
-				'name' => $request->input('name')
+			$this->validate($request, [
+				'name'          => 'required|unique:products',
+				'supplierId'    => 'required|numeric|exists:users,id',
+				'categoryId'    => 'required|numeric|exists:categories,id',
+				'price'         => 'required|numeric',
+				'supplierPrice' => 'required|numeric',
 			]);
+			$product = Product::create([
+				'name'           => $request->input('name'),
+				'supplier_id'    => $request->input('supplierId'),
+				'category_id'    => $request->input('categoryId'),
+				'price'          => $request->input('price'),
+				'supplier_price' => $request->input('supplierPrice'),
+			]);
+			
+			return $this->show($product->id);
 		}
 		
 		/**
@@ -52,20 +66,11 @@
 		public function show($id)
 		{
 			//
-			$product = Product::findOrFail($id);
+			$product = Product::with(['supplier', 'category'])->findOrFail($id);
+			
 			return $this->itemResponse($product);
 		}
 		
-		/**
-		 * Show the form for editing the specified resource.
-		 *
-		 * @param  int $id
-		 * @return \Illuminate\Http\Response
-		 */
-		public function edit($id)
-		{
-			//
-		}
 		
 		/**
 		 * Update the specified resource in storage.
@@ -76,7 +81,25 @@
 		 */
 		public function update(Request $request, $id)
 		{
-			//
+			/** @var \App\Product $product */
+			$product = Product::findOrFail($id);
+			$this->validate($request, [
+				'name'          => ['required', Rule::unique('products', 'name')->ignore($id)],
+				'supplierId'    => 'numeric|exists:users,id',
+				'categoryId'    => 'numeric|exists:categories,id',
+				'price'         => 'required|numeric',
+				'supplierPrice' => 'required|numeric',
+			]);
+			
+			$product->name = $request->input('name');
+			$product->supplier_id = empty($request->input('supplierId')) ? $product->supplier_id : $request->input('supplierId');
+			$product->category_id = empty($request->input('categoryId')) ? $product->category_id : $request->input('categoryId');
+			$product->price = $request->input('price');
+			$product->supplier_price = $request->input('supplierPrice');
+			
+			$product->save();
+			
+			return $this->show($product->id);
 		}
 		
 		/**

@@ -45,6 +45,8 @@
  * @property-read \App\Product   $product
  * @property-read \App\User      $rejectedBy
  * @property-read \App\Order $order
+ * @property float $supplier_price_at_purchase
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderItem whereSupplierPriceAtPurchase($value)
  */
 	class OrderItem extends Model
 	{

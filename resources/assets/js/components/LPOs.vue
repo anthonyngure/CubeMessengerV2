@@ -61,6 +61,42 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+        <v-dialog v-model="viewDocument" max-width="800px" persistent>
+            <v-card v-if="viewDocumentItem">
+                <v-card-text>
+                    {{currentPage}} / {{pageCount}}
+                    <v-progress-linear
+                            v-if="documentLoadedProgress < 1 && !viewDocumentError"
+                            :width="3"
+                            color="green"
+                            indeterminate/>
+
+                    <pdf :src="viewDocumentSrc"
+                         v-if="!viewDocumentError"
+                         @num-pages="pageCount = $event"
+                         @progress="documentLoadedProgress = $event"
+                         @error="viewDocumentError = $event"
+                         @page-loaded="currentPage = $event"/>
+
+                    <v-alert :value="true"
+                             v-if="viewDocumentError"
+                             type="error">
+                        Unable to load the document
+                    </v-alert>
+
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer/>
+                    <v-btn color="red"
+                           @click.native="onCloseViewDocument()"
+                           flat>Close
+                    </v-btn>
+                    <v-spacer/>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
     </v-layout>
 </template>
 
@@ -71,6 +107,7 @@
   import Guide from './Guide'
   import ConnectionManager from './ConnectionManager'
   import FilePicker from './FilePicker'
+  import pdf from 'vue-pdf'
 
   export default {
     name: 'LPOs',
@@ -80,10 +117,17 @@
       ConnectionManager,
       Guide,
       UploadButton,
-      Crud
+      Crud,
+      pdf
     },
     data () {
       return {
+        viewDocumentError: null,
+        viewDocumentItem: null,
+        viewDocument: false,
+        documentLoadedProgress: 0,
+        currentPage: 0,
+        pageCount: 0,
         uploadingDeliveryNote: false,
         connecting: false,
         selectedItems: [],
@@ -110,6 +154,21 @@
             key: 'uploadDocuments'
           },
           {
+            name: 'View LPO',
+            key: 'viewLPO',
+            color: 'info'
+          },
+          {
+            name: 'View Delivery Note',
+            key: 'viewDeliveryNote',
+            color: 'success'
+          },
+          {
+            name: 'View Invoice',
+            key: 'viewInvoice',
+            color: 'error'
+          },
+          {
             name: 'View',
             color: 'primary',
             key: 'view'
@@ -123,6 +182,12 @@
       }
     },
     methods: {
+      onCloseViewDocument () {
+        this.viewDocument = false
+        this.viewDocumentItem = null
+        this.viewDocumentError = null
+        this.documentLoadedProgress = 0
+      },
       closeUploadingDeliveryNoteDialog () {
         this.$refs.connectionManager.reset()
         this.uploadingDeliveryNote = false
@@ -181,17 +246,30 @@
           //that.$utils.log(item)
           if (action.key === 'view') {
             that.$refs.crud.viewItem(item)
-          } else {
+          } else if (action.key === 'uploadDocuments') {
             that.items = item.items
             that.item = item
             that.uploadingDeliveryNote = true
+          } else {
+            if (action.key === 'viewLPO') {
+              that.viewDocumentSrc = that.$utils.fileUrl(item.lpoPdfPath)
+            } else if (action.key === 'viewInvoice') {
+              that.viewDocumentSrc = that.$utils.fileUrl(item.invoicePdfPath)
+            } else {
+              that.viewDocumentSrc = that.$utils.fileUrl(item.deliveryNotePath)
+            }
+            this.$utils.log(that.viewDocumentSrc)
+            that.viewDocument = true
+            that.viewDocumentItem = item
           }
         }
         this.manager.showInlineAction = (action, item, filter) => {
           if (action.key === 'uploadDocuments') {
             return !item.deliveryNotePath && (that.isOperations() || that.isAdmin())
+          } else {
+            return filter.value === 'received'
           }
-          return true
+
         }
       }
     }

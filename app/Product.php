@@ -42,16 +42,20 @@
  * @method static \Illuminate\Database\Query\Builder|\App\Product withoutTrashed()
  * @property int                                                        $category_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereCategoryId($value)
- * @property int $supplier_id
- * @property-read \App\User $supplier
+ * @property int                                                        $supplier_id
+ * @property-read \App\User                                             $supplier
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereSupplierId($value)
+ * @property float $supplier_price
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereSupplierPrice($value)
  */
 	class Product extends Model
 	{
 		//
 		use SoftDeletes;
 		
-		protected $hidden = ['deleted_at', 'pivot'];
+		protected $hidden = ['deleted_at', 'pivot', 'category_id', 'supplier_id'];
+		
+		protected $guarded = ['id'];
 		
 		/**
 		 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

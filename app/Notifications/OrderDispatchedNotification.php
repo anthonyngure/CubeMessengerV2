@@ -47,6 +47,7 @@
 		{
 			return (new MailMessage)
 				->subject('Order Dispatched')
+				->greeting('Order Dispatched')
 				->line('Your order number ' . $this->order->id . ' has been dispatched!')
 				//->action('Notification Action', url('/'))
 				->line('Thank you for using our application!');

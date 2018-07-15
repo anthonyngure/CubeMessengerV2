@@ -38,6 +38,8 @@
 		
 		protected $hidden = ['deleted_at'];
 		
+		protected $guarded = ['id'];
+		
 		/**
 		 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 		 */

@@ -9,7 +9,10 @@
 	use App\OrderItem;
 	use App\Rules\CommaSeparatedIds;
 	use Auth;
+	use Illuminate\Contracts\Filesystem\FileNotFoundException;
 	use Illuminate\Http\Request;
+	use Response;
+	use Storage;
 	
 	class LocalPurchaseOrderController extends Controller
 	{
@@ -158,8 +161,8 @@
 				]);
 			}
 			
-			$deliveryNotePath = \Storage::putFile('delivery_notes', $request->file('deliveryNoteFile'));
-			$invoicePath = \Storage::putFile('invoices', $request->file('invoiceFile'));
+			$deliveryNotePath = Storage::disk('public')->putFile('delivery_notes', $request->file('deliveryNoteFile'));
+			$invoicePath = Storage::disk('public')->putFile('invoices', $request->file('invoiceFile'));
 			
 			$lpo->delivery_note_received_by_id = Auth::user()->id;
 			$lpo->delivery_note_received_at = now()->toDateTimeString();
@@ -169,4 +172,5 @@
 			
 			return $this->index($request);
 		}
+		
 	}

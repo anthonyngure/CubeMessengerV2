@@ -94,7 +94,7 @@
                     </v-data-table>
                 </v-card-text>
                 <v-card-actions>
-                    <v-spacer></v-spacer>
+                    <v-spacer/>
                     <v-btn color="red darken-1"
                            flat
                            @click.native="itemToView = null">Close

@@ -135,6 +135,9 @@ Vue.prototype.$utils = {
   imageUrl (relativePath) {
     return '/storage/' + relativePath
   },
+  fileUrl (relativePath) {
+    return '/storage/' + relativePath
+  },
   dummyImage () {
     return `https://unsplash.it/150/300?image=${Math.floor(Math.random() * 100) + 1}`
   },

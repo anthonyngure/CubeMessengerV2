@@ -50,6 +50,10 @@
 			Route::post('signIn', 'AuthController@signIn');
 		});
 		
+		Route::get('lpos/{id}/lpoPdf', 'LocalPurchaseOrderController@lpoPdf');
+		Route::get('lpos/{id}/invoicePdf', 'LocalPurchaseOrderController@invoicePdf');
+		Route::get('lpos/{id}/deliveryNotePdf', 'LocalPurchaseOrderController@deliveryNotePdf');
+		
 		Route::group(['middleware' => 'auth:api'], function () {
 			Route::resource('courierOptions', 'CourierOptionController');
 			Route::post('auth/signOut', 'AuthController@signOut');
@@ -58,8 +62,10 @@
 			Route::get('drawerItems', 'UIController@drawerItems');
 			Route::get('balance', 'UIController@balance');
 			
-			Route::get('user/appointments', 'UserController@appointments');
-			Route::post('user/changePassword', 'UserController@changePassword');
+			Route::get('users/suppliers/search', 'UserController@searchSuppliers')
+				->middleware('role:ADMIN,OPERATIONS');
+			Route::get('users/appointments', 'UserController@appointments');
+			Route::post('users/changePassword', 'UserController@changePassword');
 			
 			Route::apiResource('users', 'UserController')
 				->middleware('role:ADMIN,OPERATIONS,CLIENT_ADMIN');
@@ -92,18 +98,19 @@
 			Route::apiResource('appointments', 'AppointmentController');
 			
 			Route::apiResource('products', 'ProductController');
+			Route::get('categories/search', 'CategoryController@search');
 			Route::apiResource('categories', 'CategoryController');
 			Route::apiResource('serviceRequests', 'ServiceRequestController');
 			Route::apiResource('serviceRequestQuotes', 'ServiceRequestQuoteController');
 			Route::apiResource('serviceRequestOptions', 'ServiceRequestOptionController');
 			Route::post('orders/dispatch/{id}', 'OrderController@dispatchToClient');
+			Route::post('orders/confirmReceived/{id}', 'OrderController@confirmReceived');
 			Route::apiResource('orders', 'OrderController');
 			Route::post('orderItems/generateLPO', 'OrderItemController@generateLPO')
 				->middleware('role:SUPPLIER');
 			Route::apiResource('orderItems', 'OrderItemController')
 				->middleware('role:ADMIN,OPERATIONS,SUPPLIER');
-			Route::post('lpos/{id}/deliveryDocuments', 'LocalPurchaseOrderController@deliveryDocuments')
-				->middleware('role:ADMIN,OPERATIONS');
+			Route::post('lpos/{id}/deliveryDocuments', 'LocalPurchaseOrderController@deliveryDocuments')->middleware('role:ADMIN,OPERATIONS');
 			Route::apiResource('lpos', 'LocalPurchaseOrderController')
 				->middleware('role:ADMIN,OPERATIONS,SUPPLIER');
 			Route::apiResource('reports', 'ReportsController')->only(['index']);

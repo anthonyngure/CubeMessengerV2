@@ -41,7 +41,7 @@
 		public function store(Request $request)
 		{
 			$this->validate($request, [
-				'name'  => 'required|string|unique,categories',
+				'name'  => 'required|string|unique:categories,name',
 				'order' => 'required|numeric|min:1|max:20',
 			]);
 			
@@ -86,5 +86,17 @@
 		public function destroy($id)
 		{
 			//
+		}
+		
+		public function search(Request $request)
+		{
+			$this->validate($request, [
+				'search' => 'required',
+			]);
+			$query = $request->input('search') . '';
+			$suggestions = Category::where('name', 'LIKE', '%' . $query . '%')
+				->get(['id', 'name']);
+			
+			return $this->collectionResponse($suggestions);
 		}
 	}

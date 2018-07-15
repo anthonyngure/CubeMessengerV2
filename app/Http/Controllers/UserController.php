@@ -79,12 +79,12 @@
 				$client = Auth::user()->getClient();
 				
 				$this->validate($request, [
-					'name'           => 'required',
-					'password'       => 'required',
-					'role'           => 'required|in:CLIENT_ADMIN,PURCHASING_HEAD,DEPARTMENT_HEAD,DEPARTMENT_USER',
+					'name'         => 'required',
+					'password'     => 'required',
+					'role'         => 'required|in:CLIENT_ADMIN,PURCHASING_HEAD,DEPARTMENT_HEAD,DEPARTMENT_USER',
 					'departmentId' => 'required_if:role,DEPARTMENT_HEAD|required_if:role,DEPARTMENT_USER|exists:departments,id',
-					'email'          => 'required|unique:users',
-					'phone'          => 'required|unique:users',
+					'email'        => 'required|unique:users',
+					'phone'        => 'required|unique:users',
 				]);
 				
 				/** @var User $user */
@@ -257,5 +257,20 @@
 			$user->notify(new PasswordChanged());
 			
 			return $this->arrayResponse([]);
+		}
+		
+		public function searchSuppliers(Request $request)
+		{
+			$this->validate($request, [
+				'search' => 'required',
+			]);
+			$query = $request->input('search') . '';
+			$suggestions = User::where('name', 'LIKE', '%' . $query . '%')
+				->whereHas('role', function (Builder $builder) {
+					$builder->where('name', 'SUPPLIER');
+				})->get(['id', 'name']);
+			
+			
+			return $this->collectionResponse($suggestions);
 		}
 	}

@@ -125,6 +125,52 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <!--Confirm received-->
+        <v-dialog v-model="confirmingReceived" max-width="800px">
+            <v-card v-if="confirmingReceivedItem">
+                <v-card-text>
+                    <guide text="Confirm the order was received successfully!"/>
+                    <connection-manager ref="confirmingReceivedConnectionManager"
+                                        v-model="connecting"/>
+                    <v-data-table
+                            hide-headers
+                            hide-actions
+                            :headers="viewItemHeaders"
+                            :items="viewableHeaders">
+                        <template slot="items"
+                                  slot-scope="props">
+                            <td>{{props.item.text}}</td>
+                            <td>{{manager.toValue(props.item, confirmingReceivedItem)}}</td>
+                        </template>
+                    </v-data-table>
+                    <v-data-table
+                            :items="confirmingReceivedItem.items"
+                            hide-actions
+                            item-key="id"
+                            :style="'max-height: '+($vuetify.breakpoint.height * 0.30)+'px;'"
+                            class="scroll-y"
+                            :headers="productHeaders">
+                        <template slot="items" slot-scope="props">
+                            <td>{{props.item.product.name}}</td>
+                            <td>{{$utils.formatMoney(props.item.priceAtPurchase)}}</td>
+                            <td>{{props.item.quantity}}</td>
+                            <td>{{$utils.formatMoney(props.item.priceAtPurchase*props.item.quantity)}}</td>
+                        </template>
+                    </v-data-table>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer/>
+                    <v-btn color="red" @click.native="confirmingReceived = false" flat
+                           :disabled="connecting">Close
+                    </v-btn>
+                    <v-spacer/>
+                    <v-btn color="primary" @click.native="confirmReceived"
+                           :disabled="connecting">Confirm
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
 
     </v-layout>
 </template>
@@ -135,12 +181,15 @@
   import Guide from './Guide'
   import ConnectionManager from './ConnectionManager'
 
+
   export default {
     extends: CrudBase,
     components: {ConnectionManager, Guide, Crud},
     name: 'Orders',
     data () {
       return {
+        confirmingReceived: false,
+        confirmingReceivedItem: null,
         item: null,
         viewDialogHere: false,
         connecting: false,
@@ -197,12 +246,26 @@
         this.dispatching = false
         this.connecting = false
       },
+      closeConfirmingDispatch () {
+        this.confirmingReceivedItem = null
+        this.confirmingReceived = false
+        this.connecting = false
+      },
       dispatch () {
         let that = this
         this.$refs.dispatchConnectionManager.post('orders/dispatch/' + this.dispatchingItem.id, {
           onSuccess (response) {
             that.$refs.crud.setItems(response.data.data)
             that.closeDispatchingDialog()
+          }
+        })
+      },
+      confirmReceived () {
+        let that = this
+        this.$refs.confirmingReceivedConnectionManager.post('orders/confirmReceived/' + this.confirmingReceivedItem.id, {
+          onSuccess (response) {
+            that.$refs.crud.removeItem(response.data.data)
+            that.closeConfirmingDispatch()
           }
         })
       },
@@ -227,6 +290,9 @@
           }
           else if (header.value === 'dispatchedBy') {
             return item.dispatchedBy ? item.dispatchedBy.name : that.defaultValue
+          }
+          else if (header.value === 'receivedConfirmedBy') {
+            return item.receivedConfirmedBy ? item.receivedConfirmedBy.name : that.defaultValue
           }
           else if (header.value === 'dispatchRider') {
             return item.dispatchRider ? item.dispatchRider.name : that.defaultValue
@@ -259,11 +325,16 @@
         this.manager.onInlineActionClicked = (action, item, filter) => {
           if (action.key === 'view') {
             that.$refs.crud.viewItem(item)
-          } else {
+          } else if (action.key === 'dispatch') {
             that.viewableHeaders = that.$refs.crud.viewableHeaders
             that.viewItemHeaders = that.$refs.crud.viewItemHeaders
             that.dispatchingItem = item
-            that.dispatching = action.key === 'dispatch'
+            that.dispatching = true
+          } else if (action.key === 'confirmReceived') {
+            that.viewableHeaders = that.$refs.crud.viewableHeaders
+            that.viewItemHeaders = that.$refs.crud.viewItemHeaders
+            that.confirmingReceivedItem = item
+            that.confirmingReceived = true
           }
         }
         this.manager.hideHeader = (header, filter) => {
@@ -275,8 +346,22 @@
           else if (header.value === 'dispatchedBy') {
             return filter.value !== 'DISPATCHED' || !that.isSupplier()
           }
+
+          else if (header.value === 'receivedConfirmedAt') {
+            return filter.value !== 'DELIVERED'
+          }
+          else if (header.value === 'receivedConfirmedBy') {
+            return filter.value !== 'DELIVERED'
+          }
+
           else if (header.value === 'dispatchRider') {
             return filter.value !== 'DISPATCHED'
+          }
+          else if (header.value === 'itemsReceivedFromSupplierCount') {
+            return !that.isAdmin() && !that.isOperations()
+          }
+          else if (header.value === 'itemsNotReceivedFromSupplierCount') {
+            return !that.isAdmin() && !that.isOperations()
           }
           else {
             return false

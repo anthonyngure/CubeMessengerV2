@@ -60,7 +60,7 @@
 			$total = 0;
 			/** @var \App\LocalPurchaseOrderItem $item */
 			foreach ($items as $item) {
-				$total += ($item->orderItem->quantity * $item->orderItem->price_at_purchase);
+				$total += ($item->orderItem->quantity * $item->orderItem->supplier_price_at_purchase);
 			}
 			
 			return (new MailMessage)

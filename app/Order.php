@@ -49,6 +49,12 @@
 	 * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereDispatchRiderId($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereDispatchedAt($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereDispatchedById($value)
+	 * @property-read \App\User|null                                            $dispatchRider
+	 * @property-read \App\User|null                                            $dispatchedBy
+	 * @property string|null                                                    $received_confirmed_at
+	 * @property int|null                                                       $received_confirmed_by_id
+	 * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereReceivedConfirmedAt($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereReceivedConfirmedById($value)
 	 */
 	class Order extends Model
 	{
@@ -56,6 +62,7 @@
 		const COUNTS = ['itemsReceivedFromSupplier', 'itemsNotReceivedFromSupplier', 'items'];
 		const STATUS_PENDING_DISPATCH = 'PENDING_DISPATCH';
 		const STATUS_DISPATCHED = "DISPATCHED";
+		const STATUS_DELIVERED = "DELIVERED";
 		protected $appends = ['amount'];
 		use SoftDeletes, Billable;
 		
@@ -131,6 +138,14 @@
 		public function dispatchRider()
 		{
 			return $this->belongsTo(User::class, 'dispatch_rider_id');
+		}
+		
+		/**
+		 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+		 */
+		public function receivedConfirmedBy()
+		{
+			return $this->belongsTo(User::class, 'received_confirmed_by_id');
 		}
 		
 		/**

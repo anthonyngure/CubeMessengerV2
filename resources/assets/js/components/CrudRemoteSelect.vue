@@ -3,7 +3,7 @@
     :id="'#'+header.id"
     :key="'#'+header.id"
     :items="items"
-    :hint="editing ? header.edit_hint : header.create_hint"
+    :hint="editing ? header.editHint : header.createHint"
     v-model="itemId"
     :label="header.text"
     :required="required"

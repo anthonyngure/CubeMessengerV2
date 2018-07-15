@@ -106,7 +106,7 @@ export default {
   methods: {
     submit () {
       let that = this
-      this.$refs.connectionManager.post('user/changePassword', {
+      this.$refs.connectionManager.post('users/changePassword', {
         onSuccess (response) {
           that.signOut()
         }

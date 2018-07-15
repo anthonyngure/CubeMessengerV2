@@ -46,6 +46,8 @@
 		
 		use SoftDeletes;
 		
+		const STATUS_SETTLED = "SETTLED";
+		const STATUS_BLOCKED = "BLOCKED";
 		protected $casts = [
 			'amount'      => 'float',
 			'description' => 'string',

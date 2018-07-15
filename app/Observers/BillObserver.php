@@ -4,7 +4,7 @@
 	
 	use App\Bill;
 	use App\Notifications\BillCanceledNotification;
-	use App\Notifications\BillNotification;
+	use App\Notifications\NewBillNotification;
 	
 	class BillObserver
 	{
@@ -32,7 +32,7 @@
 			
 			/** @var \App\Client $client */
 			$client = $bill->client()->firstOrFail();
-			$client->notify(new BillNotification($bill));
+			$client->notify(new NewBillNotification($bill));
 			
 		}
 		
@@ -134,6 +134,6 @@
 		{
 			/** @var \App\Client $client */
 			$client = $bill->client()->firstOrFail();
-			$client->notify(new BillNotification($bill));
+			$client->notify(new NewBillNotification($bill));
 		}
 	}

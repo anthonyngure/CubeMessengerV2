@@ -63,7 +63,7 @@
                     </v-list-tile-content >
                   </v-list-tile >
                   <v-divider v-if="(index+1) < appointments.length"
-                             :key="appointment.id+index+1" ></v-divider >
+                             :key="appointment.id+index+1"/>
                 </template >
               
               </v-list >
@@ -72,9 +72,9 @@
         </v-card-text >
       </v-card >
     </v-flex >
-    
+
     <change-password-dialog :show="changingPassword"
-                            @onClose="changingPassword=false" ></change-password-dialog >
+                            @onClose="changingPassword=false"/>
   
   </v-layout >
 </template >
@@ -94,7 +94,7 @@ export default {
   },
   mounted () {
     let that = this
-    this.$refs.connectionManager.get('user/appointments', {
+    this.$refs.connectionManager.get('users/appointments', {
       onSuccess (response) {
         that.appointments = response.data.data
       }

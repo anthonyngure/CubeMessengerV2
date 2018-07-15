@@ -115,7 +115,7 @@
           //Determine if a header should be hidden
           hideHeader(header, filter){
             return false;
-          }
+          },
 
         }
       }

@@ -208,16 +208,23 @@
       }
     },
     mounted () {
-      let dateClientJoined = moment(this.$auth.user().client.createdAt)
-      this.minMonth = dateClientJoined.year() + '-' + (dateClientJoined.month())
       let today = moment()
-      this.maxMonth = today.year() + '-' + (today.month() + 2)
       let todayMonth = today.month()
       if (todayMonth < 10) {
         todayMonth = '0' + todayMonth
       }
-      this.month = today.year() + '-' + todayMonth
-      this.currentTab = 'bills'
+
+      if (this.isAdmin() || this.isOperations()) {
+        this.month = today.year() + '-' + todayMonth
+        this.currentTab = 'bills'
+      } else {
+        let dateClientJoined = moment(this.$auth.user().client.createdAt)
+        this.minMonth = dateClientJoined.year() + '-' + (dateClientJoined.month())
+        this.maxMonth = today.year() + '-' + (today.month() + 2)
+        this.month = today.year() + '-' + todayMonth
+        this.currentTab = 'bills'
+      }
+
     }
 
   }

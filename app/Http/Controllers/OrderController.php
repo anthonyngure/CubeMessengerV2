@@ -5,6 +5,8 @@
 	use App\Bill;
 	use App\CrudHeader;
 	use App\Exceptions\WrappedException;
+	use App\Notifications\BillSettledNotification;
+	use App\Notifications\OrderDeliveredNotification;
 	use App\Notifications\OrderDispatchedNotification;
 	use App\Notifications\OrderNotification;
 	use App\Order;
@@ -17,38 +19,6 @@
 	
 	class OrderController extends Controller
 	{
-		
-		/**
-		 * Display a listing of the resource.
-		 *
-		 * @param \Illuminate\Http\Request $request
-		 * @return \Illuminate\Http\Response
-		 * @throws \App\Exceptions\WrappedException
-		 */
-		public function index(Request $request)
-		{
-			$this->validate($request, [
-				'filter' => 'required|in:AT_DEPARTMENT_HEAD,AT_PURCHASING_HEAD,DELIVERED,REJECTED,DISPATCHED,APPROVED,PENDING_DISPATCH',
-			]);
-			
-			$headers = CrudHeader::whereModel(Order::class)->orderBy('priority')->get();
-			
-			if (Auth::user()->isAdmin() || Auth::user()->isOperations()) {
-				$orders = Order::with('items.product');
-			} else {
-				/** @var \App\Client $client */
-				$client = Auth::user()->getClient();
-				$orders = Order::whereIn('user_id', $client->users->pluck('id'));
-				
-			}
-			
-			$data = $orders->with(['items.product', 'rejectedBy.role', 'dispatchRider', 'dispatchedBy'])
-				->where('status', $request->input('filter'))
-				->withCount(Order::COUNTS)->get();
-			
-			return $this->collectionResponse($data, ['headers' => $headers]);
-			
-		}
 		
 		/**
 		 * Store a newly created resource in storage.
@@ -82,9 +52,10 @@
 				/** @var Product $product */
 				$product = Product::findOrFail($submittedOrderItem['productId']);
 				array_push($orderItems, new OrderItem([
-					'product_id'        => $submittedOrderItem['productId'],
-					'quantity'          => $submittedOrderItem['quantity'],
-					'price_at_purchase' => $product->price,
+					'product_id'                 => $submittedOrderItem['productId'],
+					'quantity'                   => $submittedOrderItem['quantity'],
+					'price_at_purchase'          => $product->price,
+					'supplier_price_at_purchase' => $product->supplier_price,
 				]));
 			}
 			
@@ -123,18 +94,6 @@
 			
 			return $this->itemCreatedResponse($order);
 		}
-		
-		/**
-		 * Display the specified resource.
-		 *
-		 * @param  int $id
-		 * @return \Illuminate\Http\Response
-		 */
-		public function show($id)
-		{
-			//
-		}
-		
 		
 		/**
 		 * Update the specified resource in storage.
@@ -210,4 +169,76 @@
 			
 			return $this->index($request);
 		}
+		
+		/**
+		 * Display a listing of the resource.
+		 *
+		 * @param \Illuminate\Http\Request $request
+		 * @return \Illuminate\Http\Response
+		 * @throws \App\Exceptions\WrappedException
+		 */
+		public function index(Request $request)
+		{
+			$this->validate($request, [
+				'filter' => 'required|in:AT_DEPARTMENT_HEAD,AT_PURCHASING_HEAD,DELIVERED,REJECTED,DISPATCHED,APPROVED,PENDING_DISPATCH',
+			]);
+			
+			$headers = CrudHeader::whereModel(Order::class)->orderBy('priority')->get();
+			
+			if (Auth::user()->isAdmin() || Auth::user()->isOperations()) {
+				$orders = Order::with('items.product');
+			} else {
+				/** @var \App\Client $client */
+				$client = Auth::user()->getClient();
+				$orders = Order::whereIn('user_id', $client->users->pluck('id'));
+				
+			}
+			
+			$data = $orders->with(['items.product', 'rejectedBy.role', 'dispatchRider', 'dispatchedBy', 'receivedConfirmedBy'])
+				->where('status', $request->input('filter'))
+				->withCount(Order::COUNTS)->get();
+			
+			return $this->collectionResponse($data, ['headers' => $headers]);
+			
+		}
+		
+		/**
+		 * @param \Illuminate\Http\Request $request
+		 * @param                          $id
+		 * @return \Illuminate\Http\Response
+		 * @throws \App\Exceptions\WrappedException
+		 */
+		public function confirmReceived(Request $request, $id)
+		{
+			/** @var \App\Order $order */
+			$order = Order::with(['user.client', 'bill'])->findOrFail($id);
+			$order->received_confirmed_at = now()->toDateTimeString();
+			$order->received_confirmed_by_id = Auth::user()->id;
+			$order->status = Order::STATUS_DELIVERED;
+			$order->save();
+			
+			$bill = $order->bill;
+			$bill->status = Bill::STATUS_SETTLED;
+			$bill->save();
+			
+			$order->user->client->notify(new BillSettledNotification($bill));
+			
+			$order->user->client->notify(new OrderDeliveredNotification($order));
+			
+			return $this->show($order->id);
+		}
+		
+		/**
+		 * Display the specified resource.
+		 *
+		 * @param  int $id
+		 * @return \Illuminate\Http\Response
+		 */
+		public function show($id)
+		{
+			$order = Order::with(['items.product', 'rejectedBy.role', 'dispatchRider', 'dispatchedBy', 'receivedConfirmedBy'])->findOrFail($id);
+			
+			return $this->itemResponse($order);
+		}
+		
 	}

@@ -21,9 +21,13 @@
         let that = this
         this.manager.toValue = (header, item) => {
           if (header.value === 'price') {
-            return item.price ? that.$utils.formatMoney(item.price) : that.defaultValue
+            return item.price ? that.$utils.formatMoney(item.price) : that.$utils.formatMoney(0)
+          } else if (header.value === 'supplierPrice') {
+            return item.price ? that.$utils.formatMoney(item.supplierPrice) : that.$utils.formatMoney(0)
           } else if (header.value === 'supplierId') {
             return item.supplier ? item.supplier.name : that.defaultValue
+          } else if (header.value === 'categoryId') {
+            return item.category ? item.category.name : that.defaultValue
           } else {
             return item[header.value] ? item[header.value] : that.defaultValue
           }

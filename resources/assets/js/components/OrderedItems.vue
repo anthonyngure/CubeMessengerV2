@@ -137,8 +137,11 @@
         }
         this.manager.toValue = (header, item) => {
           if (header.value === 'priceAtPurchase') {
-            return item.priceAtPurchase ? that.$utils.formatMoney(item.priceAtPurchase) : that.defaultValue
-          } else if (header.value === 'product') {
+            return item.priceAtPurchase ? that.$utils.formatMoney(item.priceAtPurchase) : that.$utils.formatMoney(0)
+          } else if (header.value === 'supplierPriceAtPurchase') {
+            return item.supplierPriceAtPurchase ? that.$utils.formatMoney(item.supplierPriceAtPurchase) : that.$utils.formatMoney(0)
+          }
+          else if (header.value === 'product') {
             return item.product ? item.product.name : that.defaultValue
           }
           else if (header.value === 'amount') {
@@ -160,6 +163,15 @@
         this.manager.onTopAction = (action, items, filter) => {
           that.items = items
           that.selectingItems = action.key === 'generateLPO'
+        }
+
+        this.manager.hideHeader = (header, filter) => {
+          if (header.value === 'priceAtPurchase') {
+            return that.isSupplier()
+          }
+          else {
+            return false
+          }
         }
       }
     },
