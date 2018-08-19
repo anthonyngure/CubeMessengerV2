@@ -26,7 +26,7 @@ Vue.router = router
 
 Vue.use(VueAxios, axios)
 //Vue.axios.defaults.baseURL = DEBUG ? 'http://localhost:3000/api/v1' : 'https://cube-messenger.com/api/v1'
-Vue.axios.defaults.baseURL = DEBUG ? 'http://localhost:3000/api/v1' : 'http://35.192.81.247/api/v1'
+Vue.axios.defaults.baseURL = DEBUG ? 'http://localhost:3000/api/v1' : 'http://35.226.165.115/api/v1'
 Vue.axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 Vue.axios.defaults.headers.common['Accept'] = 'application/json'
 Vue.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
