@@ -143,7 +143,7 @@
 				->with(['optionItem'])
 				->get();
 			
-			return $this->itemDeletedResponse($subscriptions);
+			return $this->collectionResponse($subscriptions);
 		}
 		
 		/**

@@ -60,11 +60,8 @@
                     <template slot="items" slot-scope="props">
 
                         <td class="text-xs-left" v-for="(header, index) in currentTabItem.headers" :key="index">
-                            {{ header.isMoney ? $utils.formatMoney(props.item[header.value]) : props.item[header.value]
+                            {{ header.isMoney ? $utils.formatMoney(props.item[header.value]) : toValue(props, header)
                             }}
-                            <!--{{props.item[index]}}-->
-                            <!--{{props.item}}-->
-                            <!--{{header.value}}-->
                         </td>
                     </template>
                 </v-data-table>
@@ -102,10 +99,12 @@
             icon: 'schedule', title: 'Subscriptions', id: 'subscriptions',
             headers: [
               {text: 'Item', sortable: false, value: 'item'},
+              {text: 'Weekdays', sortable: false, value: 'weekdays'},
               {text: 'Quantity', sortable: false, value: 'quantity'},
-              {text: 'Cost', sortable: false, value: 'quantity'},
-              {text: 'Delivery Date/Time', sortable: false, value: 'quantity'},
-              {text: 'Received By', sortable: false, value: 'quantity'},
+              {text: 'Item Cost', sortable: false, value: 'itemCost', isMoney: true},
+              {text: 'Delivery Cost', sortable: false, value: 'deliveryCost', isMoney: true},
+              {text: 'Total Cost', sortable: false, value: 'amount'},
+              {text: 'Duration', sortable: false, value: 'duration'}
             ],
           },
           {
@@ -180,6 +179,31 @@
       }
     },
     methods: {
+      toValue (props, header) {
+        //this.$utils.log(this.currentTabItem.id)
+        //this.$utils.log(header.value)
+        if (this.currentTabItem.id === 'subscriptions') {
+          switch (header.value) {
+            case 'amount':
+              return this.$utils.formatMoney(props.item.itemCost + props.item.deliveryCost)
+            case 'item':
+              return props.item.optionItem.name
+            case 'weekdays':
+              return this.transformWeekdays(props.item.weekdays)
+            case 'duration':
+              return props.item.renewEveryMonth ? 'Renew Monthly' : props.item.terminationDate
+          }
+        }
+        return props.item[header.value]
+      },
+      transformWeekdays (weekdays) {
+        let weekdayNumbers = weekdays.split('#')
+        let weekdayNames = []
+        for (let weekdayNumber of weekdayNumbers) {
+          weekdayNames.push(moment().weekday(weekdayNumber).format('dddd'))
+        }
+        return weekdayNames.join(',')
+      },
       refresh () {
         this.items = []
         let that = this

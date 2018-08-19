@@ -123,7 +123,7 @@ Vue.prototype.$actions = {
 
 Vue.prototype.$utils = {
   //url: DEBUG ? 'http://localhost:3000' : 'https://cube-messenger.com',
-  url: DEBUG ? 'http://localhost:3000' : 'http://35.192.81.247',
+  url: DEBUG ? 'http://localhost:3000' : 'http://35.226.165.115',
   googleMapsKey: GOOGLE_MAPS_KEY,
   googleGeocodeUrl: 'https://maps.googleapis.com/maps/api/geocode/json',
   googleDirectionsUrl: 'https://maps.googleapis.com/maps/api/directions/json',
