@@ -151,7 +151,7 @@
 		public function recipient(Request $request, $deliveryId, $itemId)
 		{
 			$this->validate($request, [
-				'phone' => 'required|numeric|digits:10',
+				'phone' => 'required',
 				'name'  => 'required|string',
 			]);
 			
@@ -160,7 +160,7 @@
 			/** @var DeliveryItem $deliveryItem */
 			$deliveryItem = $delivery->items()->findOrFail($itemId);
 			
-			$deliveryItem->recipient_contact = Utils::normalizePhone($request->input('phone'));
+			$deliveryItem->recipient_contact = $request->input('phone');
 			$deliveryItem->recipient_name = Utils::normalizePhone($request->input('name'));
 			$deliveryItem->save();
 			
