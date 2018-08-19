@@ -6,6 +6,7 @@
 	use App\DeliveryItem;
 	use App\Exceptions\WrappedException;
 	use App\Notifications\DeliveryItemRecipientNotification;
+	use App\Utils;
 	use Auth;
 	use Illuminate\Database\Eloquent\Builder;
 	use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -144,6 +145,7 @@
 		/**
 		 * @param $deliveryId
 		 * @param $itemId
+		 * @param $phone
 		 * @return \Illuminate\Http\Response
 		 */
 		public function token($deliveryId, $itemId, $phone)
@@ -153,7 +155,7 @@
 			/** @var DeliveryItem $deliveryItem */
 			$deliveryItem = $delivery->items()->findOrFail($itemId);
 			
-			$deliveryItem->recipient_contact = $phone;
+			$deliveryItem->recipient_contact = Utils::normalizePhone($phone);
 			$deliveryItem->save();
 			
 			$deliveryItem->notify(new DeliveryItemRecipientNotification($delivery));
