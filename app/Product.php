@@ -53,7 +53,7 @@
 		//
 		use SoftDeletes;
 		
-		protected $hidden = ['deleted_at', 'pivot', 'category_id', 'supplier_id'];
+		protected $hidden = ['deleted_at', 'pivot', 'supplier_id'];
 		
 		protected $guarded = ['id'];
 		
