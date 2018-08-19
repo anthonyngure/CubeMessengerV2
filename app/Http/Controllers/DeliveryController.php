@@ -219,6 +219,10 @@
 			
 			$this->handleApprovals($request, $delivery, 'PENDING_DELIVERY');
 			
+			//
+			$delivery->status = 'AT_PURCHASING_HEAD';
+			$delivery->save();
+			
 			$deliveries = Delivery::whereIn('user_id',
 				Auth::user()->getClient()->users->pluck('id'))
 				->whereHas('items', function (Builder $builder) use ($request) {
