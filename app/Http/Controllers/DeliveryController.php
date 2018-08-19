@@ -220,7 +220,7 @@
 			$this->handleApprovals($request, $delivery, 'PENDING_DELIVERY');
 			
 			//
-			$delivery->status = 'AT_PURCHASING_HEAD';
+			$delivery->status = 'PENDING_DELIVERY';
 			$delivery->save();
 			
 			$deliveries = Delivery::whereIn('user_id',
