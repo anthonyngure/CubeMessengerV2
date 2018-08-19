@@ -161,7 +161,7 @@
 			$deliveryItem = $delivery->items()->findOrFail($itemId);
 			
 			$deliveryItem->recipient_contact = $request->input('phone');
-			$deliveryItem->recipient_name = Utils::normalizePhone($request->input('name'));
+			$deliveryItem->recipient_name = $request->input('name');
 			$deliveryItem->save();
 			
 			$deliveryItem->notify(new DeliveryItemRecipientNotification($delivery));
