@@ -146,12 +146,15 @@
 		 * @param $itemId
 		 * @return \Illuminate\Http\Response
 		 */
-		public function token($deliveryId, $itemId)
+		public function token($deliveryId, $itemId, $phone)
 		{
 			/** @var Delivery $delivery */
 			$delivery = Delivery::findOrFail($deliveryId);
 			/** @var DeliveryItem $deliveryItem */
 			$deliveryItem = $delivery->items()->findOrFail($itemId);
+			
+			$deliveryItem->recipient_contact = $phone;
+			$deliveryItem->save();
 			
 			$deliveryItem->notify(new DeliveryItemRecipientNotification($delivery));
 			
