@@ -143,19 +143,25 @@
 		}
 		
 		/**
-		 * @param $deliveryId
-		 * @param $itemId
-		 * @param $phone
+		 * @param \Illuminate\Http\Request $request
+		 * @param                          $deliveryId
+		 * @param                          $itemId
 		 * @return \Illuminate\Http\Response
 		 */
-		public function token($deliveryId, $itemId, $phone)
+		public function recipient(Request $request, $deliveryId, $itemId)
 		{
+			$this->validate($request, [
+				'phone' => 'required|numeric|digits:10',
+				'name'  => 'required|string',
+			]);
+			
 			/** @var Delivery $delivery */
 			$delivery = Delivery::findOrFail($deliveryId);
 			/** @var DeliveryItem $deliveryItem */
 			$deliveryItem = $delivery->items()->findOrFail($itemId);
 			
-			$deliveryItem->recipient_contact = Utils::normalizePhone($phone);
+			$deliveryItem->recipient_contact = Utils::normalizePhone($request->input('phone'));
+			$deliveryItem->recipient_name = Utils::normalizePhone($request->input('name'));
 			$deliveryItem->save();
 			
 			$deliveryItem->notify(new DeliveryItemRecipientNotification($delivery));
